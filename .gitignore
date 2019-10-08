@@ -2,7 +2,7 @@
 # python compile files
 # ===========
 *.pyc
-
+credentials/
 static/*
 # Exception to the rule
 air-quality-explorer/settings.py
