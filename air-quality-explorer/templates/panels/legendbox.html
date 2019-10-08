@@ -1,0 +1,16 @@
+{% load cms_tags staticfiles %}
+<div class="legend">
+    <div class="legend-text">
+        <span>[[ 'Legend' | translate]]</span>
+        <button class="legend-info-button btn btn-danger btn-xs" id="legend-collapse">
+            <i class="glyphicon glyphicon-remove"></i>
+        </button>
+        <button class="legend-info-button btn btn-success btn-xs" id="legend-expand" style="display:none;">
+            <i class="glyphicon glyphicon-plus"></i>
+        </button>
+    </div>
+    <div id='legend-content' class="legend-tab-content">
+        <img class="legend-cb" id="precip-cb" src="{% static 'images/rainbow.png' %}" style="width:80%" alt="Precipitation Colorbar">
+
+    </div>
+</div>

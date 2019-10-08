@@ -1,0 +1,24 @@
+
+# python compile files
+# ===========
+*.pyc
+
+static/*
+# Exception to the rule
+air-quality-explorer/settings.py
+
+# Unused templates
+# ======================
+
+# Vendor files
+# ======================
+air-quality-explorer/static/vendor/*
+air-quality-explorer/static/dist/*
+# Exception to the rule
+!air-quality-explorer/static/dist/README.md
+
+# Node and related environment
+# ======================
+.npmignore
+node_modules/
+_pycache_/
