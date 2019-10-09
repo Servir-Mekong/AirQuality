@@ -688,10 +688,6 @@ p {
     z-index: 9999;
 }
 
-.ui-datepicker {
-    /*margin-left: -77px;*/
-
-}
 .ui-widget-header{
     border: 1px solid #aaaaaa;
     background: #0f0a3c;

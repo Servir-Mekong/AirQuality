@@ -1,17 +1,7 @@
-function find_var_index(item,data){
-    var index = -1;
-    for (var i = 0; i < data.length; ++i) {
-        if (item.includes(data[i]["id"])) {
-            index = i;
-            break;
-        }
-    }
-    return index
-}
 (function () {
 	'use strict';
 	angular.module('baseApp')
-	.controller('airexplorer' ,function ($scope, $timeout, MapService, appSettings,) {
+	.controller('airexplorer' ,function ($scope, $timeout, MapService, appSettings) {
 
 		/* global variables to be tossed around like hot potatoes */
 		$scope.initdate = '';
@@ -99,6 +89,17 @@ function find_var_index(item,data){
 		    $("#poly-lat-lon").val('');
 		    $("#shp-lat-lon").val('');
 		};
+
+        function find_var_index(item,data){
+            var index = -1;
+            for (var i = 0; i < data.length; ++i) {
+                if (item.includes(data[i]["id"])) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
 
 		map = L.map('map',{
             // timeDimension: true,
@@ -200,12 +201,12 @@ function find_var_index(item,data){
 
     function handleMouseMove(e,ctx,width,height){
         $('.tippy').removeClass('hidden');
+        var offsetX,offsetY;
         function reOffset(){
             var BB=canvas.getBoundingClientRect();
             offsetX=BB.left;
             offsetY=BB.top;
         }
-        var offsetX,offsetY;
         reOffset();
         // tell the browser we're handling this event
         e.preventDefault();
@@ -298,7 +299,7 @@ function find_var_index(item,data){
 		                .setContent(ccontent)
 		                .openOn(this._map);
 
-		            $('.mod_link').on('click',get_ts);
+		            //$('.mod_link').on('click',get_ts);
 		        }
 		    });
 
@@ -436,21 +437,17 @@ function find_var_index(item,data){
 
         L.Control.InfoControl = L.Control.extend({
             initialize: function (options) {
-                "use strict";
                 L.Util.setOptions(this, options);
             },
             onAdd: function () {
-                "use strict";
                 var container = L.DomUtil.create("div", "info-control leaflet-control-attribution");
                 container.innerHTML = this.options.content;
                 return container;
             },
             getContent: function () {
-                "use strict";
                 return this.getContainer().innerHTML;
             },
             setContent: function (html) {
-                "use strict";
                 this.getContainer().innerHTML = html;
             }
         });
@@ -478,7 +475,7 @@ function find_var_index(item,data){
         var baselayers = {};
         var today = new Date();
         var day = new Date(today.getTime());
-        var day = day.toISOString().split('T')[0];
+        day = day.toISOString().split('T')[0];
 
         var DATE_FORMAT = 'dd.mm.yy';
         var strToDateUTC = function(str) {
@@ -634,7 +631,7 @@ function find_var_index(item,data){
             $date
                 .val($.datepicker.formatDate(DATE_FORMAT, new Date(date.valueOf() + delta * oneDay)))
                 .change();
-        }
+        };
 
 
         // Control date navigation for GIBS WMS layers, adjust the options.time and redraw. Exclude FIRE VIIRS layers (not time-enabled)
@@ -671,14 +668,13 @@ function find_var_index(item,data){
             var feature = drawnItems.toGeoJSON();
             var type = feature.features[0].geometry.type;
             int_type = type;
-            if (type == 'Point'){
-                var coords = feature["features"][0]["geometry"]["coordinates"];
+            var coords;
+            if (type === 'Point'){
+                coords = feature["features"][0]["geometry"]["coordinates"];
                 $("#point-lat-lon").val(coords);
                 // get_ts();
-
-            } else if (type == 'Polygon'){
-
-                var coords = feature["features"][0]["geometry"];
+            } else if (type === 'Polygon'){
+                coords = feature["features"][0]["geometry"];
                 $("#poly-lat-lon").val(JSON.stringify(coords.coordinates[0]));
                 // get_ts();
             }
@@ -723,7 +719,7 @@ function find_var_index(item,data){
 
     $(function() {
             $.each(thredds_options['catalog'],function(item,i){
-                if(item.toUpperCase()!="GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!="GEOS_TAVG3_2D_AER_NX"){
+                if(item.toUpperCase()!== "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!== "GEOS_TAVG3_2D_AER_NX"){
                     var new_option = new Option(item.toUpperCase(),item);
                     var noption = new Option(item.toUpperCase(),item);
                     var noption2 = new Option(item.toUpperCase(),item);
@@ -741,7 +737,7 @@ function find_var_index(item,data){
                 $("#lvar_table").html('');
                 $("#rvar_table").html('');
                 $.each(thredds_options['catalog'][run_type],function(item,i){
-                    if (item == 'combined'){
+                    if (item === 'combined'){
                         var new_option = new Option(item,item);
                         $("#freq_table").append(new_option);
                     }
@@ -757,7 +753,7 @@ function find_var_index(item,data){
                 });
 
                 var_options.forEach(function(item,i){
-                    if(item["category"]==run_type){
+                    if(item["category"] === run_type){
 
                         var new_option = new Option(item["display_name"]);
                         // +' ('+item["units"]+')'
@@ -782,7 +778,7 @@ function find_var_index(item,data){
                 });
 
                 var_options.forEach(function(item,i){
-                    if(item["category"]==run_type){
+                    if(item["category"] === run_type){
                         var new_option = new Option(item["display_name"],item["id"]);
                         $("#lvar_table").append(new_option);
                     }
@@ -803,7 +799,7 @@ function find_var_index(item,data){
                 });
 
                 var_options.forEach(function(item,i){
-                    if(item["category"]==run_type){
+                    if(item["category"] === run_type){
                         var new_option = new Option(item["display_name"],item["id"]);
                         $("#rvar_table").append(new_option);
                     }
@@ -835,7 +831,7 @@ function find_var_index(item,data){
                 $("#var_table").html('');
 
                 var_options.forEach(function(item,i){
-                    if(item["category"]==run_type){
+                    if(item["category"] === run_type){
                         var new_option = new Option(item["display_name"],item["id"]);
                         $("#var_table").append(new_option);
                     }

@@ -12,7 +12,6 @@ from django.contrib.sitemaps.views import sitemap
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.views.generic import TemplateView
-from mapclient import api as mapclient_api
 from mapclient import controllers as controllers
 from mapclient import views, api
 admin.autodiscover()
@@ -28,6 +27,5 @@ urlpatterns += i18n_patterns(
     #url(r'^$', TemplateView.as_view(template_name="map.html")),
     url(r'^$', views.index),
     url(r'^home/', TemplateView.as_view(template_name="map.html")),
-    url(r'^mapviewer/', TemplateView.as_view(template_name="map.html")),
-    url(r'^api/mapclient/$', mapclient_api.api)
+    url(r'^mapviewer/', TemplateView.as_view(template_name="map.html"))
 )

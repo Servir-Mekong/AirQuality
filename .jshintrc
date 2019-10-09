@@ -8,6 +8,7 @@
 	"undef": true, // Require all non-global variables be declared before they are used.
 	"unused": false, // Warn unused variables.
 	"strict": true, // Require `use strict` pragma in every file.
+	"sub":true,
 	"globals": {
 		// Globals variables.
 		"$": true,
@@ -20,7 +21,10 @@
 		"FileReader": true,
 		"DOMParser": true,
 		"ActiveXObject": true,
-		"toGeoJSON": true
+		"toGeoJSON": true,
+		"Option": true,
+		"dateFormat": true,
+		"canvas": true
 	},
 	"predef": [ // Extra globals.
 		"inject",
