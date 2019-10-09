@@ -18,9 +18,25 @@
     <div class="sidenav" id="side-panel">
 
             <p><b>[[ 'Select Parameter' | translate]]</b></p>
-            <select name="run_table" id="run_table" class="form-control" ng-options="option.name for option in "
-                        ng-model="areaIndexSelector" ng-change="">
+            <select name="run_table" id="run_table" class="form-control">
             </select>
+
+            <div class="hidden">
+                <label>
+                    Select Frequency
+                </label>
+                <select  class="freq_table" name="freq_table" id="freq_table" style="width: 100%">
+
+                </select>
+                <br>
+                <label>
+                    Select Run Date
+                </label>
+                <select  class="rd_table" name="rd_table" id="rd_table" style="width: 100%">
+
+                </select>
+            </div>
+
             <p><b>[[ 'Select Variable' | translate]]</b></p>
             <select class="form-control" name="var_table" id="var_table">
 
@@ -31,7 +47,7 @@
             <p><b>[[ 'Range Max' | translate]]</b></p>
             <input  type="text" class="form-control" id="range-max" name="range-max">
 
-            <p><b>[[ 'Select Style' | translate]]</b></p>
+            <p><b>[[ 'Select a Style' | translate]]</b></p>
             <select name="style_table" id="style_table" class="form-control" ng-options="option.name for option in stylesSelectors"
                         ng-model="stylesSelector" ng-change="">
             </select>
@@ -39,27 +55,89 @@
             <p><b>[[ 'Pointer Coordinates' | translate]]</b></p>
             <div id="mouse-position" class="well well-sm"></div>
             <div class="slider-width">
-                <p> [[ 'Opacity' | translate]]:&emsp;&emsp; </p>
+                <p> [[ 'Opacity' | translate]]: <span id="OpacityVal"></span></p>
                 <input id="opacity-slider" type="text" style="width: 90%;left: 30px;"/>
             </div>
     </div>
-    <div class="map pull-margin" id="map" ></div>
-    <!-- <button class="slide-toggle"><i class="fas fa-tools fa-2x"></i></button>
-    <div class="box">
-        <div class="box-inner">
-            <div class="btn-group">
-                <button class="leaflet-draw-draw-polygon"><i class="fas fa-tools"></i></button>
-                <button><i class="fas fa-tools"></i></button>
-                <button><i class="fas fa-tools"></i></button>
-                <button><i class="fas fa-tools"></i></button>
-                <button><i class="fas fa-tools"></i></button>
-                <button><i class="fas fa-tools"></i></button>
-                <button><i class="fas fa-tools"></i></button>
-                <button><i class="fas fa-tools"></i></button>
+
+    <!--Show Compare Modal-->
+    <div class="modal fade" id="compare-modal" tabindex="-1" role="dialog" aria-labelledby="comapre-modal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="compare-modal-label">Compare Layers</h5>
+                </div>
+                <div class="modal-body">
+                    <h6>Left Window Options</h6>
+                    <label>
+                        Select Parameter
+                    </label>
+                    <select  class="run_table" name="lrun_table" id="lrun_table" style="width: 100%">
+
+                    </select>
+                    <label>
+                        Select Run Date
+                    </label>
+                    <select  class="rd_table" name="lrd_table" id="lrd_table" style="width: 100%">
+
+                    </select>
+                    <br>
+                    <label>
+                        Select Variable
+                    </label>
+                    <select  class="var_table" name="lvar_table" id="lvar_table" style="width: 100%">
+
+                    </select>
+                    <br>
+                    <h6>Right Window Options</h6>
+                    <label>
+                        Select Parameter
+                    </label>
+                    <select  class="run_table" name="rrun_table" id="rrun_table" style="width: 100%">
+
+                    </select>
+                    <label>
+                        Select Run Date
+                    </label>
+                    <select  class="rd_table" name="rrd_table" id="rrd_table" style="width: 100%">
+
+                    </select>
+                    <br>
+                    <label>
+                        Select Variable
+                    </label>
+                    <select  class="var_table" name="rvar_table" id="rvar_table" style="width: 100%">
+
+                    </select>
+                    <br>
+                    <h6>General Options</h6>
+                    <label for="range-min" class="formText">Range Min</label>
+                    <input type="text" class="form-control" id="crange-min" name="range-min" style="width: 100%">
+                    <label for="range-max" class="formText">Range Max</label>
+                    <input type="text" class="form-control" id="crange-max" name="range-max" style="width: 100% ">
+                    <label>
+                        Select a style
+                    </label>
+                    <select  class="style_table" name="cstyle_table" id="cstyle_table" style="width: 100%" >
+
+                    </select>
+                    <br><br>
+                    <div>
+                        <button type="button" class="btn btn-primary" id="btn-add-compare">Add Layers</button>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div> -->
-{% include "panels/legendbox.html" %}
+    </div>
+    <div id="metadata" style="display: none"  data-var-options="{{var_options}}" data-wms-url="{{thredds_wms_url}}"  data-thredds-options="{{thredds_options}}"></div>
+    <input type="text" name="point-lat-lon" id="point-lat-lon" hidden>
+    <input type="text" name="poly-lat-lon" id="poly-lat-lon" hidden>
+    <input type="text" name="shp-lat-lon" id="shp-lat-lon" hidden>
+    <div class="map pull-margin" id="map" ></div>
+
+<!-- {% include "panels/legendbox.html" %} -->
 
 </div>
 

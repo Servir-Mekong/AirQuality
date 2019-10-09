@@ -1,0 +1,30 @@
+Var|Category|Display_name|units|min|max
+AOD_550_STD|aod_aqua|AOD Std. Dev.|Unitless|0|0.5
+AOD_550_AVG|aod_aqua|AOD Average|Unitless|0|1
+AOD_550_MED|aod_aqua|AOD Median|Unitless|0|1
+AOD_550_STD|aod_terra|AOD Std. Dev.|Unitless|0|0.5
+AOD_550_AVG|aod_terra|AOD Average|Unitless|0|1
+AOD_550_MED|aod_terra|AOD Median|Unitless|0|1
+Number_Of_Fires_All|fire|Number of Fires - All Types|-|0|50
+Mean_FRP_Fires_All|fire|Mean Fire Radiative Power - All Types|MW|0|100
+Total_FRP_Fires_All|fire|Total Fire Radiative Power - All Types|MW|0|100
+Number_Of_Fires_Veg|fire|Number of Fires - Veg., Type|-|0|50
+Mean_FRP_Fires_Veg|fire|Mean Fire Radiative Power - Veg., Type|MW|0|100
+Total_FRP_Fires_Veg|fire|Total Fire Radiative Power - Veg., Type|MW|0|100
+Number_Of_Fires_Veg_CF_GT_50|fire|Number of Fires - Veg., with Conf. >50 |-|0|50
+Mean_FRP_Fires_Veg_CF_GT_50|fire|Mean Fire Raidative Power - Veg., Conf. >50|MW|0|100
+Total_FRP_Fires_Veg_CF_GT_50|fire|Total Fire Radiative Power - Veg., Conf. >50|MW|0|100
+Number_Of_Fires_Veg_Day|fire|Number of Fires - Veg., Daytime|-|0|50
+Mean_FRP_Fires_Veg_Day|fire|Mean Fire Radiative Power - Veg., Daytime|MW|0|100
+Total_FRP_Fires_Veg_Day|fire|Total Fire Radiative Power - Veg., Daytime|MW|0|100
+Number_Of_Fires_Veg_Night|fire|Number of Fires - Veg., Nighttime|-|0|50
+Mean_FRP_Fires_Veg_Night|fire|Mean Fire Radiative Power - Veg., Nighttime|MW|0|100
+Total_FRP_Fires_Veg_Night|fire|Total Fire Radiative Power - Veg., Nighttime|MW|0|100
+Number_Of_Fires_Veg_TERRA_Morning|fire|Number of Fires - Veg., MODIS TERRA|-|0|50
+Mean_FRP_Fires_Veg_TERRA_Morning|fire|Mean Fire Radiative Power - Veg., MODIS TERRA|-|MW|100
+Total_FRP_Fires_Veg_TERRA_Morning|fire|Total Fire Radiative Power - Veg. MODIS TERRA|MW|0|100
+Number_Of_Fires_Veg_AQUA_Morning|fire|Number of Fires - Veg., MODIS AQUA|-|0|50
+Mean_FRP_Fires_Veg_AQUA_Morning|fire|Mean Fire Radiative Power - Veg., MODIS AQUA|MW|0|100
+Total_FRP_Fires_Veg_AQUA_Morning|fire|Total Fire Radiative Power - Veg. MODIS AQUA|MW|0|100
+tavg1|geos_tavg1_2d_slv_nx|tavg1 Average|Unitless|0|1
+tavg3|geos_tavg3_2d_slv_nx|tavg3 Median|Unitless|0|1

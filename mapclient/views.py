@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
-
+import json
 from django.shortcuts import render
-import httplib2
-from oauth2client.contrib.django_util.decorators import oauth_required
+from mapclient.config import THREDDS_wms
+from mapclient.controllers import gen_thredds_options, generate_variables_meta, get_styles
 
-@oauth_required
 def index(request):
+    style_opts = get_styles()
+    th_options = gen_thredds_options()
+    var_options = generate_variables_meta()
 
-    oauth = request.oauth
-    try:
-        oauth.credentials.get_access_token(httplib2.Http())
-    except Exception as e:
-        oauth.get_authorize_redirect()
+    context = {
+        'var_options': json.dumps(var_options),
+        'style_options': json.dumps(style_opts),
+        'thredds_wms_url': THREDDS_wms,
+        'thredds_options': json.dumps(th_options),
+    }
 
-    return render(request, 'map.html', {})
+    return render(request, 'map.html', context)

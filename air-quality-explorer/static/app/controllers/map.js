@@ -1,3 +1,13 @@
+function find_var_index(item,data){
+    var index = -1;
+    for (var i = 0; i < data.length; ++i) {
+        if (item.includes(data[i]["id"])) {
+            index = i;
+            break;
+        }
+    }
+    return index
+}
 (function () {
 	'use strict';
 	angular.module('baseApp')
@@ -8,6 +18,7 @@
 		$scope.stylesSelectors = appSettings.stylesSelectors;
 
 		var map,
+        add_wms,
 		selected_date,
 		browse_layer,
 		basemap_layer,
@@ -20,28 +31,67 @@
 		compare,
 		int_type,
 		opacity,
+		public_interface,
+        wms_layer,
 		lwmsLayer,
 		rwmsLayer,
 		tdWmsLayer,
 		drawnItems,
         distLayer,
-		$layers_element;
+		$layers_element,
+		thredds_options,
+        thredds_urls,
+        threddss_wms_url,
+		var_options,
+		$modalCompare;
 
-		var init_opacity_slider = function(){
-	        opacity = 1;
-	        $("#opacity").text(opacity);
-	        $( "#opacity-slider" ).bootstrapSlider({
-	            value:opacity,
-	            min: 0.2,
-	            max: 1,
-	            step: 0.1, //Assigning the slider step based on the depths that were retrieved in the controller
-	            animate:"fast",
-	            slide: function( event, ui ) {
+		$modalCompare = $("#compare-modal");
+		var $meta_element = $("#metadata");
+        threddss_wms_url = $meta_element.attr('data-wms-url');
+		var_options = $meta_element.attr('data-var-options');
+        var_options = JSON.parse(var_options);
+		thredds_options = $meta_element.attr('data-thredds-options');
+        thredds_options = JSON.parse(thredds_options);
 
-	            }
-	        });
-	    };
-		init_opacity_slider();
+		var init_dropdown = function () {
+			$(".run_table").select2({minimumResultsForSearch: -1});
+			$(".freq_table").select2({minimumResultsForSearch: -1});
+
+			$(".model_table").select2({minimumResultsForSearch: -1});
+			$(".rd_table").select2({minimumResultsForSearch: -1});
+			$(".file_table").select2({minimumResultsForSearch: -1});
+			$(".style_table").select2({minimumResultsForSearch: -1});
+			$(".interval_table").select2({minimumResultsForSearch: -1});
+			$(".var_table").select2({minimumResultsForSearch: -1});
+			$(".date_table").select2({minimumResultsForSearch: -1});
+			$(".year_table").select2({minimumResultsForSearch: -1});
+		};
+		init_dropdown();
+
+
+
+				// $.each(style_options['colors'],function(item,i){
+				// 	var new_option = new Option(item[0],item[1]);
+		        //     var noption = new Option(item[0],item[1]);
+		        //     $("#style_table").append(new_option);
+		        //     $("#cstyle_table").append(noption);
+				// });
+
+            var init_opacity_slider = function(){
+                opacity = 1;
+                $("#opacity").text(opacity);
+                $( "#opacity-slider" ).bootstrapSlider({
+                    value: opacity,
+                    min: 0.2,
+                    max: 1,
+                    step: 0.1, //Assigning the slider step based on the depths that were retrieved in the controller
+                    animate:"fast",
+                    slide: function( event, ui ) {
+
+                    }
+                });
+            };
+            init_opacity_slider();
 
 
 		var clear_coords = function(){
@@ -55,20 +105,21 @@
             // timeDimensionControl: true
         }).setView([15.8700, 100.9925], 5);
 
-		var add_wms = function(run_type,freq,run_date,var_type,rmin,rmax,styling){
+		add_wms = function(run_type,freq,run_date,var_type,rmin,rmax,styling){
         //map.removeControl(legend);
 
         // var wmsUrl = threddss_wms_url+sdir+'/'+file_name;
         var wmsUrl = threddss_wms_url+run_date;
+        wms_layer=wmsUrl;
         // map.removeLayer(wms_layer);
         map.removeLayer(tdWmsLayer);
-        //var index = find_var_index(var_type,var_options);
+        var index = find_var_index(var_type,var_options);
         // gen_color_bar(var_options[index]["colors_list"],scale);
-        var layer_id = 'AOD_550_STD';
+        var layer_id = var_options[index]["id"];
         var range = rmin+','+rmax;
 
         var style = 'boxfill/'+styling;
-        opacity = $('#opacity-slider').bootstrapSlider("option", "value");
+        opacity = $('#opacity-slider').val();
 
         var wmsLayer = L.tileLayer.wms(wmsUrl, {
             layers: var_type,
@@ -93,6 +144,88 @@
         //console.log(imgsrc);
 
     };
+
+	var add_compare = function(){
+        map.removeLayer(tdWmsLayer);
+        map.removeLayer(lwmsLayer);
+        map.removeLayer(rwmsLayer);
+        $modalCompare.modal('hide');
+        var style =  ($("#cstyle_table option:selected").val());
+        var l_date = $("#lrd_table option:selected").val();
+        var l_var = $("#lvar_table option:selected").val();
+        var r_date = $("#rrd_table option:selected").val();
+        var r_var = $("#rvar_table option:selected").val();
+
+        var lwmsUrl = threddss_wms_url+l_date;
+        var rwmsUrl = threddss_wms_url+r_date;
+
+        var range = $("#crange-min").val()+','+$("#crange-max").val();
+        // map.removeLayer(wms_layer);
+        // var lindex = find_var_index(l_var,var_options);
+        // var rindex = find_var_index(r_var,var_options);
+
+        // var layer_id = var_options[index]["id"];
+        // var lrange = var_options[lindex]["min"]+','+var_options[lindex]["max"];
+        // var rrange = var_options[rindex]["min"]+','+var_options[rindex]["max"];
+        var styling = 'boxfill/'+style;
+        opacity = $('#opacity-slider').slider("option", "value");
+
+        lwmsLayer = L.tileLayer.wms(lwmsUrl, {
+            layers: l_var,
+            format: 'image/png',
+            transparent: true,
+            styles: styling,
+            colorscalerange: range,
+            opacity:opacity,
+            version:'1.3.0'
+        });
+
+        rwmsLayer = L.tileLayer.wms(rwmsUrl, {
+            layers: r_var,
+            format: 'image/png',
+            transparent: true,
+            styles: styling,
+            colorscalerange: range,
+            opacity:opacity,
+            version:'1.3.0'
+        });
+
+        lwmsLayer.addTo(map);
+        rwmsLayer.addTo(map);
+        compare = L.control.sideBySide(lwmsLayer,rwmsLayer);
+        compare.addTo(map);
+
+    };
+    $("#btn-add-compare").on('click',add_compare);
+
+    function handleMouseMove(e,ctx,width,height){
+        $('.tippy').removeClass('hidden');
+        function reOffset(){
+            var BB=canvas.getBoundingClientRect();
+            offsetX=BB.left;
+            offsetY=BB.top;
+        }
+        var offsetX,offsetY;
+        reOffset();
+        // tell the browser we're handling this event
+        e.preventDefault();
+        e.stopPropagation();
+
+        var mouseX=parseInt(e.clientX-offsetX);
+        var mouseY=parseInt(e.clientY-offsetY);
+        var rmin = $("#range-min").val();
+        var rmax = $("#range-max").val();
+
+        var factor = Number( rmax - rmin) / Number(width);
+        var htext = mouseX*factor;
+        // console.log(rmin,rmax,factor,width,htext);
+        var tipCanvas = document.getElementById("tip");
+        var tipCtx = tipCanvas.getContext("2d");
+        tipCanvas.style.left = (mouseX + 20) + "px";
+        tipCanvas.style.top = (mouseY + 20) + "px";
+        tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+        tipCtx.fillText(htext.toFixed(2), 5, 15);
+    }
 
 //add_wms('fire','freq',rd_type,'Number_Of_Fires_All',0,50,'rainbow');
 		L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
@@ -336,6 +469,12 @@
         });
         map.addControl(nrt_date);
 
+        var leg = new L.Control.InfoControl({
+            position: "topcenter",
+            content: '<div><canvas id="canvas" style="width:20vw;height:4vh;"></canvas><canvas class="tippy hidden" id="tip" width=35 height=25></canvas></div>'
+        });
+        //map.addControl(leg);
+
         var baselayers = {};
         var today = new Date();
         var day = new Date(today.getTime());
@@ -513,7 +652,6 @@
                     overlays[l].options.time = date.toISOString().split('T')[0];
                     overlays[l].redraw();
                 }
-
             }
         });
 
@@ -582,12 +720,177 @@
 		};
 		init_events();
 
-		var init_dropdown = function () {
-			$(".run_table").select2({minimumResultsForSearch: -1});
-			$(".style_table").select2({minimumResultsForSearch: -1});
-			$(".var_table").select2({minimumResultsForSearch: -1});
-		};
-		init_dropdown();
+
+    $(function() {
+            $.each(thredds_options['catalog'],function(item,i){
+                if(item.toUpperCase()!="GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!="GEOS_TAVG3_2D_AER_NX"){
+                    var new_option = new Option(item.toUpperCase(),item);
+                    var noption = new Option(item.toUpperCase(),item);
+                    var noption2 = new Option(item.toUpperCase(),item);
+                    $("#run_table").append(new_option);
+                    $("#lrun_table").append(noption);
+                    $("#rrun_table").append(noption2);
+                }
+            });
+
+            $("#run_table").change(function(){
+                var run_type = ($("#run_table option:selected").val());
+                $("#freq_table").html('');
+                $("#lrd_table").html('');
+                $("#rrd_table").html('');
+                $("#lvar_table").html('');
+                $("#rvar_table").html('');
+                $.each(thredds_options['catalog'][run_type],function(item,i){
+                    if (item == 'combined'){
+                        var new_option = new Option(item,item);
+                        $("#freq_table").append(new_option);
+                    }
+                });
+                $("#freq_table").trigger('change');
+
+                thredds_options['catalog'][run_type]['monthly'].forEach(function(item,i){
+                    var opt = item.split('/').reverse()[0];
+                    var new_option = new Option(opt,item);
+                    var noption = new Option(opt,item);
+                    $("#lrd_table").append(new_option);
+                    $("#rrd_table").append(noption);
+                });
+
+                var_options.forEach(function(item,i){
+                    if(item["category"]==run_type){
+
+                        var new_option = new Option(item["display_name"]);
+                        // +' ('+item["units"]+')'
+                        var noption = new Option(item["display_name"],item["id"]);
+                        $("#lvar_table").append(new_option);
+                        $("#rvar_table").append(noption);
+                    }
+                });
+
+            }).change();
+
+            $("#lrun_table").change(function(){
+                var run_type = ($("#lrun_table option:selected").val());
+
+                $("#lrd_table").html('');
+                $("#lvar_table").html('');
+
+                thredds_options['catalog'][run_type]['monthly'].forEach(function(item,i){
+                    var opt = item.split('/').reverse()[0];
+                    var new_option = new Option(opt,item);
+                    $("#lrd_table").append(new_option);
+                });
+
+                var_options.forEach(function(item,i){
+                    if(item["category"]==run_type){
+                        var new_option = new Option(item["display_name"],item["id"]);
+                        $("#lvar_table").append(new_option);
+                    }
+                });
+
+            }).change();
+
+            $("#rrun_table").change(function(){
+                var run_type = ($("#rrun_table option:selected").val());
+
+                $("#rrd_table").html('');
+                $("#rvar_table").html('');
+
+                thredds_options['catalog'][run_type]['monthly'].forEach(function(item,i){
+                    var opt = item.split('/').reverse()[0];
+                    var new_option = new Option(opt,item);
+                    $("#rrd_table").append(new_option);
+                });
+
+                var_options.forEach(function(item,i){
+                    if(item["category"]==run_type){
+                        var new_option = new Option(item["display_name"],item["id"]);
+                        $("#rvar_table").append(new_option);
+                    }
+                });
+
+            }).change();
+
+            $("#freq_table").change(function(){
+                var freq = ($("#freq_table option:selected").val());
+                var run_type = ($("#run_table option:selected").val());
+                $("#rd_table").html('');
+                $("#var_table").html('');
+                	if(thredds_options['catalog'][run_type][freq]){
+                		    thredds_options['catalog'][run_type][freq].forEach(function(item,i){
+                			var opt = item.split('/').reverse()[0];
+                			var new_option = new Option(opt,item);
+                			$("#rd_table").append(new_option);
+                		    });
+                	}
+                $("#rd_table").trigger('change');
+
+            }).change();
+
+            $("#rd_table").change(function(){
+                var freq = ($("#freq_table option:selected").val());
+                var run_type = ($("#run_table option:selected").val());
+                var rd_type = ($("#rd_table option:selected").val());
+
+                $("#var_table").html('');
+
+                var_options.forEach(function(item,i){
+                    if(item["category"]==run_type){
+                        var new_option = new Option(item["display_name"],item["id"]);
+                        $("#var_table").append(new_option);
+                    }
+                });
+
+                $("#var_table").trigger('change');
+
+            }).change();
+
+            $("#var_table").change(function(){
+                var var_type = ($("#var_table option:selected").val());
+                var index = find_var_index(var_type,var_options);
+                $("#range-min").val(var_options[index]["min"]);
+                $("#range-max").val(var_options[index]["max"]).trigger('change');
+                //$("#style_table").trigger('change');
+                // if(typeof int_type !== 'undefined'){
+                //     get_ts();
+                // }
+            }).change();
+
+            $("#rvar_table").change(function(){
+                var var_type = ($("#rvar_table option:selected").val());
+                var index = find_var_index(var_type,var_options);
+                $("#crange-min").val(var_options[index]["min"]);
+                $("#crange-max").val(var_options[index]["max"]);
+            }).change();
+
+            // $("#style_table").change(function(){
+            //     var style = ($("#style_table option:selected").val());
+            //     update_style(style);
+            //     $("#range-max").trigger('change');
+            // }).change();
+
+            $("#range-min").on('change',function(){
+                $("#range-max").trigger('change');
+            });
+
+            $("#range-max").on('change',function(){
+                var run_type = ($("#run_table option:selected").val());
+                var freq = ($("#freq_table option:selected").val());
+                var rd_type = ($("#rd_table option:selected").val());
+                var var_type = ($("#var_table option:selected").val());
+                var style =  ($("#style_table option:selected").val());
+                //update_style(style);
+                var rmin = $("#range-min").val();
+                var rmax = $("#range-max").val();
+                add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
+            }).change();
+
+            $("#opacity-slider").on("slide", function(e) {
+                $("#OpacityVal").text(e.value);
+                opacity = e.value;
+                tdWmsLayer.setOpacity(opacity);
+            });
+        });
 
 
 		});
