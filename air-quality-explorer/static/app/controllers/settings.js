@@ -12,18 +12,11 @@
 		$scope.partnersFooter = appSettings.partnersFooter;
 
 		$scope.toggleSidePanel = function () {
-			console.log('click');
-			if ($('#map').hasClass('pull-margin')) {
-				$('#map').toggleClass('pull-margin');
-				$('#map').css('width', '100%');
-				$('#side-panel').css('width', '0');
-				$('#side-panel').css('left', '-25%');
-			} else {
-				$('#map').toggleClass('pull-margin');
-				$('#map').css('width', '75%');
-				$('#side-panel').css('width', '25%');
-				$('#side-panel').css('left', '0');
-			}
+			if($('.map-panel__sidebar').css("display") === "none"){
+			   $('.map-panel__sidebar').css("display", "block");
+		   }else{
+			   $('.map-panel__sidebar').css("display", "none");
+		   }
 		};
 		$scope.changeLanguage = function (key) {
 			$rootScope.lang = key;

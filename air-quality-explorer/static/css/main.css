@@ -13,8 +13,28 @@ h1, h2, h3, h4, h5, h6 {
 }
 .map {
     height: 100%;
-    width: 75%;
+    width: 100%;
 }
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.42857143;
+    color: #666;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
 
 .leaflet-container.crosshair-cursor-enabled {
     cursor: pointer;
@@ -492,24 +512,42 @@ p {
 }
 
 .slider-handle {
-    background:#07456f;
+    background:#a8c45d;
+    border: 2px solid #07456f;
 }
 
 .irs--round .irs-from, .irs--round .irs-to, .irs--round .irs-singl {
-    background-color: #07456f;
+    background-color: #a8c45d;
 }
 .irs--round .irs-handle {
-    border: 4px solid #07456f;
+    border: 4px solid #a8c45d;
 }
 .irs--round .irs-bar {
-    background-color: #07456f;
+    background-color: #a8c45d;
 }
 
 .irs--round .irs-from:before, .irs--round .irs-to:before, .irs--round .irs-single:before {
-    border-top-color: #07456f;
+    border-top-color: #a8c45d;
 }
 .irs--round .irs-single {
-    background-color: #07456f;
+    background-color: #a8c45d;
+}
+
+
+.slider-track {
+    position: absolute;
+    cursor: pointer;
+    background-color: #E9F2E5;
+    border-radius: 4px;
+    border: none;
+    background-image: none;
+}
+
+.slider-selection {
+    position: absolute;
+    background: #2b5154;
+    box-sizing: border-box;
+    border-radius: 4px;
 }
 
 .zoom {
@@ -669,15 +707,18 @@ p {
     clear: left;
     max-width:100%;
     width:250px;
+    text-align: center;
 }
-
 #controls button {
     border-radius: 5px;
-
+    background-color: #2b5154;
+    color: white;
+    border: none;
+    line-height: 1.5;
 }
 #date {
     width: 6em;
-    font-size:11pt;
+    font-size:12px;
 }
 #transparent-container {
     margin-top: 4px;
@@ -701,4 +742,348 @@ p {
 .ui-datepicker .ui-datepicker-next {
     right: 2px;
     background-color: #ddd;
+}
+
+.map-panel__sidebar {
+    position: absolute;
+    left: 10px;
+    top: 125px;
+    background-color: #fff;
+    width: 380px;
+    max-height: calc(100vh - 90px);
+}
+
+.map-panel__area {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+}
+
+.map-panel__header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.map-panel__tabs {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    background-color: #a8c45d;
+}
+
+.map-panel__tabs--item.active {
+    background-color: #2b5154;
+}
+
+.map-panel__tabs--item {
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    padding: 5px;
+    text-align: center;
+    background-color: #a8c45d;
+    color: #fff;
+}
+
+.map-panel__tabs--item svg {
+    display: block;
+    margin: 0 auto;
+    font-size: 16px;
+}
+
+.map-panel__content {
+    background: #fff;
+    max-height: 45vh;
+    overflow: auto;
+}
+.tab-content p{
+    font-size: 12px;
+    color: #666;
+    font-weight: 300;
+    letter-spacing: .5px;
+    margin: 0 0 2px;
+}
+.map-panel__tabs a{
+    text-decoration: none;
+}
+
+.trigger {
+    font-size: 28px;
+    padding: 4px 0px;
+    border: none;
+    outline: none;
+    color: #7f8184;
+    background: transparent !important;
+    box-shadow: none;
+}
+
+.map-panel__sidebar .trigger {
+    font-size: 2rem;
+}
+
+.fa-navicon:before, .fa-reorder:before, .fa-bars:before {
+    content: "";
+}
+.map-panel__toggle {
+    position: absolute;
+    display: flex;
+    align-items: flex-end;
+    bottom: 3vh;
+    right: 10px;
+    z-index: 9999;
+}
+.map-panel__toggle--panel {
+    overflow: auto;
+    background-color: #fff;
+    padding: 10px;
+    width: 250px;
+}
+
+.map-panel__toggle .map-panel__tabs {
+    background-color: #fff;
+    flex-direction: column;
+    margin: 0 0 0 10px;
+}
+
+.map-panel__tabs--item {
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    padding: 5px;
+    text-align: center;
+    background-color: #a8c45d;
+    color: #fff;
+}
+.map-panel__tabs--item svg {
+    display: block;
+    margin: 0 auto;
+    font-size: 16px;
+}
+
+.map-panel__tabs--item svg, .map-panel__tabs--item i {
+    pointer-events: none;
+}
+
+.map-panel__tabs--item:hover {
+    cursor: pointer;
+    background-color: #2b5154;
+    transition: .2s;
+}
+
+.map-panel__tabs--item.active {
+    background-color: #2b5154;
+}
+
+ul, ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.toggles-list .toggle {
+    display: flex;
+    align-items: center;
+}
+.react-toggle {
+    touch-action: pan-x;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
+}
+.react-toggle-track {
+    width: 50px;
+    height: 24px;
+    padding: 0;
+    border-radius: 30px;
+    background-color: #4D4D4D;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.react-toggle-track-check {
+    position: absolute;
+    width: 14px;
+    height: 10px;
+    top: 0px;
+    bottom: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+    line-height: 0;
+    left: 8px;
+    opacity: 0;
+    -webkit-transition: opacity 0.25s ease;
+    -moz-transition: opacity 0.25s ease;
+    transition: opacity 0.25s ease;
+}
+
+.react-toggle-track-x {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 0px;
+    bottom: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+    line-height: 0;
+    right: 10px;
+    opacity: 1;
+    -webkit-transition: opacity 0.25s ease;
+    -moz-transition: opacity 0.25s ease;
+    transition: opacity 0.25s ease;
+}
+.custom-toggle .react-toggle-track {
+    width: 42px;
+    height: 18px;
+    border: 1px solid #bbb;
+    background-color: #bbb;
+}
+.react-toggle-thumb {
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 22px;
+    height: 22px;
+    border: 1px solid #4D4D4D;
+    border-radius: 50%;
+    background-color: #FAFAFA;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+}
+
+.custom-toggle .react-toggle-thumb {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #bbb;
+}
+
+.custom-toggle.react-toggle--checked .react-toggle-thumb {
+    left: 25px;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+    left: 27px;
+    border-color: #19AB27;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    display: inline;
+    margin: 0 0.5rem 0 0;
+}
+
+.react-toggle-screenreader-only {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.toggles-list .toggle label {
+    margin-left: 11px;
+}
+.map-panel__toggle label {
+    font-size: 12px;
+    font-weight: 200;
+    color:#666 ;
+}
+a.leaflet-control-timecontrol.timecontrol-backward {
+    background-color: #2b5154;
+    color: #FFF;
+}
+a.leaflet-control-timecontrol.timecontrol-forward {
+    background-color: #2b5154;
+    color: #FFF;
+}
+a.leaflet-control-timecontrol.timecontrol-play {
+    background-color: #2b5154;
+    color: #FFF;
+}
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
+    border: 2px solid rgba(43, 81, 84, 0.4);
+    background-clip: padding-box;
+}
+
+
+.switch_layer {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 18px;
+}
+
+.switch_layer input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider_toggle {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #bbb;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider_toggle:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider_toggle {
+  background-color: #a8c45d;
+}
+
+input:focus + .slider_toggle {
+  box-shadow: 0 0 1px #a8c45d;
+}
+
+input:checked + .slider_toggle:before {
+  -webkit-transform: translateX(22px);
+  -ms-transform: translateX(22px);
+  transform: translateX(22px);
+}
+
+/* Rounded sliders */
+.slider_toggle.round {
+  border-radius: 34px;
+}
+
+.slider_toggle.round:before {
+  border-radius: 50%;
 }

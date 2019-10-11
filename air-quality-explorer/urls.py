@@ -26,6 +26,6 @@ urlpatterns += i18n_patterns(
     url(r'^admin/', include(admin.site.urls)),  # NOQA
     #url(r'^$', TemplateView.as_view(template_name="map.html")),
     url(r'^$', views.index),
-    url(r'^home/', TemplateView.as_view(template_name="map.html")),
-    url(r'^mapviewer/', TemplateView.as_view(template_name="map.html"))
+    url(r'^home/', views.index),
+    url(r'^mapviewer/', views.index)
 )

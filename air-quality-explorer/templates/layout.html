@@ -121,7 +121,7 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.2/angular.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.18.1/angular-translate.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.18.1/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
-	{% if debug %}
+
 	<!-- Bootstrap Application -->
 	<script src="{% static 'app/init.js' %}"></script>
 	<!-- Load Settings -->
@@ -129,7 +129,7 @@
 	<!-- Services -->
 	<script src="{% static 'app/services/jquery.mtz.monthpicker.js' %}"></script>
 	<script src="{% static 'app/services/dateformat.js' %}"></script>
-	<script src="{% static 'app/services/L.Map.sync.js' %}"></script>
+	<script src="{% static 'app/services/L.Map.Sync.js' %}"></script>
 	<script src="{% static 'app/services/leaflet-clonelayer.js' %}"></script>
 	<script src="{% static 'app/services/L.Control.Layers.Minimap.js' %}"></script>
 	<script src="{% static 'app/services/leaflet.wms.js' %}"></script>
@@ -142,9 +142,7 @@
 	<!-- Controllers -->
 	<script src="{% static 'app/controllers/settings.js' %}"></script>
 	<script src="{% static 'app/controllers/map.js' %}"></script>
-	{% else %}
-	<script src="{% static 'dist/application.min.js' %}"></script>
-	{% endif %}
+
 	{% block extra_script %}{% endblock %}
 
 	{% endaddtoblock %}

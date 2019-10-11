@@ -9,6 +9,8 @@
 
 		var map,
         add_wms,
+		add_wms_fire,
+		add_wms_aod,
 		selected_date,
 		browse_layer,
 		basemap_layer,
@@ -26,6 +28,8 @@
 		lwmsLayer,
 		rwmsLayer,
 		tdWmsLayer,
+		tdWmsFireLayer,
+		tdWmsAODLayer,
 		drawnItems,
         distLayer,
 		$layers_element,
@@ -43,6 +47,83 @@
 		thredds_options = $meta_element.attr('data-thredds-options');
         thredds_options = JSON.parse(thredds_options);
 
+		$(".map-panel__tabs a").click(function(){
+			  $(this).tab('show');
+		 });
+		$(".map-panel__sidebar .map-panel__tabs .map-panel__tabs--item").click(function(){
+			var tablinks = $('.map-panel__sidebar .map-panel__tabs .map-panel__tabs--item');
+			  for (var i = 0; i < tablinks.length; i++) {
+			    tablinks[i].className = tablinks[i].className.replace(" active", "");
+			  }
+			  $(this).addClass("active");
+
+		 });
+
+			 $("#btn_toggle_fire").on('change', function() {
+				 var opacity = $('#opacity-slider').val();
+			    if ($(this).is(':checked')) {
+			        tdWmsFireLayer.setOpacity(opacity);
+					$("#opacity_fire").css("display","block");
+			    }
+			    else {
+			       tdWmsFireLayer.setOpacity(0);
+				   $("#opacity_fire").css("display","none");
+			    }
+			});
+			$("#btn_toggle_aod").on('change', function() {
+			   var opacity = $('#opacity-slider-aod').val();
+			   if ($(this).is(':checked')) {
+				   tdWmsAODLayer.setOpacity(opacity);
+				   $("#opacity_aod").css("display","block");
+			   }
+			   else {
+				  tdWmsAODLayer.setOpacity(0);
+				  $("#opacity_aod").css("display","none");
+			   }
+		   });
+
+		 $('#toggle_layers').click(function(){
+			 $('#imagery_layer_box').css("display", "none");
+			 $('#legend_box').css("display", "none");
+			 $('#toggle_imagery').removeClass("active");
+			 $('#toggle_legend').removeClass("active");
+			 if($('#toggle_layer_box').css("display") === "none"){
+				$('#toggle_layer_box').css("display", "block");
+				$(this).addClass("active")
+			}else{
+				$('#toggle_layer_box').css("display", "none");
+				$(this).removeClass("active")
+			}
+
+		  });
+		  $('#toggle_imagery').click(function(){
+			  $('#toggle_layer_box').css("display", "none");
+			  $('#legend_box').css("display", "none");
+			  $('#toggle_layers').removeClass("active");
+ 			 $('#toggle_legend').removeClass("active");
+			if($('#imagery_layer_box').css("display") === "none"){
+			   $('#imagery_layer_box').css("display", "block");
+			   $(this).addClass("active")
+		   }else{
+			   $('#imagery_layer_box').css("display", "none");
+			   $(this).removeClass("active")
+		   }
+
+		 });
+		 $('#toggle_legend').click(function(){
+			 	$('#toggle_layer_box').css("display", "none");
+			  	$('#imagery_layer_box').css("display", "none");
+				$('#toggle_layers').removeClass("active");
+   			 	$('#toggle_imagery').removeClass("active");
+			if($('#legend_box').css("display") === "none"){
+			   $('#legend_box').css("display", "block");
+			   $(this).addClass("active")
+		   }else{
+			   $('#legend_box').css("display", "none");
+			   $(this).removeClass("active")
+		   }
+
+		 });
 		var init_dropdown = function () {
 			$(".run_table").select2({minimumResultsForSearch: -1});
 			$(".freq_table").select2({minimumResultsForSearch: -1});
@@ -80,6 +161,16 @@
 
                     }
                 });
+				$( "#opacity-slider-aod" ).bootstrapSlider({
+                    value: opacity,
+                    min: 0.2,
+                    max: 1,
+                    step: 0.1, //Assigning the slider step based on the depths that were retrieved in the controller
+                    animate:"fast",
+                    slide: function( event, ui ) {
+
+                    }
+                });
             };
             init_opacity_slider();
 
@@ -102,9 +193,12 @@
         }
 
 		map = L.map('map',{
+			zoomControl: false
             // timeDimension: true,
             // timeDimensionControl: true
         }).setView([15.8700, 100.9925], 5);
+
+
 
 		add_wms = function(run_type,freq,run_date,var_type,rmin,rmax,styling){
         //map.removeControl(legend);
@@ -112,8 +206,18 @@
         // var wmsUrl = threddss_wms_url+sdir+'/'+file_name;
         var wmsUrl = threddss_wms_url+run_date;
         wms_layer=wmsUrl;
-        // map.removeLayer(wms_layer);
-        map.removeLayer(tdWmsLayer);
+		if(run_type === 'fire'){
+			if(map.hasLayer(tdWmsFireLayer)){
+				map.removeLayer(tdWmsFireLayer);
+			}
+
+		}else{
+			if(map.hasLayer(tdWmsAODLayer)){
+				map.removeLayer(tdWmsAODLayer);
+			}
+
+		}
+
         var index = find_var_index(var_type,var_options);
         // gen_color_bar(var_options[index]["colors_list"],scale);
         var layer_id = var_options[index]["id"];
@@ -133,18 +237,29 @@
             zIndex:100,
         });
 
+		if(run_type === 'fire'){
+			tdWmsFireLayer = L.timeDimension.layer.wms(wmsLayer,{
+	            updateTimeDimension:true,
+	            setDefaultTime:true,
+	            cache:365,
+	            zIndex:100,
+	        });
+	        tdWmsFireLayer.addTo(map);
+		}else{
+			tdWmsAODLayer = L.timeDimension.layer.wms(wmsLayer,{
+	            updateTimeDimension:true,
+	            setDefaultTime:true,
+	            cache:365,
+	            zIndex:100,
+	        });
+	        tdWmsAODLayer.addTo(map);
+		}
 
-        tdWmsLayer = L.timeDimension.layer.wms(wmsLayer,{
-            updateTimeDimension:true,
-            setDefaultTime:true,
-            cache:365,
-            zIndex:100,
-        });
-        tdWmsLayer.addTo(map);
         var imgsrc = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER="+layer_id+"&colorscalerange="+range+"&PALETTE="+styling+"&transparent=TRUE";
         //console.log(imgsrc);
 
     };
+
 
 	var add_compare = function(){
         map.removeLayer(tdWmsLayer);
@@ -339,101 +454,7 @@
             }
         });
 
-        drawnItems = new L.FeatureGroup();
-		map.addLayer(drawnItems);
-        distLayer = L.tileLayer.betterWms('https://tethys.servirglobal.net/geoserver/wms/', {
-            layers: 'utils:adm',
-            format: 'image/png',
-            transparent: true,
-            styles:'district',
-            zIndex:1,
-        });
 
-        var drawControlFull = new L.Control.DrawPlus({
-            edit: {
-                featureGroup: drawnItems,
-                edit: false,
-            },
-            draw: {
-                polyline: false,
-                circlemarker:false,
-                rectangle:{shapeOptions: {  color: '#007df3', weight: 4}},
-                circle:false,
-                polygon:false,
-              /*  shapefile: {
-                    shapeOptions: {
-                        color: '#007df3',
-                        weight: 4,
-                        opacity: 1,
-                        fillOpacity: 0
-                    }
-                }*/
-            }
-        });
-
-        map.addControl(drawControlFull);
-
-        compare = L.control.sideBySide();
-        var stateChangingButton = L.easyButton({
-            states: [{
-                stateName: 'enable-compare',        // name the state
-                icon:      'glyphicon-resize-horizontal',               // and define its properties
-                title:     'Enable side by side comparison',      // like its title
-                onClick: function(btn, map) {       // and its callback
-                    $modalCompare.modal('show');
-                    map.removeControl(compare);
-                    // compare = L.control.sideBySide(wmsLayer,wmsLayer);
-                    // compare.addTo(map);
-                    btn.state('disable-compare');    // change state on click!
-                }
-            }, {
-                stateName: 'disable-compare',
-                icon:      'glyphicon-transfer',
-                title:     'Disable side by side comparison',
-                onClick: function(btn, map) {
-                    map.removeControl(compare);
-                    map.removeLayer(lwmsLayer);
-                    map.removeLayer(rwmsLayer);
-                    tdWmsLayer.addTo(map);
-                    btn.state('enable-compare');
-                }
-            }]
-        });
-
-        stateChangingButton.addTo(map);
-        var crosshairs_enabled = false;
-
-        var selectAdm = L.easyButton({
-            states: [{
-                stateName: 'enable-compare',        // name the state
-                icon:      'glyphicon-globe',               // and define its properties
-                title:     'Select Admin Region',      // like its title
-                onClick: function(btn, map) {       // and its callback
-                    btn.state('disable-compare');    // change state on click!
-					distLayer.setOpacity(0.5);
-                    distLayer.addTo(map);
-
-//L.control.layers(baselayers, distLayer).addTo(map);
-
-                    L.DomUtil.addClass(map._container, 'crosshair-cursor-enabled');
-                    crosshairs_enabled = true;
-
-                }
-            }, {
-                stateName: 'disable-compare',
-                icon:      'glyphicon-dashboard',
-                title:     'Disable Admin Region',
-                onClick: function(btn, map) {
-                    btn.state('enable-compare');
-                    map.removeLayer(distLayer);
-                    L.DomUtil.removeClass(map._container, 'crosshair-cursor-enabled');
-                    crosshairs_enabled = false;
-
-                }
-            }]
-        });
-
-        selectAdm.addTo(map);
 
         L.Control.InfoControl = L.Control.extend({
             initialize: function (options) {
@@ -452,13 +473,6 @@
             }
         });
 
-        var downloadFile = L.easyButton('glyphicon-download-alt', function(btn, map){
-            var fileUrl = threddss_wms_url.replace('wms','fileServer');
-            var rd_type = ($("#rd_table option:selected").val());
-
-            var downUrl = fileUrl+rd_type;
-            window.location = (downUrl);
-        },'Download the NetCDF file for the current run').addTo(map);
 
         var nrt_date = new L.Control.InfoControl({
             position: "topright",
@@ -624,6 +638,119 @@
             collapsed: true
         }).addTo(map);
 
+		L.control.zoom({
+		    position: 'topright'
+		}).addTo(map);
+
+		drawnItems = new L.FeatureGroup();
+		map.addLayer(drawnItems);
+		distLayer = L.tileLayer.betterWms('https://tethys.servirglobal.net/geoserver/wms/', {
+			layers: 'utils:adm',
+			format: 'image/png',
+			transparent: true,
+			styles:'district',
+			zIndex:1,
+		});
+
+		var drawControlFull = new L.Control.DrawPlus({
+			position: 'topright',
+			edit: {
+				featureGroup: drawnItems,
+				edit: false,
+			},
+			draw: {
+				polyline: false,
+				circlemarker:false,
+				rectangle:{shapeOptions: {  color: '#007df3', weight: 4}},
+				circle:false,
+				polygon:false,
+			  /*  shapefile: {
+					shapeOptions: {
+						color: '#007df3',
+						weight: 4,
+						opacity: 1,
+						fillOpacity: 0
+					}
+				}*/
+			}
+		});
+
+		map.addControl(drawControlFull);
+
+		compare = L.control.sideBySide({
+			position: 'topright'
+		});
+		var stateChangingButton = L.easyButton({
+			position: 'topright',
+			states: [{
+				stateName: 'enable-compare',        // name the state
+				icon:      'glyphicon-resize-horizontal',               // and define its properties
+				title:     'Enable side by side comparison',      // like its title
+				onClick: function(btn, map) {       // and its callback
+					$modalCompare.modal('show');
+					map.removeControl(compare);
+					// compare = L.control.sideBySide(wmsLayer,wmsLayer);
+					// compare.addTo(map);
+					btn.state('disable-compare');    // change state on click!
+				}
+			}, {
+				stateName: 'disable-compare',
+				icon:      'glyphicon-transfer',
+				title:     'Disable side by side comparison',
+				onClick: function(btn, map) {
+					map.removeControl(compare);
+					map.removeLayer(lwmsLayer);
+					map.removeLayer(rwmsLayer);
+					tdWmsLayer.addTo(map);
+					btn.state('enable-compare');
+				}
+			}]
+		});
+
+		stateChangingButton.addTo(map);
+		var crosshairs_enabled = false;
+
+		var selectAdm = L.easyButton({
+			position: 'topright',
+			states: [{
+				stateName: 'enable-compare',        // name the state
+				icon:      'glyphicon-globe',               // and define its properties
+				title:     'Select Admin Region',      // like its title
+				onClick: function(btn, map) {       // and its callback
+					btn.state('disable-compare');    // change state on click!
+					distLayer.setOpacity(0.5);
+					distLayer.addTo(map);
+
+		//L.control.layers(baselayers, distLayer).addTo(map);
+
+					L.DomUtil.addClass(map._container, 'crosshair-cursor-enabled');
+					crosshairs_enabled = true;
+
+				}
+			}, {
+				stateName: 'disable-compare',
+				icon:      'glyphicon-dashboard',
+				title:     'Disable Admin Region',
+				onClick: function(btn, map) {
+					btn.state('enable-compare');
+					map.removeLayer(distLayer);
+					L.DomUtil.removeClass(map._container, 'crosshair-cursor-enabled');
+					crosshairs_enabled = false;
+
+				}
+			}]
+		});
+
+		selectAdm.addTo(map);
+
+		var downloadFile = L.easyButton('glyphicon-download-alt', function(btn, map){
+
+			var fileUrl = threddss_wms_url.replace('wms','fileServer');
+			var rd_type = ($("#rd_table option:selected").val());
+
+			var downUrl = fileUrl+rd_type;
+			window.location = (downUrl);
+		}, 'Download the NetCDF file for the current run', { position: 'topright' }).addTo(map);
 
         var alterDate = function(delta) {
             var date = $.datepicker.parseDate(DATE_FORMAT, $date.val());
@@ -701,7 +828,7 @@
         });
 
 // Create and add a TimeDimension Layer to the map
-        tdWmsLayer = L.timeDimension.layer.wms(wmsLayer);
+        tdWmsFireLayer = L.timeDimension.layer.wms(wmsLayer);
 		//tdWmsLayer.addTo(map);
 
         lwmsLayer = L.tileLayer.wms();
@@ -709,15 +836,150 @@
         rwmsLayer = L.tileLayer.wms();
 
 
-		var init_events = function(){
-			map.on("mousemove", function (event) {
-				document.getElementById('mouse-position').innerHTML = 'Latitude:'+event.latlng.lat.toFixed(5)+', Longitude:'+event.latlng.lng.toFixed(5);
-			});
-		};
-		init_events();
+		// var init_events = function(){
+		// 	map.on("mousemove", function (event) {
+		// 		document.getElementById('mouse-position').innerHTML = 'Latitude:'+event.latlng.lat.toFixed(5)+', Longitude:'+event.latlng.lng.toFixed(5);
+		// 	});
+		// };
+		// init_events();
 
 
     $(function() {
+
+			$.each(thredds_options['catalog']['fire'],function(item,i){
+				if (item === 'combined'){
+					var new_option = new Option(item,item);
+					$("#fire_freq_table").append(new_option);
+				}
+			});
+			$("#fire_freq_table").change(function(){
+                var freq = ($("#fire_freq_table option:selected").val());
+                $("#fire_rd_table").html('');
+                	if(thredds_options['catalog']['fire'][freq]){
+                		    thredds_options['catalog']['fire'][freq].forEach(function(item,i){
+                			var opt = item.split('/').reverse()[0];
+                			var new_option = new Option(opt,item);
+                			$("#fire_rd_table").append(new_option);
+                		    });
+                	}
+                $("#fire_rd_table").trigger('change');
+
+            }).change();
+
+			$("#fire_freq_table").trigger('change');
+
+			var_options.forEach(function(item,i){
+				if(item["category"] === 'fire'){
+					var new_option = new Option(item["display_name"],item["id"]);
+					$("#fire_var_table").append(new_option);
+				}
+			});
+
+			$("#fire_var_table").change(function(){
+                var var_type = ($("#fire_var_table option:selected").val());
+                var index = find_var_index(var_type,var_options);
+                $("#fire_range-min").val(var_options[index]["min"]);
+                $("#fire_range-max").val(var_options[index]["max"]).trigger('change');
+
+            }).change();
+
+			 $("#fire_range-max").on('change',function(){
+                var freq = ($("#fire_freq_table option:selected").val());
+                var rd_type = ($("#fire_rd_table option:selected").val());
+                var var_type = ($("#fire_var_table option:selected").val());
+                //var style =  ($("#style_table option:selected").val());
+                //update_style(style);
+                var rmin = $("#fire_range-min").val();
+                var rmax = $("#fire_range-max").val();
+                add_wms('fire',freq,rd_type,var_type,rmin,rmax,'rianbow');
+            }).change();
+
+
+
+			$.each(thredds_options['catalog'],function(item,i){
+                if(item.toUpperCase()!== "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!== "GEOS_TAVG3_2D_AER_NX" && item.toUpperCase()!== "FIRE"){
+                    var new_option = new Option(item.toUpperCase(),item);
+                    $("#aod_run_table").append(new_option);
+                }
+            });
+
+			$("#aod_run_table").change(function(){
+                var run_type = ($("#aod_run_table option:selected").val());
+				$("#aod_freq_table").html('');
+				$("#aod_var_table").html('');
+                var_options.forEach(function(item,i){
+                    if(item["category"] === run_type){
+                        var option = new Option(item["display_name"],item["id"]);
+                        $("#aod_var_table").append(option);
+                    }
+                });
+				$.each(thredds_options['catalog'][run_type],function(item,i){
+                    if (item === 'combined'){
+                        var new_option = new Option(item,item);
+                        $("#aod_freq_table").append(new_option);
+                    }
+                });
+                $("#aod_freq_table").trigger('change');
+
+            }).change();
+
+			$("#aod_freq_table").change(function(){
+                var freq = ($("#aod_freq_table option:selected").val());
+                var run_type = ($("#aod_run_table option:selected").val());
+                $("#aod_rd_table").html('');
+                $("#aod_var_table").html('');
+                	if(thredds_options['catalog'][run_type][freq]){
+                		    thredds_options['catalog'][run_type][freq].forEach(function(item,i){
+                			var opt = item.split('/').reverse()[0];
+                			var new_option = new Option(opt,item);
+                			$("#aod_rd_table").append(new_option);
+                		    });
+                	}
+                $("#aod_rd_table").trigger('change');
+
+            }).change();
+
+            $("#aod_rd_table").change(function(){
+                var freq = ($("#aod_freq_table option:selected").val());
+                var run_type = ($("#aod_run_table option:selected").val());
+                var rd_type = ($("#aod_rd_table option:selected").val());
+
+                $("#aod_var_table").html('');
+
+                var_options.forEach(function(item,i){
+                    if(item["category"] === run_type){
+                        var new_option = new Option(item["display_name"],item["id"]);
+                        $("#aod_var_table").append(new_option);
+                    }
+                });
+
+                $("#aod_var_table").trigger('change');
+
+            }).change();
+
+			$("#aod_var_table").change(function(){
+                var var_type = ($("#aod_var_table option:selected").val());
+				console.log(var_type);
+                var index = find_var_index(var_type,var_options);
+                $("#aod_range-min").val(var_options[index]["min"]);
+                $("#aod_range-max").val(var_options[index]["max"]).trigger('change');
+
+            }).change();
+
+			 $("#aod_range-max").on('change',function(){
+                var run_type = ($("#aod_run_table option:selected").val());
+                var freq = ($("#aod_freq_table option:selected").val());
+                var rd_type = ($("#aod_rd_table option:selected").val());
+                var var_type = ($("#aod_var_table option:selected").val());
+                //var style =  ($("#style_table option:selected").val());
+                //update_style(style);
+                var rmin = $("#aod_range-min").val();
+                var rmax = $("#aod_range-max").val();
+                add_wms(run_type,freq,rd_type,var_type,rmin,rmax,'fire');
+            }).change();
+
+
+
             $.each(thredds_options['catalog'],function(item,i){
                 if(item.toUpperCase()!== "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!== "GEOS_TAVG3_2D_AER_NX"){
                     var new_option = new Option(item.toUpperCase(),item);
@@ -884,7 +1146,13 @@
             $("#opacity-slider").on("slide", function(e) {
                 $("#OpacityVal").text(e.value);
                 opacity = e.value;
-                tdWmsLayer.setOpacity(opacity);
+                tdWmsFireLayer.setOpacity(opacity);
+            });
+
+			$("#opacity-slider-aod").on("slide", function(e) {
+                $("#OpacityVal2").text(e.value);
+                opacity = e.value;
+                tdWmsAODLayer.setOpacity(opacity);
             });
         });
 
