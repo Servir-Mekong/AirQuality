@@ -94,7 +94,7 @@ wms.Source = L.Layer.extend({
              this._overlay.setOpacity(opacity);
          }
     },
-    
+
     'bringToBack': function() {
          this.options.isBack = true;
          if (this._overlay) {

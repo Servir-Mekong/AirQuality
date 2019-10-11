@@ -193,10 +193,17 @@
         }
 
 		map = L.map('map',{
-			zoomControl: false
+			zoomControl: false,
+			maxBounds: [
+						//south west
+						[-10, 130],
+						//north east
+						[50, 80]
+					],
             // timeDimension: true,
             // timeDimensionControl: true
         }).setView([15.8700, 100.9925], 5);
+
 
 
 
@@ -235,6 +242,7 @@
             opacity:opacity,
             version:'1.3.0',
             zIndex:100,
+			bounds: [[0, 100], [25, 110]],
         });
 
 		if(run_type === 'fire'){
@@ -379,6 +387,7 @@
 
 		        getFeatureInfoUrl: function (latlng) {
 		            // Construct a GetFeatureInfo request URL given a point
+					console.log('trss');
 		            var point = this._map.latLngToContainerPoint(latlng, this._map.getZoom()),
 		                size = this._map.getSize(),
 
