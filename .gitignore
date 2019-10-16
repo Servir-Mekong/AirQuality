@@ -4,6 +4,7 @@
 *.pyc
 credentials/
 static/*
+downloadGEOSData/
 # Exception to the rule
 air-quality-explorer/settings.py
 
