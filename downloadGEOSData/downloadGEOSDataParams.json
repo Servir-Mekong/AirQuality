@@ -1,0 +1,15 @@
+{
+    "url":"https://portal.nccs.nasa.gov/datashare/gmao/geos-fp/forecast",
+    "logFile":"//home//tethys//GEOSDataDownload.log",
+    "logMode":"INFO",
+    "threeHourDataPath":"//home//tethys//3hour//",
+    "oneHourDataPath":"//home//tethys//1hour//",
+    "combinedDataPath1hour":"//home//tethys//geos_tavg1_2d_slv_Nx//",
+    "combinedDataPath3hour":"//home//tethys//geos_tavg3_2d_aer_Nx//",
+    "oneHourDropVariables":["CLDPRS","CLDTMP","DISPH","H1000","H250","H500","H850","OMEGA500","PBLTOP","Q250","QV2M","SLP","T250","T2M","TO3","TOX","TQI","TQL","TQV","TROPPB","TROPPT","TROPPV",
+                   "TROPQ","TROPT","TS","U250","U2M","U500","U50M","U850","V250","V2M","V500","V50M","V850"],
+    "threeHourDropVariables":["BCANGSTR","BCCMASS","BCEXTTAU","BCFLUXU","BCFLUXV","BCSCATAU","DMSCMASS","DMSSMASS","DUANGSTR","DUCMASS","DUCMASS25","DUEXTT25","DUEXTTAU","DUFLUXU","DUFLUXV","DUSCAT25","DUSCATAU","DUSMASS",
+                   "HNO3CMASS","HNO3SMASS","NH3CMASS","NH3SMASS","NH4CMASS","NH4SMASS","NIANGSTR","NICMASS","NICMASS25","NIEXTTAU","NIEXTTFM","NIFLUXU","NIFLUXV","NISCATAU","NISCATFM","NISMASS","OCANGSTR",
+                   "OCCMASS","OCEXTTAU","OCFLUXU","OCFLUXV","OCSCATAU","SO2CMASS","SO4CMASS","SSANGSTR","SSCMASS","SSEXTT25","SSEXTTAU","SSSCAT25","SSSCATAU","SSSMASS","SUANGSTR","SUEXTTAU",
+                   "SUFLUXU","SUFLUXV","SUSCATAU","TOTANGSTR","TOTSCATAU"]
+}
