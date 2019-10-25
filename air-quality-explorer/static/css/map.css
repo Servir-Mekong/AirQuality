@@ -91,3 +91,10 @@ p {
 .form-control{
     margin-bottom: 15px;;
 }
+.leaflet-top .leaflet-control {
+    margin-top: 3px;
+}
+.leaflet-touch .leaflet-control-layers-toggle {
+    width: 32px;
+    height: 32px;
+}

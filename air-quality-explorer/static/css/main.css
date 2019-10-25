@@ -512,8 +512,8 @@ p {
 }
 
 .slider-handle {
-    background:#a8c45d;
-    border: 2px solid #07456f;
+    background:#797D7F;
+    border: 0 solid #797D7F;
 }
 
 .irs--round .irs-from, .irs--round .irs-to, .irs--round .irs-singl {
@@ -757,7 +757,8 @@ p {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    z-index: 9999;
+    z-index: 999;
+    padding-bottom: 30px;
 }
 
 .map-panel__header {
@@ -796,7 +797,7 @@ p {
 
 .map-panel__content {
     background: #fff;
-    max-height: 45vh;
+    max-height: 70vh;
     overflow: auto;
 }
 .tab-content p{
