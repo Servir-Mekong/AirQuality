@@ -14,8 +14,15 @@
         <strong>[[alertContent]]</strong>
     </div>
 
+
+    <div id="metadata" style="display: none"  data-var-options="{{var_options}}" data-wms-url="{{thredds_wms_url}}"  data-thredds-options="{{thredds_options}}"></div>
+    <input type="text" name="point-lat-lon" id="point-lat-lon" hidden>
+    <input type="text" name="poly-lat-lon" id="poly-lat-lon" hidden>
+    <input type="text" name="shp-lat-lon" id="shp-lat-lon" hidden>
+
+    <div class="map" id="map" ></div>
     <!--Show Compare Modal-->
-    <div class="modal fade" id="compare-modal" tabindex="-1" role="dialog" aria-labelledby="comapre-modal-label">
+    <!-- <div class="modal fade" id="compare-modal" tabindex="-1" role="dialog" aria-labelledby="comapre-modal-label">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -69,11 +76,11 @@
                     <label for="range-min" class="formText">Range Min</label>
                     <input type="text" class="form-control" id="crange-min" name="range-min" style="width: 100%">
                     <label for="range-max" class="formText">Range Max</label>
-                    <input type="text" class="form-control" id="crange-max" name="range-max" style="width: 100% ">
+                    <input type="text" class="form-control" id="crange-max" name="range-max" style="width: 100%">
                     <label>
                         Select a style
                     </label>
-                    <select  class="style_table" name="cstyle_table" id="cstyle_table" style="width: 100%" >
+                    <select  class="style_table" name="cstyle_table" id="cstyle_table" style="width: 100%">
 
                     </select>
                     <br><br>
@@ -84,313 +91,378 @@
                 </div>
             </div>
         </div>
+    </div> -->
+
+    <div id="compare-modal" class="model fade map-modal map-modal--vertical-smaller map-modal--horizontal-smaller" tabindex="-1" role="dialog" aria-labelledby="comapre-modal-label">
+        <div class="map-modal__header">
+            <h2 class="map-modal__title">Compare Layers</h2>
+        </div>
+        <div class="map-modal__content">
+                <h4>Left Window Options</h4>
+                <label>
+                    Select Parameter
+                </label>
+                <select  class="run_table" name="lrun_table" id="lrun_table" style="width: 100%">
+
+                </select>
+                <label>
+                    Select Run Date
+                </label>
+                <select  class="rd_table" name="lrd_table" id="lrd_table" style="width: 100%">
+
+                </select>
+                <br>
+                <label>
+                    Select Variable
+                </label>
+                <select  class="var_table" name="lvar_table" id="lvar_table" style="width: 100%">
+
+                </select>
+                <hr>
+                <h4>Right Window Options</h4>
+                <label>
+                    Select Parameter
+                </label>
+                <select  class="run_table" name="rrun_table" id="rrun_table" style="width: 100%">
+
+                </select>
+                <label>
+                    Select Run Date
+                </label>
+                <select  class="rd_table" name="rrd_table" id="rrd_table" style="width: 100%">
+
+                </select>
+                <br>
+                <label>
+                    Select Variable
+                </label>
+                <select  class="var_table" name="rvar_table" id="rvar_table" style="width: 100%">
+                </select>
+                <hr>
+                <!-- <h4>General Options</h4>
+                <label for="range-min" class="formText">Range Min</label>
+                <input type="text" class="form-control" id="crange-min" name="range-min" style="width: 100%">
+                <label for="range-max" class="formText">Range Max</label>
+                <input type="text" class="form-control" id="crange-max" name="range-max" style="width: 100%">
+                <label>
+                    Select a style
+                </label>
+                <select  class="style_table" name="cstyle_table" id="cstyle_table" style="width: 100%">
+
+                </select> -->
+
+
+        </div>
+        <div class="map-modal__buttons">
+            <div>
+                <button type="button" class="btn" id="btn-close-compare">Close</button>
+            </div>
+            <div>
+                <button type="button" class="btn" id="btn-add-compare">Add Layers</button>
+            </div>
+        </div>
     </div>
-    <div id="metadata" style="display: none"  data-var-options="{{var_options}}" data-wms-url="{{thredds_wms_url}}"  data-thredds-options="{{thredds_options}}"></div>
-    <input type="text" name="point-lat-lon" id="point-lat-lon" hidden>
-    <input type="text" name="poly-lat-lon" id="poly-lat-lon" hidden>
-    <input type="text" name="shp-lat-lon" id="shp-lat-lon" hidden>
 
-    <div class="map" id="map" ></div>
     <section>
-    <div class="map-panel__area map-panel__sidebar" style="display: block;">
+        <div class="map-panel__area map-panel__sidebar" style="display: block;">
 
-            <!-- <div class="map-panel__header">
-                <button class="trigger">
-                    <span class="fa fa-navicon"></span>
-                </button>
-            </div> -->
-            <div class="map-panel__tabs">
-            <a href="#aqi_content_tab">
-                <span class="map-panel__tabs--item active" data-target="aqi_content_tab">
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M255,0C114.75,0,0,114.75,0,255s114.75,255,255,255s255-114.75,255-255S395.25,0,255,0z M344.25,153
-                			c20.4,0,38.25,17.85,38.25,38.25s-17.85,38.25-38.25,38.25S306,211.65,306,191.25S323.85,153,344.25,153z M165.75,153
-                			c20.4,0,38.25,17.85,38.25,38.25s-17.85,38.25-38.25,38.25s-38.25-17.85-38.25-38.25S145.35,153,165.75,153z M255,408
-                			c-66.3,0-122.4-43.35-142.8-102h285.6C377.4,364.65,321.3,408,255,408z"></path>
-                    </svg>
-                    Air Quality Index
-                </span>
-            </a>
-            <a href="#particulate_content_tab">
-                <span class="map-panel__tabs--item" data-target="particulate_content_tab">
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M188.12 210.74L142.86 256l45.25 45.25L233.37 256l-45.25-45.26zm113.13-22.62L256 142.86l-45.25 45.25L256 233.37l45.25-45.25zm-90.5 135.76L256 369.14l45.26-45.26L256 278.63l-45.25 45.25zM256 0C114.62 0 0 114.62 0 256s114.62 256 256 256 256-114.62 256-256S397.38 0 256 0zm186.68 295.6l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-28.29-28.29-45.25 45.25 33.94 33.94 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-33.94-33.94-45.26 45.26 28.29 28.29c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0L256 414.39l-28.29 28.29c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l28.29-28.29-45.25-45.26-33.94 33.94 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 33.94-33.94-45.25-45.25-28.29 28.29c-3.12 3.12-8.19 3.12-11.31 0L69.32 295.6c-3.12-3.12-3.12-8.19 0-11.31L97.61 256l-28.29-28.29c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l28.29 28.29 45.25-45.26-33.94-33.94-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 33.94 33.94 45.26-45.25-28.29-28.29c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0L256 97.61l28.29-28.29c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-28.29 28.29 45.26 45.25 33.94-33.94-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-33.94 33.94 45.25 45.26 28.29-28.29c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31L414.39 256l28.29 28.28a8.015 8.015 0 0 1 0 11.32zM278.63 256l45.26 45.25L369.14 256l-45.25-45.26L278.63 256z"> </path>
-                    </svg>
-                    Particulate Matter
-                </span>
-            </a>
-            <a href="#fire_content_tab">
-                <span class="map-panel__tabs--item" data-target="fire_content_tab">
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 130 130" height="1em" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M 23.347656 134.058594 C 8.445312 84.953125 39.933594 67.023438 39.933594 67.023438 C 37.730469 93.226562 52.621094 113.640625 52.621094 113.640625 C 58.097656 111.988281 68.550781 104.265625 68.550781 104.265625 C 68.550781 113.640625 63.035156 134.046875 63.035156 134.046875 C 63.035156 134.046875 82.34375 119.117188 88.421875 94.320312 C 94.492188 69.523438 76.859375 44.628906 76.859375 44.628906 C 77.921875 62.179688 71.984375 79.441406 60.351562 92.628906 C 60.933594 91.957031 61.421875 91.210938 61.796875 90.402344 C 63.886719 86.222656 67.242188 75.359375 65.277344 50.203125 C 62.511719 14.890625 30.515625 0 30.515625 0 C 33.273438 21.515625 25.003906 26.472656 5.632812 67.3125 C -13.738281 108.144531 23.347656 134.058594 23.347656 134.058594 Z M 23.347656 134.058594 " />
-                    </svg>
-                    Fire Locations
-                </span>
+                <!-- <div class="map-panel__header">
+                    <button class="trigger">
+                        <span class="fa fa-navicon"></span>
+                    </button>
+                </div> -->
+                <div class="map-panel__tabs">
+                <a href="#aqi_content_tab">
+                    <span class="map-panel__tabs--item active" data-target="aqi_content_tab">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M255,0C114.75,0,0,114.75,0,255s114.75,255,255,255s255-114.75,255-255S395.25,0,255,0z M344.25,153
+                    			c20.4,0,38.25,17.85,38.25,38.25s-17.85,38.25-38.25,38.25S306,211.65,306,191.25S323.85,153,344.25,153z M165.75,153
+                    			c20.4,0,38.25,17.85,38.25,38.25s-17.85,38.25-38.25,38.25s-38.25-17.85-38.25-38.25S145.35,153,165.75,153z M255,408
+                    			c-66.3,0-122.4-43.35-142.8-102h285.6C377.4,364.65,321.3,408,255,408z"></path>
+                        </svg>
+                        Air Quality Index
+                    </span>
                 </a>
-                <a href="#aod_content_tab">
-                <span class="map-panel__tabs--item" data-target="coverage">
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
-                        <g>
-                            <g>
-                                <path d="M287.203,111.257c-32.454,0-58.857,26.403-58.857,58.856h30c0-15.911,12.945-28.856,28.857-28.856
-                                    s28.857,12.945,28.857,28.856s-12.945,28.856-28.857,28.856H91.533v30h195.67c32.454,0,58.857-26.403,58.857-58.856
-                                    S319.657,111.257,287.203,111.257z"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <path d="M385.765,299.861H152.144v30h233.621c15.912,0,28.857,12.945,28.857,28.857c0,15.911-12.945,28.856-28.857,28.856
-                                    s-28.856-12.945-28.856-28.856h-30c0,32.453,26.403,58.856,58.856,58.856s58.857-26.403,58.857-58.856
-                                    C444.622,326.264,418.218,299.861,385.765,299.861z"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <path d="M443.936,143.287c-37.531,0-68.064,30.533-68.064,68.064h30c0-20.989,17.076-38.064,38.064-38.064
-                                    c20.988,0,38.064,17.075,38.064,38.064c0,20.989-17.076,38.064-38.064,38.064H0v30h443.936c37.531,0,68.064-30.533,68.064-68.064
-                                    C512,173.82,481.466,143.287,443.936,143.287z"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="54.46" y="48.974" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="138.07" y="101.16" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="233.27" y="26.94" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="461.53" y="26.94" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="360.76" y="65.21" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="17.789" y="323.29" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="58.24" y="434.08" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="179.07" y="378.33" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="461.53" y="387.79" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="256" y="434.08" width="30" height="30"/>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <rect x="380.09" y="455.06" width="30" height="30"/>
-                            </g>
-                        </g>
-
-                    </svg>
-                    Aerosal Optical Depth
-                </span>
+                <a href="#particulate_content_tab">
+                    <span class="map-panel__tabs--item" data-target="particulate_content_tab">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M188.12 210.74L142.86 256l45.25 45.25L233.37 256l-45.25-45.26zm113.13-22.62L256 142.86l-45.25 45.25L256 233.37l45.25-45.25zm-90.5 135.76L256 369.14l45.26-45.26L256 278.63l-45.25 45.25zM256 0C114.62 0 0 114.62 0 256s114.62 256 256 256 256-114.62 256-256S397.38 0 256 0zm186.68 295.6l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-28.29-28.29-45.25 45.25 33.94 33.94 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-33.94-33.94-45.26 45.26 28.29 28.29c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0L256 414.39l-28.29 28.29c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l28.29-28.29-45.25-45.26-33.94 33.94 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 33.94-33.94-45.25-45.25-28.29 28.29c-3.12 3.12-8.19 3.12-11.31 0L69.32 295.6c-3.12-3.12-3.12-8.19 0-11.31L97.61 256l-28.29-28.29c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l28.29 28.29 45.25-45.26-33.94-33.94-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 33.94 33.94 45.26-45.25-28.29-28.29c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0L256 97.61l28.29-28.29c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-28.29 28.29 45.26 45.25 33.94-33.94-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-33.94 33.94 45.25 45.26 28.29-28.29c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31L414.39 256l28.29 28.28a8.015 8.015 0 0 1 0 11.32zM278.63 256l45.26 45.25L369.14 256l-45.25-45.26L278.63 256z"> </path>
+                        </svg>
+                        Particulate Matter
+                    </span>
                 </a>
-                <a href="#forecast_content_tab">
+                <a href="#fire_content_tab">
+                    <span class="map-panel__tabs--item" data-target="fire_content_tab">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 130 130" height="1em" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M 23.347656 134.058594 C 8.445312 84.953125 39.933594 67.023438 39.933594 67.023438 C 37.730469 93.226562 52.621094 113.640625 52.621094 113.640625 C 58.097656 111.988281 68.550781 104.265625 68.550781 104.265625 C 68.550781 113.640625 63.035156 134.046875 63.035156 134.046875 C 63.035156 134.046875 82.34375 119.117188 88.421875 94.320312 C 94.492188 69.523438 76.859375 44.628906 76.859375 44.628906 C 77.921875 62.179688 71.984375 79.441406 60.351562 92.628906 C 60.933594 91.957031 61.421875 91.210938 61.796875 90.402344 C 63.886719 86.222656 67.242188 75.359375 65.277344 50.203125 C 62.511719 14.890625 30.515625 0 30.515625 0 C 33.273438 21.515625 25.003906 26.472656 5.632812 67.3125 C -13.738281 108.144531 23.347656 134.058594 23.347656 134.058594 Z M 23.347656 134.058594 " />
+                        </svg>
+                        Fire Locations
+                    </span>
+                    </a>
+                    <a href="#aod_content_tab">
                     <span class="map-panel__tabs--item" data-target="coverage">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                                <g>
+                                    <path d="M287.203,111.257c-32.454,0-58.857,26.403-58.857,58.856h30c0-15.911,12.945-28.856,28.857-28.856
+                                        s28.857,12.945,28.857,28.856s-12.945,28.856-28.857,28.856H91.533v30h195.67c32.454,0,58.857-26.403,58.857-58.856
+                                        S319.657,111.257,287.203,111.257z"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <path d="M385.765,299.861H152.144v30h233.621c15.912,0,28.857,12.945,28.857,28.857c0,15.911-12.945,28.856-28.857,28.856
+                                        s-28.856-12.945-28.856-28.856h-30c0,32.453,26.403,58.856,58.856,58.856s58.857-26.403,58.857-58.856
+                                        C444.622,326.264,418.218,299.861,385.765,299.861z"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <path d="M443.936,143.287c-37.531,0-68.064,30.533-68.064,68.064h30c0-20.989,17.076-38.064,38.064-38.064
+                                        c20.988,0,38.064,17.075,38.064,38.064c0,20.989-17.076,38.064-38.064,38.064H0v30h443.936c37.531,0,68.064-30.533,68.064-68.064
+                                        C512,173.82,481.466,143.287,443.936,143.287z"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="54.46" y="48.974" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="138.07" y="101.16" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="233.27" y="26.94" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="461.53" y="26.94" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="360.76" y="65.21" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="17.789" y="323.29" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="58.24" y="434.08" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="179.07" y="378.33" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="461.53" y="387.79" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="256" y="434.08" width="30" height="30"/>
+                                </g>
+                            </g>
+                            <g>
+                                <g>
+                                    <rect x="380.09" y="455.06" width="30" height="30"/>
+                                </g>
+                            </g>
+
+                        </svg>
+                        Aerosal Optical Depth
+                    </span>
+                    </a>
+                    <a href="#forecast_content_tab">
+                        <span class="map-panel__tabs--item" data-target="coverage">
+                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M560.02 32c-1.96 0-3.98.37-5.96 1.16L384.01 96H384L212 35.28A64.252 64.252 0 0 0 191.76 32c-6.69 0-13.37 1.05-19.81 3.14L20.12 87.95A32.006 32.006 0 0 0 0 117.66v346.32C0 473.17 7.53 480 15.99 480c1.96 0 3.97-.37 5.96-1.16L192 416l172 60.71a63.98 63.98 0 0 0 40.05.15l151.83-52.81A31.996 31.996 0 0 0 576 394.34V48.02c0-9.19-7.53-16.02-15.98-16.02zM224 90.42l128 45.19v285.97l-128-45.19V90.42zM48 418.05V129.07l128-44.53v286.2l-.64.23L48 418.05zm480-35.13l-128 44.53V141.26l.64-.24L528 93.95v288.97z"> </path>
+                            </svg>
+                            Air Quality Forecast
+                        </span>
+                    </a>
+
+                    <!-- <span class="map-panel__tabs--item" data-target="coverage">
                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
                             <path d="M560.02 32c-1.96 0-3.98.37-5.96 1.16L384.01 96H384L212 35.28A64.252 64.252 0 0 0 191.76 32c-6.69 0-13.37 1.05-19.81 3.14L20.12 87.95A32.006 32.006 0 0 0 0 117.66v346.32C0 473.17 7.53 480 15.99 480c1.96 0 3.97-.37 5.96-1.16L192 416l172 60.71a63.98 63.98 0 0 0 40.05.15l151.83-52.81A31.996 31.996 0 0 0 576 394.34V48.02c0-9.19-7.53-16.02-15.98-16.02zM224 90.42l128 45.19v285.97l-128-45.19V90.42zM48 418.05V129.07l128-44.53v286.2l-.64.23L48 418.05zm480-35.13l-128 44.53V141.26l.64-.24L528 93.95v288.97z"> </path>
                         </svg>
-                        Air Quality Forecast
-                    </span>
-                </a>
+                        Ture Color Imagery
+                    </span> -->
+                </div>
+                <div class="map-panel__content">
+                    <div class="tab-content">
+                    <div id="aqi_content_tab" class="tab-pane fade in active">
+                        <p>Air Quality Index (AQI)</p>
+                        <!-- <p>Click on a point to determine the air quality index at your location</p> -->
 
-                <!-- <span class="map-panel__tabs--item" data-target="coverage">
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M560.02 32c-1.96 0-3.98.37-5.96 1.16L384.01 96H384L212 35.28A64.252 64.252 0 0 0 191.76 32c-6.69 0-13.37 1.05-19.81 3.14L20.12 87.95A32.006 32.006 0 0 0 0 117.66v346.32C0 473.17 7.53 480 15.99 480c1.96 0 3.97-.37 5.96-1.16L192 416l172 60.71a63.98 63.98 0 0 0 40.05.15l151.83-52.81A31.996 31.996 0 0 0 576 394.34V48.02c0-9.19-7.53-16.02-15.98-16.02zM224 90.42l128 45.19v285.97l-128-45.19V90.42zM48 418.05V129.07l128-44.53v286.2l-.64.23L48 418.05zm480-35.13l-128 44.53V141.26l.64-.24L528 93.95v288.97z"> </path>
+
+                    </div>
+                    <div id="particulate_content_tab" class="tab-pane fade">
+
+                        <p>Particulate Matter</p>
+
+                    </div>
+                    <div id="fire_content_tab" class="tab-pane fade">
+                        <div class="hidden">
+                            <label>
+                                Select Frequency
+                            </label>
+                            <select  class="freq_table" name="fire_freq_table" id="fire_freq_table" style="width: 100%">
+
+                            </select>
+                            <br>
+                            <label>
+                                Select Run Date
+                            </label>
+                            <select  class="rd_table" name="fire_rd_table" id="fire_rd_table" style="width: 100%">
+
+                            </select>
+                        </div>
+                        <p><b>[[ 'Select Variable' | translate]]</b></p>
+                        <select class="form-control" name="fire_var_table" id="fire_var_table">
+
+                        </select>
+                        <p><b>[[ 'Range Min' | translate]]</b></p>
+                        <input  type="text" class="form-control" id="fire_range-min" name="fire_range-min">
+
+                        <p><b>[[ 'Range Max' | translate]]</b></p>
+                        <input  type="text" class="form-control" id="fire_range-max" name="fire_range-max">
+                        <div id="opacity_fire" class="slider-width">
+                            <p> [[ 'Opacity' | translate]]: <span id="OpacityVal"></span></p>
+                            <input id="opacity-slider" type="text" style="width: 90%;left: 60px;"/>
+                        </div>
+                    </div>
+
+                    <div id="aod_content_tab" class="tab-pane fade">
+                        <p><b>[[ 'Select Parameter' | translate]]</b></p>
+                        <select name="aod_run_table" id="aod_run_table" class="form-control">
+                        </select>
+
+                        <div class="hidden">
+                            <label>
+                                Select Frequency
+                            </label>
+                            <select  class="freq_table" name="aod_freq_table" id="aod_freq_table" style="width: 100%">
+
+                            </select>
+                            <br>
+                            <label>
+                                Select Run Date
+                            </label>
+                            <select  class="rd_table" name="aod_rd_table" id="aod_rd_table" style="width: 100%">
+
+                            </select>
+                        </div>
+
+                        <p><b>[[ 'Select Variable' | translate]]</b></p>
+                        <select class="form-control" name="aod_var_table" id="aod_var_table">
+
+                        </select>
+                        <p><b>[[ 'Range Min' | translate]]</b></p>
+                        <input  type="text" class="form-control" id="aod_range-min" name="aod_range-min">
+
+                        <p><b>[[ 'Range Max' | translate]]</b></p>
+                        <input  type="text" class="form-control" id="aod_range-max" name="aod_range-max">
+                        <div id="opacity_aod" class="slider-width">
+                            <p> [[ 'Opacity' | translate]]: <span id="OpacityVal2"></span></p>
+                            <input id="opacity-slider-aod" type="text" style="width: 90%;left: 60px;"/>
+                        </div>
+                    </div>
+                    <div id="forecast_content_tab" class="tab-pane fade">
+                        <p>Air Quality Forecast</p>
+
+                    </div>
+                    <div id="imagery_content_tab" class="tab-pane fade">
+                        <p>True color Imagery</p>
+                    </div>
+                </div>
+                </div>
+        </div>
+        <div class="map-panel__toggle">
+            <div id="toggle_layer_box" class="map-panel__toggle--panel" style="display: none;">
+                <p>Toggle layer visibility</p>
+                <ul class="toggles-list">
+                    <li class="toggle">
+                        <label class="switch_layer">
+                          <input id="btn_toggle_fire" type="checkbox" checked>
+                          <span class="slider_toggle round"></span>
+                        </label>
+                        <label>Fire Locations</label>
+                    </li>
+                    <li class="toggle">
+                        <label class="switch_layer">
+                          <input id="btn_toggle_aod" type="checkbox" checked>
+                          <span class="slider_toggle round"></span>
+                        </label>
+                        <label>Aerosol Optical Depth</label>
+                    </li>
+                </ul>
+            </div>
+            <div id="imagery_layer_box" class="map-panel__toggle--panel" style="display: none;">
+                <p>True Color Imagery</p>
+
+            </div>
+            <div id="legend_box" class="map-panel__toggle--panel" style="display: none;">
+                <p>Legend</p>
+
+            </div>
+
+            <div class="map-panel__tabs">
+                <span id="toggle_layers" class="map-panel__tabs--item" data-target="layers">
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.41 148.02l232.94 105.67c6.8 3.09 14.49 3.09 21.29 0l232.94-105.67c16.55-7.51 16.55-32.52 0-40.03L266.65 2.31a25.607 25.607 0 0 0-21.29 0L12.41 107.98c-16.55 7.51-16.55 32.53 0 40.04zm487.18 88.28l-58.09-26.33-161.64 73.27c-7.56 3.43-15.59 5.17-23.86 5.17s-16.29-1.74-23.86-5.17L70.51 209.97l-58.1 26.33c-16.55 7.5-16.55 32.5 0 40l232.94 105.59c6.8 3.08 14.49 3.08 21.29 0L499.59 276.3c16.55-7.5 16.55-32.5 0-40zm0 127.8l-57.87-26.23-161.86 73.37c-7.56 3.43-15.59 5.17-23.86 5.17s-16.29-1.74-23.86-5.17L70.29 337.87 12.41 364.1c-16.55 7.5-16.55 32.5 0 40l232.94 105.59c6.8 3.08 14.49 3.08 21.29 0L499.59 404.1c16.55-7.5 16.55-32.5 0-40z"></path>
                     </svg>
-                    Ture Color Imagery
-                </span> -->
-            </div>
-            <div class="map-panel__content">
-                <div class="tab-content">
-                <div id="aqi_content_tab" class="tab-pane fade in active">
-                    <p>Air Quality Index (AQI)</p>
-                    <!-- <p>Click on a point to determine the air quality index at your location</p> -->
-
-
-                </div>
-                <div id="particulate_content_tab" class="tab-pane fade">
-
-                    <p>Particulate Matter</p>
-
-                </div>
-                <div id="fire_content_tab" class="tab-pane fade">
-                    <div class="hidden">
-                        <label>
-                            Select Frequency
-                        </label>
-                        <select  class="freq_table" name="fire_freq_table" id="fire_freq_table" style="width: 100%">
-
-                        </select>
-                        <br>
-                        <label>
-                            Select Run Date
-                        </label>
-                        <select  class="rd_table" name="fire_rd_table" id="fire_rd_table" style="width: 100%">
-
-                        </select>
-                    </div>
-                    <p><b>[[ 'Select Variable' | translate]]</b></p>
-                    <select class="form-control" name="fire_var_table" id="fire_var_table">
-
-                    </select>
-                    <p><b>[[ 'Range Min' | translate]]</b></p>
-                    <input  type="text" class="form-control" id="fire_range-min" name="fire_range-min">
-
-                    <p><b>[[ 'Range Max' | translate]]</b></p>
-                    <input  type="text" class="form-control" id="fire_range-max" name="fire_range-max">
-                    <div id="opacity_fire" class="slider-width">
-                        <p> [[ 'Opacity' | translate]]: <span id="OpacityVal"></span></p>
-                        <input id="opacity-slider" type="text" style="width: 90%;left: 60px;"/>
-                    </div>
-                </div>
-
-                <div id="aod_content_tab" class="tab-pane fade">
-                    <p><b>[[ 'Select Parameter' | translate]]</b></p>
-                    <select name="aod_run_table" id="aod_run_table" class="form-control">
-                    </select>
-
-                    <div class="hidden">
-                        <label>
-                            Select Frequency
-                        </label>
-                        <select  class="freq_table" name="aod_freq_table" id="aod_freq_table" style="width: 100%">
-
-                        </select>
-                        <br>
-                        <label>
-                            Select Run Date
-                        </label>
-                        <select  class="rd_table" name="aod_rd_table" id="aod_rd_table" style="width: 100%">
-
-                        </select>
-                    </div>
-
-                    <p><b>[[ 'Select Variable' | translate]]</b></p>
-                    <select class="form-control" name="aod_var_table" id="aod_var_table">
-
-                    </select>
-                    <p><b>[[ 'Range Min' | translate]]</b></p>
-                    <input  type="text" class="form-control" id="aod_range-min" name="aod_range-min">
-
-                    <p><b>[[ 'Range Max' | translate]]</b></p>
-                    <input  type="text" class="form-control" id="aod_range-max" name="aod_range-max">
-                    <div id="opacity_aod" class="slider-width">
-                        <p> [[ 'Opacity' | translate]]: <span id="OpacityVal2"></span></p>
-                        <input id="opacity-slider-aod" type="text" style="width: 90%;left: 60px;"/>
-                    </div>
-                </div>
-                <div id="forecast_content_tab" class="tab-pane fade">
-                    <p>Air Quality Forecast</p>
-
-                </div>
-                <div id="imagery_content_tab" class="tab-pane fade">
-                    <p>True color Imagery</p>
-                </div>
-            </div>
-            </div>
-    </div>
-    <div class="map-panel__toggle">
-        <div id="toggle_layer_box" class="map-panel__toggle--panel" style="display: none;">
-            <p>Toggle layer visibility</p>
-            <ul class="toggles-list">
-                <li class="toggle">
-                    <label class="switch_layer">
-                      <input id="btn_toggle_fire" type="checkbox" checked>
-                      <span class="slider_toggle round"></span>
-                    </label>
-                    <label>Fire Locations</label>
-                </li>
-                <li class="toggle">
-                    <label class="switch_layer">
-                      <input id="btn_toggle_aod" type="checkbox" checked>
-                      <span class="slider_toggle round"></span>
-                    </label>
-                    <label>Aerosol Optical Depth</label>
-                </li>
-            </ul>
-        </div>
-        <div id="imagery_layer_box" class="map-panel__toggle--panel" style="display: none;">
-            <p>True Color Imagery</p>
-
-        </div>
-        <div id="legend_box" class="map-panel__toggle--panel" style="display: none;">
-            <p>Legend</p>
-
-        </div>
-
-        <div class="map-panel__tabs">
-            <span id="toggle_layers" class="map-panel__tabs--item" data-target="layers">
-                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.41 148.02l232.94 105.67c6.8 3.09 14.49 3.09 21.29 0l232.94-105.67c16.55-7.51 16.55-32.52 0-40.03L266.65 2.31a25.607 25.607 0 0 0-21.29 0L12.41 107.98c-16.55 7.51-16.55 32.53 0 40.04zm487.18 88.28l-58.09-26.33-161.64 73.27c-7.56 3.43-15.59 5.17-23.86 5.17s-16.29-1.74-23.86-5.17L70.51 209.97l-58.1 26.33c-16.55 7.5-16.55 32.5 0 40l232.94 105.59c6.8 3.08 14.49 3.08 21.29 0L499.59 276.3c16.55-7.5 16.55-32.5 0-40zm0 127.8l-57.87-26.23-161.86 73.37c-7.56 3.43-15.59 5.17-23.86 5.17s-16.29-1.74-23.86-5.17L70.29 337.87 12.41 364.1c-16.55 7.5-16.55 32.5 0 40l232.94 105.59c6.8 3.08 14.49 3.08 21.29 0L499.59 404.1c16.55-7.5 16.55-32.5 0-40z"></path>
-                </svg>
-                Layers
-            </span>
-            <span id="toggle_imagery" class="map-panel__tabs--item" data-target="layers">
-                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 50 50" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11,6.5H6v5v22H0v-33h34v6H11z M34,11.5H11v22v11h34v-33H34z"/>
-                </svg>
-                Imagery
-            </span>
-            <span id="toggle_legend" class="map-panel__tabs--item" data-target="layers">
-                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 350 350" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                		<path d="M63.953,164.453H9.135c-2.474,0-4.615,0.9-6.423,2.709C0.903,168.972,0,171.114,0,173.589v54.817
-                			c0,2.473,0.903,4.619,2.712,6.424c1.809,1.803,3.949,2.712,6.423,2.712h54.818c2.474,0,4.615-0.905,6.423-2.712
-                			c1.809-1.809,2.712-3.951,2.712-6.424v-54.817c0-2.475-0.904-4.617-2.712-6.427C68.568,165.356,66.427,164.453,63.953,164.453z"/>
-                		<path d="M63.953,383.722H9.135c-2.474,0-4.615,0.896-6.423,2.707C0.903,388.238,0,390.378,0,392.854v54.82
-                			c0,2.471,0.903,4.609,2.712,6.42c1.809,1.813,3.949,2.714,6.423,2.714h54.818c2.474,0,4.615-0.903,6.423-2.714
-                			c1.809-1.807,2.712-3.949,2.712-6.42v-54.82c0-2.477-0.904-4.616-2.712-6.426C68.568,384.625,66.427,383.722,63.953,383.722z"/>
-                		<path d="M63.953,274.082H9.135c-2.474,0-4.615,0.91-6.423,2.714S0,280.749,0,283.22v54.815c0,2.478,0.903,4.62,2.712,6.427
-                			c1.809,1.808,3.949,2.707,6.423,2.707h54.818c2.474,0,4.615-0.896,6.423-2.707c1.809-1.807,2.712-3.949,2.712-6.427V283.22
-                			c0-2.471-0.904-4.613-2.712-6.424C68.568,274.989,66.427,274.082,63.953,274.082z"/>
-                		<path d="M63.953,54.817H9.135c-2.474,0-4.615,0.903-6.423,2.712S0,61.479,0,63.953v54.817c0,2.475,0.903,4.615,2.712,6.424
-                			s3.949,2.712,6.423,2.712h54.818c2.474,0,4.615-0.9,6.423-2.712c1.809-1.809,2.712-3.949,2.712-6.424V63.953
-                			c0-2.475-0.904-4.615-2.712-6.424C68.568,55.725,66.427,54.817,63.953,54.817z"/>
-                		<path d="M502.49,383.722H118.771c-2.474,0-4.615,0.896-6.423,2.707c-1.809,1.81-2.712,3.949-2.712,6.426v54.82
-                			c0,2.471,0.903,4.609,2.712,6.42c1.809,1.813,3.946,2.714,6.423,2.714H502.49c2.478,0,4.616-0.903,6.427-2.714
-                			c1.81-1.811,2.71-3.949,2.71-6.42v-54.82c0-2.477-0.903-4.616-2.71-6.426C507.106,384.625,504.967,383.722,502.49,383.722z"/>
-                		<path d="M502.49,274.082H118.771c-2.474,0-4.615,0.91-6.423,2.714s-2.712,3.953-2.712,6.424v54.815
-                			c0,2.478,0.903,4.62,2.712,6.427c1.809,1.808,3.946,2.707,6.423,2.707H502.49c2.478,0,4.616-0.896,6.427-2.707
-                			c1.81-1.807,2.71-3.949,2.71-6.427V283.22c0-2.471-0.903-4.613-2.71-6.424C507.106,274.992,504.967,274.082,502.49,274.082z"/>
-                		<path d="M508.917,57.529c-1.811-1.805-3.949-2.712-6.427-2.712H118.771c-2.474,0-4.615,0.903-6.423,2.712
-                			s-2.712,3.949-2.712,6.424v54.817c0,2.475,0.903,4.615,2.712,6.424s3.946,2.712,6.423,2.712H502.49c2.478,0,4.616-0.9,6.427-2.712
-                			c1.81-1.809,2.71-3.949,2.71-6.424V63.953C511.626,61.479,510.723,59.338,508.917,57.529z"/>
-                		<path d="M502.49,164.453H118.771c-2.474,0-4.615,0.9-6.423,2.709c-1.809,1.81-2.712,3.952-2.712,6.427v54.817
-                			c0,2.473,0.903,4.615,2.712,6.424c1.809,1.803,3.946,2.712,6.423,2.712H502.49c2.478,0,4.616-0.905,6.427-2.712
-                			c1.81-1.809,2.71-3.951,2.71-6.424v-54.817c0-2.475-0.903-4.617-2.71-6.427C507.106,165.356,504.967,164.453,502.49,164.453z"/>
-                	</g>
+                    Layers
+                </span>
+                <span id="toggle_imagery" class="map-panel__tabs--item" data-target="layers">
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 50 50" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11,6.5H6v5v22H0v-33h34v6H11z M34,11.5H11v22v11h34v-33H34z"/>
                     </svg>
-                Legend
-            </span>
+                    Imagery
+                </span>
+                <span id="toggle_legend" class="map-panel__tabs--item" data-target="layers">
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 350 350" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                    		<path d="M63.953,164.453H9.135c-2.474,0-4.615,0.9-6.423,2.709C0.903,168.972,0,171.114,0,173.589v54.817
+                    			c0,2.473,0.903,4.619,2.712,6.424c1.809,1.803,3.949,2.712,6.423,2.712h54.818c2.474,0,4.615-0.905,6.423-2.712
+                    			c1.809-1.809,2.712-3.951,2.712-6.424v-54.817c0-2.475-0.904-4.617-2.712-6.427C68.568,165.356,66.427,164.453,63.953,164.453z"/>
+                    		<path d="M63.953,383.722H9.135c-2.474,0-4.615,0.896-6.423,2.707C0.903,388.238,0,390.378,0,392.854v54.82
+                    			c0,2.471,0.903,4.609,2.712,6.42c1.809,1.813,3.949,2.714,6.423,2.714h54.818c2.474,0,4.615-0.903,6.423-2.714
+                    			c1.809-1.807,2.712-3.949,2.712-6.42v-54.82c0-2.477-0.904-4.616-2.712-6.426C68.568,384.625,66.427,383.722,63.953,383.722z"/>
+                    		<path d="M63.953,274.082H9.135c-2.474,0-4.615,0.91-6.423,2.714S0,280.749,0,283.22v54.815c0,2.478,0.903,4.62,2.712,6.427
+                    			c1.809,1.808,3.949,2.707,6.423,2.707h54.818c2.474,0,4.615-0.896,6.423-2.707c1.809-1.807,2.712-3.949,2.712-6.427V283.22
+                    			c0-2.471-0.904-4.613-2.712-6.424C68.568,274.989,66.427,274.082,63.953,274.082z"/>
+                    		<path d="M63.953,54.817H9.135c-2.474,0-4.615,0.903-6.423,2.712S0,61.479,0,63.953v54.817c0,2.475,0.903,4.615,2.712,6.424
+                    			s3.949,2.712,6.423,2.712h54.818c2.474,0,4.615-0.9,6.423-2.712c1.809-1.809,2.712-3.949,2.712-6.424V63.953
+                    			c0-2.475-0.904-4.615-2.712-6.424C68.568,55.725,66.427,54.817,63.953,54.817z"/>
+                    		<path d="M502.49,383.722H118.771c-2.474,0-4.615,0.896-6.423,2.707c-1.809,1.81-2.712,3.949-2.712,6.426v54.82
+                    			c0,2.471,0.903,4.609,2.712,6.42c1.809,1.813,3.946,2.714,6.423,2.714H502.49c2.478,0,4.616-0.903,6.427-2.714
+                    			c1.81-1.811,2.71-3.949,2.71-6.42v-54.82c0-2.477-0.903-4.616-2.71-6.426C507.106,384.625,504.967,383.722,502.49,383.722z"/>
+                    		<path d="M502.49,274.082H118.771c-2.474,0-4.615,0.91-6.423,2.714s-2.712,3.953-2.712,6.424v54.815
+                    			c0,2.478,0.903,4.62,2.712,6.427c1.809,1.808,3.946,2.707,6.423,2.707H502.49c2.478,0,4.616-0.896,6.427-2.707
+                    			c1.81-1.807,2.71-3.949,2.71-6.427V283.22c0-2.471-0.903-4.613-2.71-6.424C507.106,274.992,504.967,274.082,502.49,274.082z"/>
+                    		<path d="M508.917,57.529c-1.811-1.805-3.949-2.712-6.427-2.712H118.771c-2.474,0-4.615,0.903-6.423,2.712
+                    			s-2.712,3.949-2.712,6.424v54.817c0,2.475,0.903,4.615,2.712,6.424s3.946,2.712,6.423,2.712H502.49c2.478,0,4.616-0.9,6.427-2.712
+                    			c1.81-1.809,2.71-3.949,2.71-6.424V63.953C511.626,61.479,510.723,59.338,508.917,57.529z"/>
+                    		<path d="M502.49,164.453H118.771c-2.474,0-4.615,0.9-6.423,2.709c-1.809,1.81-2.712,3.952-2.712,6.427v54.817
+                    			c0,2.473,0.903,4.615,2.712,6.424c1.809,1.803,3.946,2.712,6.423,2.712H502.49c2.478,0,4.616-0.905,6.427-2.712
+                    			c1.81-1.809,2.71-3.951,2.71-6.424v-54.817c0-2.475-0.903-4.617-2.71-6.427C507.106,165.356,504.967,164.453,502.49,164.453z"/>
+                    	</g>
+                        </svg>
+                    Legend
+                </span>
+            </div>
         </div>
-    </div>
 </section>
 <!-- {% include "panels/legendbox.html" %} -->
 

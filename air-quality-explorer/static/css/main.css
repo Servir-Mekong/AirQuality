@@ -512,8 +512,8 @@ p {
 }
 
 .slider-handle {
-    background:#797D7F;
-    border: 0 solid #797D7F;
+    background:#CACFD2;
+    border: 0 solid #CACFD2;
 }
 
 .irs--round .irs-from, .irs--round .irs-to, .irs--round .irs-singl {
@@ -533,7 +533,17 @@ p {
     background-color: #a8c45d;
 }
 
-
+.slider.slider-horizontal .slider-track {
+    height: 8px;
+    width: 100%;
+    margin-top: -5px;
+    top: 50%;
+    left: 0;
+}
+.slider-handle {
+    width: 18px;
+    height: 18px;
+}
 .slider-track {
     position: absolute;
     cursor: pointer;

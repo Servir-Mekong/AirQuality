@@ -1,10 +1,12 @@
 {
+    "applicationName": "Air Quality Explorer",
     "Home": "နေအိမ်",
     "Map Viewer": "မြေပုံ",
     "Map": "မြေပုံ",
     "Language": "ဘာသာစကား",
     "English": "အင်္ဂလိပ်",
     "Burmese": "မြန်မာ",
+    "Thai": "Thai",
     "Use Cases": "အသုံးပြုပုံနမှုနာများ",
     "Explore the HYDRAFloods Viewer": "HYDRAFloods မြေပုံများကို လေ့လာစူးစမ်းကြည့်ရန်",
     "RSS Feeds": "RSS Feeds",

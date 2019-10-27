@@ -15,6 +15,7 @@
 		flood_layer,
 		drawing_polygon,
 		compare,
+		add_compare,
 		int_type,
 		opacity,
 		public_interface,
@@ -263,21 +264,23 @@
     };
 
 
-	var add_compare = function(){
-        map.removeLayer(tdWmsLayer);
-        map.removeLayer(lwmsLayer);
-        map.removeLayer(rwmsLayer);
+	add_compare = function(){
+		map.removeLayer(tdWmsFireLayer);
+		map.removeLayer(tdWmsAODLayer);
+
         $modalCompare.modal('hide');
-        var style =  ($("#cstyle_table option:selected").val());
+        //var style =  ($("#cstyle_table option:selected").val());
+		var style = 'Rainbow';
         var l_date = $("#lrd_table option:selected").val();
         var l_var = $("#lvar_table option:selected").val();
         var r_date = $("#rrd_table option:selected").val();
         var r_var = $("#rvar_table option:selected").val();
 
+
         var lwmsUrl = threddss_wms_url+l_date;
         var rwmsUrl = threddss_wms_url+r_date;
 
-        var range = $("#crange-min").val()+','+$("#crange-max").val();
+        //var range = $("#crange-min").val()+','+$("#crange-max").val();
         // map.removeLayer(wms_layer);
         // var lindex = find_var_index(l_var,var_options);
         // var rindex = find_var_index(r_var,var_options);
@@ -286,15 +289,15 @@
         // var lrange = var_options[lindex]["min"]+','+var_options[lindex]["max"];
         // var rrange = var_options[rindex]["min"]+','+var_options[rindex]["max"];
         var styling = 'boxfill/'+style;
-        opacity = $('#opacity-slider').slider("option", "value");
+        //opacity = $('#opacity-slider').slider("option", "value");
 
         lwmsLayer = L.tileLayer.wms(lwmsUrl, {
             layers: l_var,
             format: 'image/png',
             transparent: true,
             styles: styling,
-            colorscalerange: range,
-            opacity:opacity,
+            colorscalerange: '0,50',
+            opacity:1,
             version:'1.3.0'
         });
 
@@ -303,8 +306,8 @@
             format: 'image/png',
             transparent: true,
             styles: styling,
-            colorscalerange: range,
-            opacity:opacity,
+            colorscalerange: '0,50',
+            opacity:1,
             version:'1.3.0'
         });
 
@@ -315,6 +318,9 @@
 
     };
     $("#btn-add-compare").on('click',add_compare);
+	$("#btn-close-compare").on('click', function(){
+		$modalCompare.modal('hide');
+	})
 
     function handleMouseMove(e,ctx,width,height){
         $('.tippy').removeClass('hidden');
@@ -704,7 +710,8 @@
 					map.removeControl(compare);
 					map.removeLayer(lwmsLayer);
 					map.removeLayer(rwmsLayer);
-					tdWmsLayer.addTo(map);
+					tdWmsFireLayer.addTo(map);
+					tdWmsAODLayer.addTo(map);
 					btn.state('enable-compare');
 				}
 			}]
@@ -723,8 +730,6 @@
 					btn.state('disable-compare');    // change state on click!
 					distLayer.setOpacity(0.5);
 					distLayer.addTo(map);
-
-		//L.control.layers(baselayers, distLayer).addTo(map);
 
 					L.DomUtil.addClass(map._container, 'crosshair-cursor-enabled');
 					crosshairs_enabled = true;

@@ -23,7 +23,7 @@
             <!-- <a class="navbar-brand" style="padding: 5px;" href="/" ng-show="true">
                 <img src="{% static 'images/air-quality.png' %}" style="width: 60px;" >
             </a> -->
-            <a class="navbar-brand navmenu" style="padding: 15px 15px;" href="/">[[ applicationName ]]</a>
+            <a class="navbar-brand navmenu" style="padding: 15px 15px;" href="/">[[ applicationName | translate ]]</a>
         </div>
         <div class="container-fluid menu-container collapse navbar-collapse main-padding" id="navbar-collapse">
             <!-- <div class="collapse navbar-collapse"> -->
@@ -40,6 +40,7 @@
                     </a>
                     <ul style="cursor: pointer;" class="dropdown-menu">
                         <li><a ng-click="changeLanguage('en')">[[ 'English' | translate ]]</a></li>
+                        <li><a ng-click="changeLanguage('th')">[[ 'Thai' | translate]]</a></li>
                         <li><a ng-click="changeLanguage('mm')">[[ 'Burmese' | translate]]</a></li>
                     </ul>
                 </li>

@@ -98,3 +98,95 @@ p {
     width: 32px;
     height: 32px;
 }
+
+.tooltip-inner {
+    background-color: #a8c45d;
+}
+
+.tooltip.top .tooltip-arrow {
+    border-top-color: #a8c45d;
+}
+
+.map-modal {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 1rem;
+    box-shadow: 1px 1px 2px rgba(127,129,132,0.4);
+    border-radius: 2px;
+    background: #fff;
+    padding: 1rem;
+    z-index: 9999;
+    max-height: 80%;
+}
+.map-modal--vertical-smaller {
+    bottom: auto;
+    margin: 1rem;
+}
+
+.map-modal--horizontal-smaller {
+    margin: 13rem auto;
+    width: 700px;
+}
+
+.map-modal__header {
+    display: flex;
+    border-bottom: 2px solid #a8c45d;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+.map-modal__content {
+    height: 100%;
+    overflow: auto;
+    padding: 0.25rem;
+    scroll-y: auto;
+}
+.map-modal__content hr{
+    border-top: 2px dotted #a8c45d;
+}
+.map-modal__content label{
+    font-weight: 500;
+}
+.map-modal__content .form-control{
+    margin-bottom: 10px;
+}
+.select2-container {
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 0;
+    position: relative;
+    z-index: 99999;
+    vertical-align: middle;
+}
+.map-modal__content .select2-container{
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+.map-modal__buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+.map-modal__buttons button{
+    padding-left: 30px;
+    padding-right: 30px;
+    border: none;
+    margin-left: 5px;
+    color: #FFF;
+}
+.map-modal__buttons #btn-close-compare{
+    background-color: #F0B27A;
+}
+.map-modal__buttons #btn-add-compare{
+    background-color: #a8c45d;
+}
+.map-modal__title {
+    flex: 1;
+    text-align: center;
+    margin: 5px;
+    font-weight: 800;
+}
