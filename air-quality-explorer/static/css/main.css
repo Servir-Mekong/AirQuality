@@ -11,6 +11,9 @@ h1, h2, h3, h4, h5, h6 {
     color: #555;
     letter-spacing: 1px;
 }
+b, strong {
+    font-weight: 600;
+}
 .map {
     height: 100%;
     width: 100%;
@@ -79,7 +82,16 @@ h1, h2, h3, h4, h5, h6 {
 .leaflet-minimap-container.leaflet-minimap-hidden {
     display: none;
 }
-
+.leaflet-popup-content {
+    margin: 13px 19px;
+    line-height: 1.4;
+}
+.leaflet-popup-content .btn-primary {
+    color: #fff;
+    background-color: #F0B27A;
+    border: none;
+    padding: 7px;
+}
 .pull-margin {
     left: 25%;
 }
@@ -128,49 +140,6 @@ h1, h2, h3, h4, h5, h6 {
     border-color: #ddd;
 }
 
-.btn-thmcolor{
-    color: #fff;
-    background-color: #173F5F;
-}
-.btn-thmcolor:hover{
-    background-color: #cca779;
-    color: white;
-    text-decoration: none;
-}
-
-.btn-thmcolor:focus{
-    background-color: #173F5F;
-    color: white;
-    text-decoration: none;
-}
-
-.btn-light{
-    color: #000;
-    font-weight: 600;
-    background-color: #cca779;
-}
-
-.btn-light:hover{
-    font-weight: 500;
-    background-color: #173F5F;
-    color: white;
-    text-decoration: none;
-}
-
-.btn-light:focus{
-    background-color: #cca779;
-    font-weight: 600;
-    color: #000;
-    text-decoration: none;
-}
-
-.form-control:focus {
-    border-color: #cca779;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgb(204, 167, 121, .6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgb(204, 167, 121, .6);
-}
-
 .draw-line-icon {
     content: url(../images/draw-line-icon.png);
     width: 30px;
@@ -186,7 +155,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .container-wrapper {
-    margin-top: 115px;
+    margin-top: 15px;
     margin-right: -15px;
     margin-left: -15px;
     overflow: hidden;
@@ -448,8 +417,8 @@ for better animation effect */
     margin-right: 5px;
 }
 
-.legend .legend-cb {
-    width: 55%;
+.legend-cb {
+    width: 60%;
     /* height:100px; */
     margin-left:25px;
     margin-right:25px;
@@ -807,7 +776,7 @@ p {
 
 .map-panel__content {
     background: #fff;
-    max-height: 70vh;
+    max-height: 55vh;
     overflow: auto;
 }
 .tab-content p{
@@ -844,8 +813,18 @@ p {
     align-items: flex-end;
     bottom: 3vh;
     right: 10px;
-    z-index: 9999;
+    z-index: 999;
 }
+
+.map-panel__toggle--panel--legendbox {
+    overflow: auto;
+    background-color: #333;
+    padding: 10px;
+    width: 250px;
+    color: #FFF;
+}
+
+
 .map-panel__toggle--panel {
     overflow: auto;
     background-color: #fff;
@@ -1097,4 +1076,83 @@ input:checked + .slider_toggle:before {
 
 .slider_toggle.round:before {
   border-radius: 50%;
+}
+
+/***************************/
+/* Application Page Legend */
+/***************************/
+.legend {
+    display: block;
+    position: absolute;
+    right: 15px;
+    bottom: 40px;
+    width: 150px;
+    margin-top: 0;
+    padding: 6px 6px 1px 6px;
+    background-color: white;
+    border-radius: 2px;
+    box-shadow: 0 0 5px gray;
+    z-index: 1000;
+}
+
+.legend-text {
+    font-weight: bold;
+    margin-left: 3px;
+    margin-bottom: 5px;
+}
+
+.legend-info-button {
+    position: absolute;
+    margin-left: 40px;
+    display: inline-block;
+}
+
+.legend-tabs {
+    overflow: hidden;
+    background-color: #333;
+    padding-bottom: 8px;
+    color: #FFF;
+}
+
+.legend-tabs  button{
+    background-color: inherit;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 12px;
+    margin-right: -3px;
+    transition: 0.3s;
+    font-size: 12px;
+}
+
+.legend-tabs button.active {
+    border: 1px solid #ccc;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+.legend-tab-content {
+    display: none;
+    padding: 0 6px;
+}
+
+.legend-value {
+    font-size: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.legend-block {
+    min-width: 25px;
+    height: 20px;
+    margin-right: 5px;
+    border: #bbb solid 1px;
+    background-color: #D3D3D3;
+}
+
+.legend-textlist {
+    min-width: 60px;
+    margin-right: 5px;
 }

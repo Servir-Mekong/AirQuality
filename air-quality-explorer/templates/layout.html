@@ -39,18 +39,18 @@
 	<link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
 	<!--Plugin CSS file with desired skin-->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css"/>
-
+	<!-- Normalize CSS -->
+	<link href="{% static 'vendor/normalize-css/normalize.css' %}" rel="stylesheet">
+	<!-- ng-Dialog -->
+	<link href="{% static 'vendor/ng-dialog/css/ngDialog.min.css' %}" rel="stylesheet">
+	<link href="{% static 'vendor/ng-dialog/css/ngDialog-theme-default.min.css' %}" rel="stylesheet">
 	<!-- Load CSS -->
 	<!-- Custom CSS -->
 	<link href="{% static 'css/main.css' %}" rel="stylesheet">
 	<link href="{% static 'css/map.css' %}" rel="stylesheet">
 	<link href="{% static 'css/navigation.css' %}" rel="stylesheet">
 	<link href="{% static 'css/footer.css' %}" rel="stylesheet">
-	<!-- Normalize CSS -->
-	<link href="{% static 'vendor/normalize-css/normalize.css' %}" rel="stylesheet">
-	<!-- ng-Dialog -->
-	<link href="{% static 'vendor/ng-dialog/css/ngDialog.min.css' %}" rel="stylesheet">
-	<link href="{% static 'vendor/ng-dialog/css/ngDialog-theme-default.min.css' %}" rel="stylesheet">
+
 	{% block extra_css %}{% endblock %}
 
 	{% endaddtoblock %}

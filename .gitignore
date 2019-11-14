@@ -14,6 +14,7 @@ air-quality-explorer/settings.py
 # ======================
 air-quality-explorer/static/vendor/*
 air-quality-explorer/static/dist/*
+air-quality-explorer/static/aq_dir/*
 # Exception to the rule
 !air-quality-explorer/static/dist/README.md
 

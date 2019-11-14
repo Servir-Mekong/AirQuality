@@ -1,0 +1,40 @@
+{% load cms_tags staticfiles %}
+<div id="aod_content_tab" class="tab-pane fade">
+    <p><b>[[ 'Select Parameter' | translate]]</b></p>
+    <select name="aod_run_table" id="aod_run_table" class="form-control">
+    </select>
+
+    <div class="hidden">
+        <label>
+            Select Frequency
+        </label>
+        <select  class="freq_table" name="aod_freq_table" id="aod_freq_table" style="width: 100%">
+
+        </select>
+        <br>
+        <label>
+            Select Run Date
+        </label>
+        <select  class="rd_table" name="aod_rd_table" id="aod_rd_table" style="width: 100%">
+
+        </select>
+    </div>
+
+    <p><b>[[ 'Select Variable' | translate]]</b></p>
+    <select class="form-control" name="aod_var_table" id="aod_var_table">
+
+    </select>
+    <p><b>[[ 'Range Min' | translate]]</b></p>
+    <input  type="text" class="form-control" id="aod_range-min" name="aod_range-min">
+
+    <p><b>[[ 'Range Max' | translate]]</b></p>
+    <input  type="text" class="form-control" id="aod_range-max" name="aod_range-max">
+
+    <p><b>Select a style</b></p>
+    <select class="form-control" name="aod_style_table" id="aod_style_table" style="width: 100%"></select>
+
+    <div id="opacity_aod" class="slider-width">
+        <p> [[ 'Opacity' | translate]]: <span id="OpacityVal2"></span></p>
+        <input id="opacity-slider-aod" type="text" style="width: 90%;left: 60px;"/>
+    </div>
+</div>

@@ -13,7 +13,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.views.generic import TemplateView
 from mapclient import controllers as controllers
-from mapclient import views, api
+from mapclient import views
+from mapclient import api as mapclient_api
 admin.autodiscover()
 
 urlpatterns = [
@@ -27,5 +28,6 @@ urlpatterns += i18n_patterns(
     #url(r'^$', TemplateView.as_view(template_name="map.html")),
     url(r'^$', views.index),
     url(r'^home/', views.index),
-    url(r'^mapviewer/', views.index)
+    url(r'^mapviewer/', views.index),
+    url(r'^api/mapclient/$', mapclient_api.api),
 )

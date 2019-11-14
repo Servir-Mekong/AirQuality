@@ -1,0 +1,52 @@
+{% load cms_tags staticfiles %}
+<div id="GEOS_content_tab" class="tab-pane fade  in active">
+    <p><b>[[ 'Select Parameter' | translate]]</b></p>
+    <select name="geos_run_table" id="geos_run_table" class="form-control">
+    </select>
+
+    <div class="hidden">
+        <label>
+            Select Frequency
+        </label>
+        <select  class="freq_table" name="geos_freq_table" id="geos_freq_table" style="width: 100%">
+
+        </select>
+        <br>
+        <label>
+            Select Run Date
+        </label>
+        <select  class="rd_table" name="geos_rd_table" id="geos_rd_table" style="width: 100%">
+
+        </select>
+    </div>
+
+    <p><b>[[ 'Select Variable' | translate]]</b></p>
+    <select class="form-control" name="geos_var_table" id="geos_var_table">
+
+    </select>
+    <p><b>[[ 'Range Min' | translate]]</b></p>
+    <input  type="text" class="form-control" id="geos_range-min" name="geos_range-min">
+
+    <p><b>[[ 'Range Max' | translate]]</b></p>
+    <input  type="text" class="form-control" id="geos_range-max" name="geos_range-max">
+
+    <p><b>Select a style</b></p>
+    <select class="form-control" name="geos_style_table" id="geos_style_table" style="width: 100%"></select>
+
+    <div id="opacity_geos" class="slider-width">
+        <p> [[ 'Opacity' | translate]]: <span id="OpacityVal3"></span></p>
+        <input id="opacity-slider-geos" type="text" style="width: 90%;left: 60px;"/>
+    </div>
+    <p id="info"></p>
+    <br>
+    <p> Note: Date and hour are enabled for GEOS datasets</p>
+    <p><b>Select a date</b></p>
+    <select class="form-control" name="date_table" id="date_table" style="width: 100%">
+
+    </select>
+    <p><b>Select an hour</b></p>
+    <select  class="form-control"  name="hour_table" id="hour_table" style="width: 100%">
+
+    </select>
+
+</div>

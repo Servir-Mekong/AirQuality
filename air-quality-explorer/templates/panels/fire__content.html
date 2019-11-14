@@ -1,0 +1,36 @@
+{% load cms_tags staticfiles %}
+<div id="fire_content_tab" class="tab-pane fade">
+    <div class="hidden">
+        <label>
+            Select Frequency
+        </label>
+        <select  class="freq_table" name="fire_freq_table" id="fire_freq_table" style="width: 100%">
+
+        </select>
+        <br>
+        <label>
+            Select Run Date
+        </label>
+        <select  class="rd_table" name="fire_rd_table" id="fire_rd_table" style="width: 100%">
+
+        </select>
+    </div>
+    <p><b>[[ 'Select Variable' | translate]]</b></p>
+    <select class="form-control" name="fire_var_table" id="fire_var_table">
+
+    </select>
+    <p><b>[[ 'Range Min' | translate]]</b></p>
+    <input  type="text" class="form-control" id="fire_range-min" name="fire_range-min">
+
+    <p><b>[[ 'Range Max' | translate]]</b></p>
+    <input  type="text" class="form-control" id="fire_range-max" name="fire_range-max">
+
+    <p><b>Select a style</b></p>
+    <select class="form-control" name="fire_style_table" id="fire_style_table" style="width: 100%"></select>
+
+    <div id="opacity_fire" class="slider-width">
+        <p> [[ 'Opacity' | translate]]: <span id="OpacityVal"></span></p>
+        <input id="opacity-slider" type="text" style="width: 90%;left: 60px;"/>
+    </div>
+
+</div>

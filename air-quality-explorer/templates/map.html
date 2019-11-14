@@ -14,166 +14,20 @@
         <strong>[[alertContent]]</strong>
     </div>
 
-
-    <div id="metadata" style="display: none"  data-var-options="{{var_options}}" data-wms-url="{{thredds_wms_url}}"  data-thredds-options="{{thredds_options}}"></div>
+    <div id="metadata" style="display: none"  data-var-options="{{var_options}}" data-style-options="{{style_options}}" data-wms-url="{{thredds_wms_url}}"  data-thredds-options="{{thredds_options}}"></div>
     <input type="text" name="point-lat-lon" id="point-lat-lon" hidden>
     <input type="text" name="poly-lat-lon" id="poly-lat-lon" hidden>
     <input type="text" name="shp-lat-lon" id="shp-lat-lon" hidden>
 
     <div class="map" id="map" ></div>
-    <!--Show Compare Modal-->
-    <!-- <div class="modal fade" id="compare-modal" tabindex="-1" role="dialog" aria-labelledby="comapre-modal-label">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title" id="compare-modal-label">Compare Layers</h5>
-                </div>
-                <div class="modal-body">
-                    <h6>Left Window Options</h6>
-                    <label>
-                        Select Parameter
-                    </label>
-                    <select  class="run_table" name="lrun_table" id="lrun_table" style="width: 100%">
-
-                    </select>
-                    <label>
-                        Select Run Date
-                    </label>
-                    <select  class="rd_table" name="lrd_table" id="lrd_table" style="width: 100%">
-
-                    </select>
-                    <br>
-                    <label>
-                        Select Variable
-                    </label>
-                    <select  class="var_table" name="lvar_table" id="lvar_table" style="width: 100%">
-
-                    </select>
-                    <br>
-                    <h6>Right Window Options</h6>
-                    <label>
-                        Select Parameter
-                    </label>
-                    <select  class="run_table" name="rrun_table" id="rrun_table" style="width: 100%">
-
-                    </select>
-                    <label>
-                        Select Run Date
-                    </label>
-                    <select  class="rd_table" name="rrd_table" id="rrd_table" style="width: 100%">
-
-                    </select>
-                    <br>
-                    <label>
-                        Select Variable
-                    </label>
-                    <select  class="var_table" name="rvar_table" id="rvar_table" style="width: 100%">
-
-                    </select>
-                    <br>
-                    <h6>General Options</h6>
-                    <label for="range-min" class="formText">Range Min</label>
-                    <input type="text" class="form-control" id="crange-min" name="range-min" style="width: 100%">
-                    <label for="range-max" class="formText">Range Max</label>
-                    <input type="text" class="form-control" id="crange-max" name="range-max" style="width: 100%">
-                    <label>
-                        Select a style
-                    </label>
-                    <select  class="style_table" name="cstyle_table" id="cstyle_table" style="width: 100%">
-
-                    </select>
-                    <br><br>
-                    <div>
-                        <button type="button" class="btn btn-primary" id="btn-add-compare">Add Layers</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-    <div id="compare-modal" class="model map-modal map-modal--vertical-smaller map-modal--horizontal-smaller" tabindex="-1" role="dialog" aria-labelledby="comapre-modal-label" style="display: none;">
-        <div class="map-modal__header">
-            <h2 class="map-modal__title">Compare Layers</h2>
-        </div>
-        <div class="map-modal__content">
-                <h4>Left Window Options</h4>
-                <label>
-                    Select Parameter
-                </label>
-                <select  class="run_table" name="lrun_table" id="lrun_table" style="width: 100%">
-
-                </select>
-                <label>
-                    Select Run Date
-                </label>
-                <select  class="rd_table" name="lrd_table" id="lrd_table" style="width: 100%">
-
-                </select>
-                <br>
-                <label>
-                    Select Variable
-                </label>
-                <select  class="var_table" name="lvar_table" id="lvar_table" style="width: 100%">
-
-                </select>
-                <hr>
-                <h4>Right Window Options</h4>
-                <label>
-                    Select Parameter
-                </label>
-                <select  class="run_table" name="rrun_table" id="rrun_table" style="width: 100%">
-
-                </select>
-                <label>
-                    Select Run Date
-                </label>
-                <select  class="rd_table" name="rrd_table" id="rrd_table" style="width: 100%">
-
-                </select>
-                <br>
-                <label>
-                    Select Variable
-                </label>
-                <select  class="var_table" name="rvar_table" id="rvar_table" style="width: 100%">
-                </select>
-                <hr>
-                <!-- <h4>General Options</h4>
-                <label for="range-min" class="formText">Range Min</label>
-                <input type="text" class="form-control" id="crange-min" name="range-min" style="width: 100%">
-                <label for="range-max" class="formText">Range Max</label>
-                <input type="text" class="form-control" id="crange-max" name="range-max" style="width: 100%">
-                <label>
-                    Select a style
-                </label>
-                <select  class="style_table" name="cstyle_table" id="cstyle_table" style="width: 100%">
-
-                </select> -->
-
-
-        </div>
-        <div class="map-modal__buttons">
-            <div>
-                <button type="button" class="btn" id="btn-close-compare">Close</button>
-            </div>
-            <div>
-                <button type="button" class="btn" id="btn-add-compare">Add Layers</button>
-            </div>
-        </div>
-    </div>
+    {% include "panels/compare_layers.html" %}
 
     <section>
         <div class="map-panel__area map-panel__sidebar" style="display: block;">
 
-                <!-- <div class="map-panel__header">
-                    <button class="trigger">
-                        <span class="fa fa-navicon"></span>
-                    </button>
-                </div> -->
-                <div class="map-panel__tabs">
+            <div class="map-panel__tabs">
                 <a href="#aqi_content_tab">
-                    <span class="map-panel__tabs--item active" data-target="aqi_content_tab">
+                    <span class="map-panel__tabs--item" data-target="aqi_content_tab">
                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
                             <path d="M255,0C114.75,0,0,114.75,0,255s114.75,255,255,255s255-114.75,255-255S395.25,0,255,0z M344.25,153
                     			c20.4,0,38.25,17.85,38.25,38.25s-17.85,38.25-38.25,38.25S306,211.65,306,191.25S323.85,153,344.25,153z M165.75,153
@@ -183,14 +37,14 @@
                         Air Quality Index
                     </span>
                 </a>
-                <a href="#particulate_content_tab">
+                <!-- <a href="#particulate_content_tab">
                     <span class="map-panel__tabs--item" data-target="particulate_content_tab">
                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
                             <path d="M188.12 210.74L142.86 256l45.25 45.25L233.37 256l-45.25-45.26zm113.13-22.62L256 142.86l-45.25 45.25L256 233.37l45.25-45.25zm-90.5 135.76L256 369.14l45.26-45.26L256 278.63l-45.25 45.25zM256 0C114.62 0 0 114.62 0 256s114.62 256 256 256 256-114.62 256-256S397.38 0 256 0zm186.68 295.6l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-28.29-28.29-45.25 45.25 33.94 33.94 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-33.94-33.94-45.26 45.26 28.29 28.29c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0L256 414.39l-28.29 28.29c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l28.29-28.29-45.25-45.26-33.94 33.94 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 33.94-33.94-45.25-45.25-28.29 28.29c-3.12 3.12-8.19 3.12-11.31 0L69.32 295.6c-3.12-3.12-3.12-8.19 0-11.31L97.61 256l-28.29-28.29c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l28.29 28.29 45.25-45.26-33.94-33.94-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 33.94 33.94 45.26-45.25-28.29-28.29c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0L256 97.61l28.29-28.29c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-28.29 28.29 45.26 45.25 33.94-33.94-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-33.94 33.94 45.25 45.26 28.29-28.29c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31L414.39 256l28.29 28.28a8.015 8.015 0 0 1 0 11.32zM278.63 256l45.26 45.25L369.14 256l-45.25-45.26L278.63 256z"> </path>
                         </svg>
                         Particulate Matter
                     </span>
-                </a>
+                </a> -->
                 <a href="#fire_content_tab">
                     <span class="map-panel__tabs--item" data-target="fire_content_tab">
                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 130 130" height="1em" xmlns="http://www.w3.org/2000/svg">
@@ -198,8 +52,8 @@
                         </svg>
                         Fire Locations
                     </span>
-                    </a>
-                    <a href="#aod_content_tab">
+                </a>
+                <a href="#aod_content_tab">
                     <span class="map-panel__tabs--item" data-target="coverage">
                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
                             <g>
@@ -282,154 +136,60 @@
                         </svg>
                         Aerosal Optical Depth
                     </span>
-                    </a>
-                    <a href="#forecast_content_tab">
+                </a>
+                <a href="#GEOS_content_tab">
+                    <span class="map-panel__tabs--item active" data-target="fire_content_tab">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M188.12 210.74L142.86 256l45.25 45.25L233.37 256l-45.25-45.26zm113.13-22.62L256 142.86l-45.25 45.25L256 233.37l45.25-45.25zm-90.5 135.76L256 369.14l45.26-45.26L256 278.63l-45.25 45.25zM256 0C114.62 0 0 114.62 0 256s114.62 256 256 256 256-114.62 256-256S397.38 0 256 0zm186.68 295.6l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-28.29-28.29-45.25 45.25 33.94 33.94 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-33.94-33.94-45.26 45.26 28.29 28.29c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0L256 414.39l-28.29 28.29c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l28.29-28.29-45.25-45.26-33.94 33.94 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 33.94-33.94-45.25-45.25-28.29 28.29c-3.12 3.12-8.19 3.12-11.31 0L69.32 295.6c-3.12-3.12-3.12-8.19 0-11.31L97.61 256l-28.29-28.29c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l28.29 28.29 45.25-45.26-33.94-33.94-16.97 16.97c-3.12 3.12-8.19 3.12-11.31 0l-11.31-11.31c-3.12-3.12-3.12-8.19 0-11.31l16.97-16.97-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 33.94 33.94 45.26-45.25-28.29-28.29c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0L256 97.61l28.29-28.29c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-28.29 28.29 45.26 45.25 33.94-33.94-16.97-16.97c-3.12-3.12-3.12-8.19 0-11.31l11.31-11.31c3.12-3.12 8.19-3.12 11.31 0l16.97 16.97 16.97-16.97c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31l-16.97 16.97 16.97 16.97c3.12 3.12 3.12 8.19 0 11.31l-11.31 11.31c-3.12 3.12-8.19 3.12-11.31 0l-16.97-16.97-33.94 33.94 45.25 45.26 28.29-28.29c3.12-3.12 8.19-3.12 11.31 0l11.31 11.31c3.12 3.12 3.12 8.19 0 11.31L414.39 256l28.29 28.28a8.015 8.015 0 0 1 0 11.32zM278.63 256l45.26 45.25L369.14 256l-45.25-45.26L278.63 256z"> </path>
+                        </svg>
+                        GEOS Data
+                    </span>
+                </a>
+                <a href="#forecast_content_tab">
                         <span class="map-panel__tabs--item" data-target="coverage">
                             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M560.02 32c-1.96 0-3.98.37-5.96 1.16L384.01 96H384L212 35.28A64.252 64.252 0 0 0 191.76 32c-6.69 0-13.37 1.05-19.81 3.14L20.12 87.95A32.006 32.006 0 0 0 0 117.66v346.32C0 473.17 7.53 480 15.99 480c1.96 0 3.97-.37 5.96-1.16L192 416l172 60.71a63.98 63.98 0 0 0 40.05.15l151.83-52.81A31.996 31.996 0 0 0 576 394.34V48.02c0-9.19-7.53-16.02-15.98-16.02zM224 90.42l128 45.19v285.97l-128-45.19V90.42zM48 418.05V129.07l128-44.53v286.2l-.64.23L48 418.05zm480-35.13l-128 44.53V141.26l.64-.24L528 93.95v288.97z"> </path>
                             </svg>
                             Air Quality Forecast
                         </span>
-                    </a>
-
-                    <!-- <span class="map-panel__tabs--item" data-target="coverage">
-                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M560.02 32c-1.96 0-3.98.37-5.96 1.16L384.01 96H384L212 35.28A64.252 64.252 0 0 0 191.76 32c-6.69 0-13.37 1.05-19.81 3.14L20.12 87.95A32.006 32.006 0 0 0 0 117.66v346.32C0 473.17 7.53 480 15.99 480c1.96 0 3.97-.37 5.96-1.16L192 416l172 60.71a63.98 63.98 0 0 0 40.05.15l151.83-52.81A31.996 31.996 0 0 0 576 394.34V48.02c0-9.19-7.53-16.02-15.98-16.02zM224 90.42l128 45.19v285.97l-128-45.19V90.42zM48 418.05V129.07l128-44.53v286.2l-.64.23L48 418.05zm480-35.13l-128 44.53V141.26l.64-.24L528 93.95v288.97z"> </path>
-                        </svg>
-                        Ture Color Imagery
-                    </span> -->
-                </div>
+                </a>
+            </div>
                 <div class="map-panel__content">
                     <div class="tab-content">
-                    <div id="aqi_content_tab" class="tab-pane fade in active">
-                        <p>Air Quality Index (AQI)</p>
-                        <!-- <p>Click on a point to determine the air quality index at your location</p> -->
-
-
+                        {% include "panels/air-index__content.html" %}
+                        {% include "panels/fire__content.html" %}
+                        {% include "panels/aod__content.html" %}
+                        {% include "panels/geos__content.html" %}
+                        {% include "panels/air-forecast__content.html" %}
                     </div>
-                    <div id="particulate_content_tab" class="tab-pane fade">
-
-                        <p>Particulate Matter</p>
-
-                    </div>
-                    <div id="fire_content_tab" class="tab-pane fade">
-                        <div class="hidden">
-                            <label>
-                                Select Frequency
-                            </label>
-                            <select  class="freq_table" name="fire_freq_table" id="fire_freq_table" style="width: 100%">
-
-                            </select>
-                            <br>
-                            <label>
-                                Select Run Date
-                            </label>
-                            <select  class="rd_table" name="fire_rd_table" id="fire_rd_table" style="width: 100%">
-
-                            </select>
-                        </div>
-                        <p><b>[[ 'Select Variable' | translate]]</b></p>
-                        <select class="form-control" name="fire_var_table" id="fire_var_table">
-
-                        </select>
-                        <p><b>[[ 'Range Min' | translate]]</b></p>
-                        <input  type="text" class="form-control" id="fire_range-min" name="fire_range-min">
-
-                        <p><b>[[ 'Range Max' | translate]]</b></p>
-                        <input  type="text" class="form-control" id="fire_range-max" name="fire_range-max">
-                        <div id="opacity_fire" class="slider-width">
-                            <p> [[ 'Opacity' | translate]]: <span id="OpacityVal"></span></p>
-                            <input id="opacity-slider" type="text" style="width: 90%;left: 60px;"/>
-                        </div>
-                    </div>
-
-                    <div id="aod_content_tab" class="tab-pane fade">
-                        <p><b>[[ 'Select Parameter' | translate]]</b></p>
-                        <select name="aod_run_table" id="aod_run_table" class="form-control">
-                        </select>
-
-                        <div class="hidden">
-                            <label>
-                                Select Frequency
-                            </label>
-                            <select  class="freq_table" name="aod_freq_table" id="aod_freq_table" style="width: 100%">
-
-                            </select>
-                            <br>
-                            <label>
-                                Select Run Date
-                            </label>
-                            <select  class="rd_table" name="aod_rd_table" id="aod_rd_table" style="width: 100%">
-
-                            </select>
-                        </div>
-
-                        <p><b>[[ 'Select Variable' | translate]]</b></p>
-                        <select class="form-control" name="aod_var_table" id="aod_var_table">
-
-                        </select>
-                        <p><b>[[ 'Range Min' | translate]]</b></p>
-                        <input  type="text" class="form-control" id="aod_range-min" name="aod_range-min">
-
-                        <p><b>[[ 'Range Max' | translate]]</b></p>
-                        <input  type="text" class="form-control" id="aod_range-max" name="aod_range-max">
-                        <div id="opacity_aod" class="slider-width">
-                            <p> [[ 'Opacity' | translate]]: <span id="OpacityVal2"></span></p>
-                            <input id="opacity-slider-aod" type="text" style="width: 90%;left: 60px;"/>
-                        </div>
-                    </div>
-                    <div id="forecast_content_tab" class="tab-pane fade">
-                        <p>Air Quality Forecast</p>
-
-                    </div>
-                    <div id="imagery_content_tab" class="tab-pane fade">
-                        <p>True color Imagery</p>
-                    </div>
-                </div>
                 </div>
         </div>
         <div class="map-panel__toggle">
-            <div id="toggle_layer_box" class="map-panel__toggle--panel" style="display: none;">
-                <p>Toggle layer visibility</p>
-                <ul class="toggles-list">
-                    <li class="toggle">
-                        <label class="switch_layer">
-                          <input id="btn_toggle_fire" type="checkbox" checked>
-                          <span class="slider_toggle round"></span>
-                        </label>
-                        <label>Fire Locations</label>
-                    </li>
-                    <li class="toggle">
-                        <label class="switch_layer">
-                          <input id="btn_toggle_aod" type="checkbox" checked>
-                          <span class="slider_toggle round"></span>
-                        </label>
-                        <label>Aerosol Optical Depth</label>
-                    </li>
-                </ul>
-            </div>
-            <div id="imagery_layer_box" class="map-panel__toggle--panel" style="display: none;">
-                <p>True Color Imagery</p>
-
-            </div>
-            <div id="legend_box" class="map-panel__toggle--panel" style="display: none;">
-                <p>Legend</p>
-
-            </div>
+            {% include "panels/panel__toggle.html" %}
 
             <div class="map-panel__tabs">
-                <span id="toggle_layers" class="map-panel__tabs--item" data-target="layers">
+                <span id="toggle_layers" class="map-panel__tabs--item active" data-target="layers">
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12.41 148.02l232.94 105.67c6.8 3.09 14.49 3.09 21.29 0l232.94-105.67c16.55-7.51 16.55-32.52 0-40.03L266.65 2.31a25.607 25.607 0 0 0-21.29 0L12.41 107.98c-16.55 7.51-16.55 32.53 0 40.04zm487.18 88.28l-58.09-26.33-161.64 73.27c-7.56 3.43-15.59 5.17-23.86 5.17s-16.29-1.74-23.86-5.17L70.51 209.97l-58.1 26.33c-16.55 7.5-16.55 32.5 0 40l232.94 105.59c6.8 3.08 14.49 3.08 21.29 0L499.59 276.3c16.55-7.5 16.55-32.5 0-40zm0 127.8l-57.87-26.23-161.86 73.37c-7.56 3.43-15.59 5.17-23.86 5.17s-16.29-1.74-23.86-5.17L70.29 337.87 12.41 364.1c-16.55 7.5-16.55 32.5 0 40l232.94 105.59c6.8 3.08 14.49 3.08 21.29 0L499.59 404.1c16.55-7.5 16.55-32.5 0-40z"></path>
                     </svg>
                     Layers
                 </span>
-                <span id="toggle_imagery" class="map-panel__tabs--item" data-target="layers">
+                <span id="toggle_download" class="map-panel__tabs--item" data-target="layers">
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    	<g>
+                    		<g id="file-download">
+                    			<path d="M395.25,153h-102V0h-153v153h-102l178.5,178.5L395.25,153z M38.25,382.5v51h357v-51H38.25z"/>
+                    		</g>
+                    	</g>
+                    </svg>
+                    Download
+                </span>
+                <!-- <span id="toggle_imagery" class="map-panel__tabs--item" data-target="layers">
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 50 50" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11,6.5H6v5v22H0v-33h34v6H11z M34,11.5H11v22v11h34v-33H34z"/>
                     </svg>
                     Imagery
-                </span>
+                </span> -->
                 <span id="toggle_legend" class="map-panel__tabs--item" data-target="layers">
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 350 350" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                         <g>
@@ -464,9 +224,7 @@
             </div>
         </div>
 </section>
-<!-- {% include "panels/legendbox.html" %} -->
 
 </div>
 
-</div>
 {% endblock main_container %}

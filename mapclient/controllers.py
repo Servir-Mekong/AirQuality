@@ -1,17 +1,23 @@
+"""Helper Functions for the Controllers Module"""
 import os
 import xml.etree.ElementTree as ET
 import json
 from collections import defaultdict
 import calendar
+from PIL import Image
+import numpy as np
 import requests
-from django.conf import settings
-from collections import defaultdict
-from django.shortcuts import render
-from django.core.urlresolvers import reverse
+import shapely.geometry
+import shapely
+import netCDF4
+import time
+from mapclient.config import THREDDS_CATALOG, THREDDS_wms, DATA_DIR, LOG_DIR
+from shapely.geometry import Polygon
+import logging
+from datetime import datetime
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from mapclient.config import THREDDS_CATALOG, THREDDS_wms, DATA_DIR, LOG_DIR
-import datetime
+from django.conf import settings
 
 def generate_variables_meta():
     """Generate Variables Metadata from the Var Info text"""
@@ -66,7 +72,10 @@ def gen_thredds_options():
     cat_response = requests.get(catalog_xml_url, verify=False)
 
     cat_tree = ET.fromstring(cat_response.content)
-
+    currentDay = datetime.now().strftime('%d')
+    currentMonth = datetime.now().strftime('%m')
+    currentYear = datetime.now().strftime('%Y')
+    d=currentYear+currentMonth+currentDay+'_forecast'
     for elem in cat_tree.iter():
         for k, v in elem.attrib.items():
             if 'title' in k:
@@ -76,7 +85,12 @@ def gen_thredds_options():
                 for ele in run_tree.iter():
                     for ke, va in ele.attrib.items():
                         if 'urlPath' in ke:
-                            if va.endswith('.nc'):
+
+                            if va.endswith('.nc') and d in va:
+                                tinf.setdefault(v, {}).setdefault('3daytoday', []).append(va)
+                            elif va.endswith('.nc') and d not in va and '_forecast' in va:
+                                tinf.setdefault(v, {}).setdefault('3dayrecent', []).append(va)
+                            elif va.endswith('.nc'):
                                 tinf.setdefault(v, {}).setdefault('monthly', []).append(va)
                         if 'title' in ke:
                             mo_xml_url = catalog_url + str(v) + '/'+str(va)+'/catalog.xml'
@@ -95,25 +109,44 @@ def get_styles():
     date_obj = {}
 
     color_opts = [
-        ('Rainbow', 'rainbow'),
-        ('TMP 1', 'tmp_2maboveground'),
-        ('TMP 2', 'dpt_2maboveground'),
-        ('SST-36', 'sst_36'),
-        ('Greyscale', 'greyscale'),
+        {'Rainbow': 'rainbow'},
+        {'TMP 1': 'tmp_2maboveground'},
+        {'TMP 2': 'dpt_2maboveground'},
+        {'SST-36': 'sst_36'},
+        {'Greyscale': 'greyscale'},
 
-        ('OCCAM', 'occam'),
-        ('OCCAM Pastel', 'occam_pastel-30'),
-        ('Red-Blue', 'redblue'),
-        ('NetCDF Viewer', 'ncview'),
-        ('ALG', 'alg'),
-        ('ALG 2', 'alg2'),
-        ('Ferret', 'ferret'),
-        ('Reflectivity', 'enspmm-refc'),
+        {'OCCAM': 'occam'},
+        {'OCCAM Pastel': 'occam_pastel-30'},
+        {'Red-Blue': 'redblue'},
+        {'NetCDF Viewer': 'ncview'},
+        {'ALG': 'alg'},
+        {'ALG 2': 'alg2'},
+        {'Ferret': 'ferret'},
+        {'Reflectivity': 'enspmm-refc'},
         # ('Probability', 'prob'),
         # ('White-Blue', whiteblue'),
         # ('Grace', 'grace'),
     ]
 
-    date_obj["colors"] = color_opts
+    date_obj = color_opts
 
-    return date_obj
+    return color_opts
+
+def get_time(freq, run_type, run_date):
+    # Empty list to store the timeseries values
+    ts = []
+    json_obj = {}
+
+    """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
+    infile = os.path.join(DATA_DIR, run_type, run_date)
+    nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
+    lis_var = nc_fid.variables
+    time = nc_fid.variables['time'][:]
+    for timestep, v in enumerate(time):
+        dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                  calendar=lis_var['time'].calendar)
+        time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+        ts.append(datetime.strftime(dt_str,'%Y-%m-%dT%H:%M:%SZ'))
+    ts.sort()
+    json_obj["times"] = ts
+    return json_obj

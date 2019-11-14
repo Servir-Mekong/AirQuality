@@ -130,7 +130,7 @@ p {
 
 .map-modal--horizontal-smaller {
     margin: 13rem auto;
-    width: 700px;
+    width: 50%;
 }
 
 .map-modal__header {
@@ -184,6 +184,23 @@ p {
 .map-modal__buttons #btn-add-compare{
     background-color: #a8c45d;
 }
+.download-label{
+    margin-top: 10px;
+    margin-left: 5px;
+}
+.btn-download{
+    background-color: #a8c45d;
+    font-size: 14px;
+    padding: 5px 5px 0 6px;
+    color: #FFF;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.btn-download:hover{
+    background-color: #F0B27A;
+    color: #753636;
+}
+
 .map-modal__title {
     flex: 1;
     text-align: center;

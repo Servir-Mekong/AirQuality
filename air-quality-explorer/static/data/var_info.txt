@@ -26,5 +26,21 @@ Total_FRP_Fires_Veg_TERRA_Morning|fire|Total Fire Radiative Power - Veg. MODIS T
 Number_Of_Fires_Veg_AQUA_Morning|fire|Number of Fires - Veg., MODIS AQUA|-|0|50
 Mean_FRP_Fires_Veg_AQUA_Morning|fire|Mean Fire Radiative Power - Veg., MODIS AQUA|MW|0|100
 Total_FRP_Fires_Veg_AQUA_Morning|fire|Total Fire Radiative Power - Veg. MODIS AQUA|MW|0|100
-tavg1|geos_tavg1_2d_slv_nx|tavg1 Average|Unitless|0|1
-tavg3|geos_tavg3_2d_slv_nx|tavg3 Median|Unitless|0|1
+BCSMASS|geos_tavg3_2d_aer_Nx|Black Carbon Surface Mass Concentration|mcg|0|0.0000000001
+TOTEXTTAU|geos_tavg3_2d_aer_Nx|Total Aerosol Extinction AOT|kg|0|1
+NISMASS25|geos_tavg3_2d_aer_Nx|Nitrate Surface Mass Concentration|mcg|0|0.0000000005
+DUSMASS25|geos_tavg3_2d_aer_Nx|Dust Surface Mass Concentration|mcg|0|0.0000000005
+OCSMASS|geos_tavg3_2d_aer_Nx|Organic Carbon Surface Mass Concentration|mcg|0|0.000000001
+DUSMASS25|geos_tavg3_2d_aer_Nx|Dust Surface Mass Concentration|mcg|0|0.0000000005
+SO2SMASS|geos_tavg3_2d_aer_Nx|SO2 Surface Mass Concentration|mcg|0|0.0000000005
+SO4SMASS|geos_tavg3_2d_aer_Nx|SO4 Surface Mass Concentration|mcg|0|0.0000000005
+SSSMASS25|geos_tavg3_2d_aer_Nx|SS Surface Mass Concentration|mcg|0|0.0000000005
+U10M|geos_tavg1_2d_slv_Nx|10-meter_eastward_wind|Unitless|0|1
+V10M|geos_tavg1_2d_slv_Nx|10-meter_northward_wind|Unitless|0|1
+PS|geos_tavg1_2d_slv_Nx|surface_pressure|Unitless|0|1
+T10M|geos_tavg1_2d_slv_Nx|10-meter_air_temperature|Unitless|0|1
+T850|geos_tavg1_2d_slv_Nx|air_temperature_at_850_hPa|Unitless|0|0.0000000001
+T500|geos_tavg1_2d_slv_Nx|air_temperature_at_500_hPa|Unitless|0|0.0000000001
+QV10M|geos_tavg1_2d_slv_Nx|10-meter_specific_humidity|Unitless|0|1
+Q850|geos_tavg1_2d_slv_Nx|specific_humidity_at_850_hPa|Unitless|0|1
+Q500|geos_tavg1_2d_slv_Nx|specific_humidity_at_500_hPa|Unitless|0|1

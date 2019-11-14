@@ -11,7 +11,7 @@ For a DATA_DIR base named /srv/aqx, with the parameters fire, aod_terra and aod_
 
 DATA_DIR = '/home/tethys/aq_dir/'
 
-LOG_DIR = '/home/tethys/logs/'
+LOG_DIR = '/home/tethys/aq_dir/'
 
 """
 THREDDS_CATALOG: Indicates the base URL for the directory containing the different Parameters
