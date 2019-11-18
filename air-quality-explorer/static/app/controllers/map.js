@@ -97,9 +97,11 @@
 			$('#imagery_layer_box').css("display", "none");
 			$('#legend_box').css("display", "none");
 			$('#download_box').css("display", "none");
+			$('#print_box').css("display", "none");
 			$('#toggle_imagery').removeClass("active");
 			$('#toggle_legend').removeClass("active");
 			$('#toggle_download').removeClass("active");
+			$('#toggle_print').removeClass("active");
 			if($('#toggle_layer_box').css("display") === "none"){
 				$('#toggle_layer_box').css("display", "block");
 				$(this).addClass("active")
@@ -113,9 +115,11 @@
 			$('#toggle_layer_box').css("display", "none");
 			$('#legend_box').css("display", "none");
 			$('#imagery_layer_box').css("display", "none");
+			$('#print_box').css("display", "none");
 			$('#toggle_layers').removeClass("active");
 			$('#toggle_legend').removeClass("active");
 			$('#toggle_imagery').removeClass("active");
+			$('#toggle_print').removeClass("active");
 			if($('#download_box').css("display") === "none"){
 				$('#download_box').css("display", "block");
 				$(this).addClass("active")
@@ -129,9 +133,11 @@
 			$('#toggle_layer_box').css("display", "none");
 			$('#legend_box').css("display", "none");
 			$('#download_box').css("display", "none");
+			$('#print_box').css("display", "none");
 			$('#toggle_layers').removeClass("active");
 			$('#toggle_legend').removeClass("active");
 			$('#toggle_download').removeClass("active");
+			$('#toggle_print').removeClass("active");
 			if($('#imagery_layer_box').css("display") === "none"){
 				$('#imagery_layer_box').css("display", "block");
 				$(this).addClass("active")
@@ -145,14 +151,35 @@
 			$('#toggle_layer_box').css("display", "none");
 			$('#imagery_layer_box').css("display", "none");
 			$('#download_box').css("display", "none");
+			$('#print_box').css("display", "none");
 			$('#toggle_layers').removeClass("active");
 			$('#toggle_imagery').removeClass("active");
 			$('#toggle_download').removeClass("active");
+			$('#toggle_print').removeClass("active");
 			if($('#legend_box').css("display") === "none"){
 				$('#legend_box').css("display", "block");
 				$(this).addClass("active")
 			}else{
 				$('#legend_box').css("display", "none");
+				$(this).removeClass("active")
+			}
+
+		});
+
+		$('#toggle_print').click(function(){
+			$('#toggle_layer_box').css("display", "none");
+			$('#imagery_layer_box').css("display", "none");
+			$('#download_box').css("display", "none");
+			$('#legend_box').css("display", "none");
+			$('#toggle_layers').removeClass("active");
+			$('#toggle_imagery').removeClass("active");
+			$('#toggle_download').removeClass("active");
+			$('#toggle_legend').removeClass("active");
+			if($('#print_box').css("display") === "none"){
+				$('#print_box').css("display", "block");
+				$(this).addClass("active")
+			}else{
+				$('#print_box').css("display", "none");
 				$(this).removeClass("active")
 			}
 
@@ -813,6 +840,22 @@
 
 		selectAdm.addTo(map);
 
+		var customActionToPrint = function (context, mode) {
+			return function () {
+				//window.alert("Please check if any overlays are selected before you print..");
+				context._printLandscape(mode);
+			}
+		}
+
+		L.control.browserPrint({
+			title: 'Air quality Print',
+			documentTitle: 'Air quality App with data',
+			printLayer: wms_layer,
+			closePopupsOnPrint: false,
+			printModes: [L.control.browserPrint.mode("Landscape", "Landscape", "A4", customActionToPrint, false)],
+			manualMode: false
+		}).addTo(map);
+
 		var alterDate = function(delta) {
 			var date = $.datepicker.parseDate(DATE_FORMAT, $date.val());
 
@@ -929,6 +972,7 @@
 				$("#plotter").addClass('hidden');
 
 			};
+			//document.getElementsByClassName("leaflet-control-browser-print").style.display = "none";
 
 			$(function() {
 				//Fire options
@@ -1352,6 +1396,13 @@
 						$("#legend-expand").css("display","inline-block");
 					}
 				});
+				$("#btn-print").click(function () {
+					var modeToUse = L.control.browserPrint.mode.auto();
+					map.printControl.print(modeToUse);
+				});
+
+				$("a[title='Air quality Print']").css("display", "none");
+
 				$("#tab-fire").click(function () {
 					$("#legend-tab-fire").css("display", "block");
 					$("#legend-tab-aod").css("display", "none");
