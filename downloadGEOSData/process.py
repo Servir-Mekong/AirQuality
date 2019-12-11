@@ -8,12 +8,15 @@ from sklearn.externals import joblib
 from helper import *
 from datetime import datetime,timedelta
 import json
+import sys
 warnings.filterwarnings('ignore')
 
 #method that uses machine learning algorithm. Make sure models folder exists with the 10 .pkl files
 #this method uses the data frmae that is generated after adding and scaling the variables in the combined file.
 def ensemble(dataframe, models_folder_path):
   df_master = dataframe
+  index=np.where(np.isnan(df_master['T850'].values))
+  print(df_master.max())
   col = ['Lat',	'Lon', 'PS', 'QV10M', 'Q500', 'Q850', 'T10M',	'T500',	'T850',	'WIND',	'BCSMASS',
         'DUSMASS25',	'OCSMASS',	'SO2SMASS',	'SO4SMASS',	'SSSMASS25',	'TOTEXTTAU',	'Date_Time']
   prediction = []
@@ -39,7 +42,15 @@ def ensemble(dataframe, models_folder_path):
 currentDay = datetime.now().strftime('%d')
 currentMonth = datetime.now().strftime('%m')
 currentYear = datetime.now().strftime('%Y')
+if len(sys.argv)==2:
+    date_str = sys.argv[1]
+    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+    currentDay = date_obj.strftime('%d')
+    currentMonth = date_obj.strftime('%m')
+    currentYear = date_obj.strftime('%Y')
+
 datestr=currentYear+currentMonth+currentDay
+#datestr='20191201'
 #load config params
 f = open('downloadGEOSDataParams.json')
 config = json.load(f)
@@ -67,8 +78,10 @@ if path.exists('final_combined.nc'):
     df['SO4SMASS']=1.0e9*df['SO4SMASS']
     df['SSSMASS25']=1.0e9*df['SSSMASS25']
     # Get index where values are missing.
+    
     index=np.where(np.isnan(df['T850'].values))
-    # Call machine learning code for each prediction
+    
+   # Call machine learning code for each prediction
     df_master=ensemble(df.fillna(-9999.0), 'models')
     #prediction[index]=np.nan
     df_master.iloc[index[0],:]=np.nan
@@ -87,7 +100,7 @@ if path.exists('final_combined.nc'):
     model9_prediction = df_master['model_9'].values.reshape(141,164,24).transpose((2,0,1))
     model10_prediction = df_master['model_10'].values.reshape(141,164,24).transpose((2,0,1))
     # Put this data back into the xarray dataset since all the coordinates are already defined there.
-    forcing['model_prediction']=xr.DataArray(model_prediction,dims=("time","lat","lon"))
+    forcing['PM25']=xr.DataArray(model_prediction,dims=("time","lat","lon"))
     forcing['model_1']=xr.DataArray(model1_prediction,dims=("time","lat","lon"))
     forcing['model_2']=xr.DataArray(model2_prediction,dims=("time","lat","lon"))
     forcing['model_3']=xr.DataArray(model3_prediction,dims=("time","lat","lon"))
@@ -98,12 +111,12 @@ if path.exists('final_combined.nc'):
     forcing['model_8']=xr.DataArray(model8_prediction,dims=("time","lat","lon"))
     forcing['model_9']=xr.DataArray(model9_prediction,dims=("time","lat","lon"))
     forcing['model_10']=xr.DataArray(model10_prediction,dims=("time","lat","lon"))
-    # Add metadata to variable, you may do it here.
-    forcing['model_prediction'].attrs = { 'long_name':'air_quality_index_pm25','units':'my_units','description':'ensemble ML model' }
+    # Add metadata to variable, you may do it here.    
+    forcing['PM25'].attrs = { 'long_name':'air_quality_index_pm25','units':'my_units','description':'ensemble ML model' }
     # Now write this data to file.
     if not os.path.exists(config['dataDownloadPath']):
        os.makedirs(config['dataDownloadPath'])
-    forcing.to_netcdf(path=config['dataDownloadPath']+datestr+'.nc')
+    forcing.to_dataframe().to_xarray().to_netcdf(path=config['dataDownloadPath']+datestr+'.nc')
     if os.path.exists('slv_subset_file.nc'):
         os.remove('slv_subset_file.nc')
     if os.path.exists('aer_subset_file.nc'):

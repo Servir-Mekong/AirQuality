@@ -14,12 +14,12 @@ import sys
 import shutil
 f = open('downloadGEOSDataParams.json')
 config = json.load(f)
-if os.path.exists('../slv_subset_file.nc'):
-    os.remove('../slv_subset_file.nc')
-if os.path.exists('../aer_subset_file.nc'):
-    os.remove('../aer_subset_file.nc')
-if os.path.exists('../final_combined.nc'):
-    os.remove('../final_combined.nc')
+if os.path.exists('slv_subset_file.nc'):
+    os.remove('slv_subset_file.nc')
+if os.path.exists('aer_subset_file.nc'):
+    os.remove('aer_subset_file.nc')
+if os.path.exists('final_combined.nc'):
+    os.remove('final_combined.nc')
 if config["logMode"] == "DEBUG":
    logging.basicConfig(level=logging.DEBUG,
                         filename=config["logFile"],
@@ -45,7 +45,7 @@ if len(sys.argv)==2:
        print('Please enter date in YYYY-MM-DD format')
        logging.error('Date was not in YYYY-MM-DD format')
        sys.exit()
-yDay=yesterday.strftime('%d')
+yDay=yesterday.strftime("%Y%m%d")
 datestr=currentYear+currentMonth+currentDay
 #bounds to subset the region
 lat_bnds, lon_bnds = [5, 40], [59, 110]
@@ -78,7 +78,7 @@ def download_files(links):
     #GEOS.fp.fcst.tavg1_2d_slv_Nx.20191004_00+20191004_0030.V01.nc4
     logInfo("Download 3 hour data tavg3_2d_aer_Nx and tavg1_2d_slv_Nx")
     for link in links:
-       if 'tavg3_2d_aer_Nx' in link and currentYear+currentMonth+yDay+'_2230' not in link:
+       if 'tavg3_2d_aer_Nx' in link and yDay+'_2230' not in link:
            d1=link.split('.')[-3] #20191004_00+20191004_0030
            d2=d1.split('+')[1]    #20191004_0030
            d3=d2.split('_')       #20191004
@@ -199,11 +199,11 @@ combine_data(direc1,os.path.join(combined1,datestr+'.nc'),process_1hour)
 
 logInfo('Deleting files from 1 hour directory')
 
-remove_directory(config["oneHourDataPath"])
+#remove_directory(config["oneHourDataPath"])
 
 logInfo('Deleting files from 3 hour directory')
 
-remove_directory(config["threeHourDataPath"])
+#remove_directory(config["threeHourDataPath"])
 
 logInfo('---------------------------END---------------------------------')
 
