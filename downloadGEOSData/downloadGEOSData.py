@@ -14,12 +14,6 @@ import sys
 import shutil
 f = open('downloadGEOSDataParams.json')
 config = json.load(f)
-if os.path.exists('slv_subset_file.nc'):
-    os.remove('slv_subset_file.nc')
-if os.path.exists('aer_subset_file.nc'):
-    os.remove('aer_subset_file.nc')
-if os.path.exists('final_combined.nc'):
-    os.remove('final_combined.nc')
 if config["logMode"] == "DEBUG":
    logging.basicConfig(level=logging.DEBUG,
                         filename=config["logFile"],

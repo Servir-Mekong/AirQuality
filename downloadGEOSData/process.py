@@ -8,8 +8,22 @@ from sklearn.externals import joblib
 from helper import *
 from datetime import datetime,timedelta
 import json
+import logging
 import sys
 warnings.filterwarnings('ignore')
+f = open('downloadGEOSDataParams.json')
+#load config params
+config = json.load(f)
+if config["logMode"] == "DEBUG":
+   logging.basicConfig(level=logging.DEBUG,
+                        filename=config["logFile"],
+                        format='%(message)s')
+if config["logMode"] == "INFO":
+   logging.basicConfig(level=logging.INFO,
+                        filename=config["logFile"],
+                        format='%(message)s')
+def logInfo(message):
+    logging.info(str(datetime.now())[:19]+' '+message)
 
 #method that uses machine learning algorithm. Make sure models folder exists with the 10 .pkl files
 #this method uses the data frmae that is generated after adding and scaling the variables in the combined file.
@@ -37,25 +51,16 @@ def ensemble(dataframe, models_folder_path):
   #Get eman ensemble prediction
   df_master['Ensemble'] = prediction/10
   return df_master
+logInfo('Process.py triggered')
+date_str = sys.argv[1]
+date_obj = datetime.strptime(date_str, '%Y%m%d')
+datestr = date_obj.strftime('%Y-%m-%d')
 
-#get current date
-currentDay = datetime.now().strftime('%d')
-currentMonth = datetime.now().strftime('%m')
-currentYear = datetime.now().strftime('%Y')
-if len(sys.argv)==2:
-    date_str = sys.argv[1]
-    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-    currentDay = date_obj.strftime('%d')
-    currentMonth = date_obj.strftime('%m')
-    currentYear = date_obj.strftime('%Y')
-
-datestr=currentYear+currentMonth+currentDay
 #datestr='20191201'
-#load config params
-f = open('downloadGEOSDataParams.json')
-config = json.load(f)
+logInfo('Downloading data for '+datestr)
 #If combined file exists, we run this script
 if path.exists('final_combined.nc'):
+    logInfo('Combined file available, processing....')
     # Read in to xarray
     forcing=xr.open_dataset('final_combined.nc')
     # Convert to a pandas data frame
@@ -80,7 +85,8 @@ if path.exists('final_combined.nc'):
     # Get index where values are missing.
     
     index=np.where(np.isnan(df['T850'].values))
-    
+    logInfo('Calling machine learning scripts....')
+
    # Call machine learning code for each prediction
     df_master=ensemble(df.fillna(-9999.0), 'models')
     #prediction[index]=np.nan
@@ -99,6 +105,8 @@ if path.exists('final_combined.nc'):
     model8_prediction = df_master['model_8'].values.reshape(141,164,24).transpose((2,0,1))
     model9_prediction = df_master['model_9'].values.reshape(141,164,24).transpose((2,0,1))
     model10_prediction = df_master['model_10'].values.reshape(141,164,24).transpose((2,0,1))
+    logInfo('Reshaping....')
+
     # Put this data back into the xarray dataset since all the coordinates are already defined there.
     forcing['PM25']=xr.DataArray(model_prediction,dims=("time","lat","lon"))
     forcing['model_1']=xr.DataArray(model1_prediction,dims=("time","lat","lon"))
@@ -110,13 +118,19 @@ if path.exists('final_combined.nc'):
     forcing['model_7']=xr.DataArray(model7_prediction,dims=("time","lat","lon"))
     forcing['model_8']=xr.DataArray(model8_prediction,dims=("time","lat","lon"))
     forcing['model_9']=xr.DataArray(model9_prediction,dims=("time","lat","lon"))
-    forcing['model_10']=xr.DataArray(model10_prediction,dims=("time","lat","lon"))
+    forcing['model_10']=xr.DataArray(model10_prediction,dims=("time","lat","lon"))   
+    logInfo('Added data to final netcdf....')
+
     # Add metadata to variable, you may do it here.    
     forcing['PM25'].attrs = { 'long_name':'air_quality_index_pm25','units':'my_units','description':'ensemble ML model' }
     # Now write this data to file.
+    logInfo("Place netCDF in the GEOS folder if it exists....")
+
     if not os.path.exists(config['dataDownloadPath']):
        os.makedirs(config['dataDownloadPath'])
-    forcing.to_dataframe().to_xarray().to_netcdf(path=config['dataDownloadPath']+datestr+'.nc')
+    forcing.to_dataframe().to_xarray().to_netcdf(path=config['dataDownloadPath']+date_str+'.nc')
+    logInfo("Delete unnecessary directories")
+
     if os.path.exists('slv_subset_file.nc'):
         os.remove('slv_subset_file.nc')
     if os.path.exists('aer_subset_file.nc'):
@@ -124,4 +138,5 @@ if path.exists('final_combined.nc'):
     if os.path.exists('final_combined.nc'):
         os.remove('final_combined.nc')
 else:
+    logInfo("Combined file does not exist, cannot process data for "+datestr+".")
     print("Combined file does not exist, cannot process data for "+datestr+".")
