@@ -76,12 +76,13 @@ if path.exists('final_combined.nc'):
     df['Q850']=1000.*df['Q850']
     df['Lon']=df['lonArray']
     df['Lat']=df['latArray']
-    df['BCSMASS']=1.0e9*df['BCSMASS']
-    df['DUSMASS25']=1.0e9*df['DUSMASS25']
-    df['OCSMASS']=1.0e9*df['OCSMASS']
-    df['SO2SMASS']=1.0e9*df['SO2SMASS']
-    df['SO4SMASS']=1.0e9*df['SO4SMASS']
-    df['SSSMASS25']=1.0e9*df['SSSMASS25']
+    df['BCSMASS']=df['BCSMASS']*1000000000.0
+    df['DUSMASS25']=df['DUSMASS25']*1000000000.0
+    df['OCSMASS']=df['OCSMASS']*1000000000.0
+    df['SO2SMASS']=df['SO2SMASS']*1000000000.0
+    df['SO4SMASS']=df['SO4SMASS']*1000000000.0
+    df['SSSMASS25']=df['SSSMASS25']*1000000000.0
+
     # Get index where values are missing.
     
     index=np.where(np.isnan(df['T850'].values))
@@ -92,6 +93,7 @@ if path.exists('final_combined.nc'):
     #prediction[index]=np.nan
     df_master.iloc[index[0],:]=np.nan
     prediction=df_master['Ensemble']
+
     # Now we need to write the data to the netcdf file.
     # "prediciton" should be an array (or data frame with values that are an array) with NX*NY*24 elements
     model_prediction = prediction.values.reshape(141,164,24).transpose((2,0,1))
@@ -118,7 +120,15 @@ if path.exists('final_combined.nc'):
     forcing['model_7']=xr.DataArray(model7_prediction,dims=("time","lat","lon"))
     forcing['model_8']=xr.DataArray(model8_prediction,dims=("time","lat","lon"))
     forcing['model_9']=xr.DataArray(model9_prediction,dims=("time","lat","lon"))
-    forcing['model_10']=xr.DataArray(model10_prediction,dims=("time","lat","lon"))   
+    forcing['model_10']=xr.DataArray(model10_prediction,dims=("time","lat","lon"))
+    forcing['BC_MLPM25']=forcing['PM25']-2.5+(0.11 * forcing['PM25'])
+    forcing['BCSMASS']=forcing['BCSMASS']*1000000000.0
+    forcing['DUSMASS25']=forcing['DUSMASS25']*1000000000.0
+    forcing['OCSMASS']=forcing['OCSMASS']*1000000000.0
+    forcing['SO2SMASS']=forcing['SO2SMASS']*1000000000.0
+    forcing['SO4SMASS']=forcing['SO4SMASS']*1000000000.0
+    forcing['SSSMASS25']=forcing['SSSMASS25']*1000000000.0
+    forcing['GEOSPM25']=1.375*forcing['SO4SMASS']+1.8*forcing['OCSMASS']+forcing['BCSMASS']+forcing['DUSMASS25']+forcing['SSSMASS25']
     logInfo('Added data to final netcdf....')
 
     # Add metadata to variable, you may do it here.    
@@ -128,7 +138,20 @@ if path.exists('final_combined.nc'):
 
     if not os.path.exists(config['dataDownloadPath']):
        os.makedirs(config['dataDownloadPath'])
-    forcing.to_dataframe().to_xarray().to_netcdf(path=config['dataDownloadPath']+date_str+'.nc')
+    forcing_df=forcing.to_dataframe()
+    forcing_xr=forcing_df.to_xarray()
+    forcing_xr['PM25'].attrs = { 'long_name':'PM2.5','units':'\u03BCg/m\u00b3','description':'ML model PM2.5' }
+    forcing_xr['BC_MLPM25'].attrs = { 'long_name':'BC_ML_PM2.5','units':'\u03BCg/m\u00b3','description':'Bias corrected ML model PM2.5' }
+    forcing_xr['GEOSPM25'].attrs = { 'long_name':'GEOS PM2.5','units':'\u03BCg/m\u00b3','description':'GEOS PM2.5' }
+    forcing_xr['WIND'].attrs = { 'long_name':'WIND','units':'m/s','description':'WIND' }
+    forcing_xr['T10M'].attrs = { 'long_name':'T10M','units':'kelvin','description':'T10M' }
+    forcing_xr['SSSMASS25'].attrs = { 'long_name':'SSSMASS25','units':'\u03BCg/m\u00b3','description':'SSSMASS25' }
+    forcing_xr['SO4SMASS'].attrs = { 'long_name':'SO4SMASS','units':'\u03BCg/m\u00b3','description':'SO4SMASS' }
+    forcing_xr['SO2SMASS'].attrs = { 'long_name':'SO2SMASS','units':'\u03BCg/m\u00b3','description':'SO2SMASS' }
+    forcing_xr['DUSMASS25'].attrs = { 'long_name':'DUSMASS25','units':'\u03BCg/m\u00b3','description':'DUSMASS25' }
+    forcing_xr['TOTEXTTAU'].attrs = { 'long_name':'TOTEXTTAU','units':'\u03BCg/m\u00b3','description':'TOTEXTTAU' }
+    forcing_xr['BCSMASS'].attrs = { 'long_name':'BCSMASS','units':'\u03BCg/m\u00b3','description':'BCSMASS' }
+    forcing_xr.to_netcdf(path=config['dataDownloadPath']+date_str+'.nc')
     logInfo("Delete unnecessary directories")
 
     if os.path.exists('slv_subset_file.nc'):
