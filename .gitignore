@@ -4,9 +4,9 @@
 *.pyc
 credentials/
 static/*
-# Exception to the rule
+# Setting and  config files
 air-quality-explorer/settings.py
-
+mapclient/config.py
 # Unused templates
 # ======================
 

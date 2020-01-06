@@ -35,7 +35,8 @@
 		thredds_options,
 		stations,
 		thredds_urls,
-		threddss_wms_url;
+		threddss_wms_url,
+		markersLayer;
 
 		$modalCompare = $("#compare-modal");
 		var $meta_element = $("#metadata");
@@ -106,6 +107,14 @@
 			else {
 				tdWmsGEOSLayer.setOpacity(0);
 				$("#opacity_geos").css("display","none");
+			}
+		});
+		$("#btn_toggle_stations").on('change', function() {
+			if ($(this).is(':checked')) {
+				map.addLayer(markersLayer);
+			}
+			else {
+				map.removeLayer(markersLayer);
 			}
 		});
 
@@ -454,8 +463,6 @@
 						overlays[l].redraw();
 					}
 				}
-
-				console.log(result);
 				stations = result;
 				addStations();
 			}), function (error){
@@ -590,7 +597,7 @@
 		function addStations(){
 			//markersLayer.clearLayers();
 			var icon_src;
-			var markersLayer = L.featureGroup().addTo(map);
+			markersLayer = L.featureGroup().addTo(map);
 
 
 			for (var i = 0; i < stations.length; ++i) {
@@ -670,7 +677,6 @@
 
 		function markerOnClick(e) {
 			var attributes = e.layer;
-			console.log(attributes);
 			int_type = "Station";
 			$("#station").val(attributes.name+','+attributes.lat+','+attributes.lon);
 			$("#station_name").text(attributes.name);
@@ -686,14 +692,10 @@
 		add_wms = function(run_type,freq,run_date,var_type,rmin,rmax,styling,time = ""){
 
 			var wmsUrl = threddss_wms_url+run_date;
-			console.log(wmsUrl);
-			console.log(threddss_wms_url);
-			console.log(run_date);
 			wms_layer=wmsUrl;
 			run_type = run_type.toUpperCase();
 			if(run_type === 'FIRE'){
 				if(map.hasLayer(tdWmsFireLayer)){
-					console.log('Fire is removed');
 					map.removeLayer(tdWmsFireLayer);
 				}
 			}else if(run_type === 'GEOS_TAVG1_2D_SLV_NX' || run_type === 'GEOS_TAVG3_2D_AER_NX'){
@@ -987,7 +989,6 @@
 		var today = new Date();
 		var day = new Date(today.getTime());
 		day = $scope.selectedDate;
-		console.log("DAY  " + $scope.selectedDate)
 
 		var DATE_FORMAT = 'dd.mm.yy';
 		var strToDateUTC = function(str) {
@@ -1366,7 +1367,6 @@
 					var parameter_url = rd_type.slice(0, -17);
 					var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
 
-					console.log(parameter_url);
 					//var datetime = "201801";
 					var rd_type = parameter_url + "."+ datetime +".MEKONG.nc";
 					var var_type = ($("#aod_var_table option:selected").val());
@@ -1455,7 +1455,6 @@
 					$("#hour_table").html('');
 					var freq = ($("#geos_freq_table option:selected").val());
 					var run_type = ($("#geos_run_table option:selected").val());
-					console.log(rd_type)
 					var parameters = {
 						run_type: run_type,
 						freq: freq,
@@ -1465,7 +1464,6 @@
 					.then(function (result){
 						var times = result["times"];
 						time_global = times[0];
-						console.log(time_global);
 						times.forEach(function (time, i) {
 							var opt = new Option(time, time);
 							$("#hour_table").append(opt);
@@ -1611,7 +1609,6 @@
 					var parameter_url = "tethys/MK_AQX/fire/";
 					var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
 
-					console.log(datetime);
 					//var datetime = "201801";
 					var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
 					var var_type = ($("#fire_var_table option:selected").val());
