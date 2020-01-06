@@ -1,7 +1,24 @@
 {% load cms_tags staticfiles %}
 <div id="aqi_content_tab" class="tab-pane fade">
-    <p>Air Quality Index (AQI)</p>
-    <!-- <p>Click on a point to determine the air quality index at your location</p> -->
 
+    <!-- <p>Click on a point to determine the air quality index at your location</p> -->
+    <!-- <p><b>Parameters</b></p>
+    <select class="form-control" name="air_parameter" id="air_parameter"></select> -->
+    <table style="width:100%;">
+        <tr>
+            <td style="width:30%; padding: 2%;">
+                <img id="aqi_img" src="" alt="" style="width: 100px;">
+            </td>
+            <td style="width:70%; padding: 2%;">
+                <b id="station_name"></b><br>
+                <p id="obs_date"></p>
+                <h3 id="aqi_txt"></h3>
+            </td>
+        </tr>
+        <tr colspan="2">
+            <small><b>Data provided by</b> <a href="http://air4thai.pcd.go.th/webV2/">Thailand Pollution Control Department</a></small>
+        </tr>
+
+    </table>
 
 </div>

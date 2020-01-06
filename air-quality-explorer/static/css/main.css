@@ -14,6 +14,27 @@ h1, h2, h3, h4, h5, h6 {
 b, strong {
     font-weight: 600;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #CFCFCF;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
 .map {
     height: 100%;
     width: 100%;
@@ -733,11 +754,10 @@ p {
 }
 
 .map-panel__area {
-    padding: 10px;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    z-index: 999;
-    padding-bottom: 30px;
+    z-index: 999
 }
 
 .map-panel__header {
@@ -746,7 +766,7 @@ p {
 }
 
 .map-panel__tabs {
-    margin: 10px 0;
+    margin: 0;
     display: flex;
     justify-content: space-between;
     background-color: #a8c45d;
@@ -778,6 +798,7 @@ p {
     background: #fff;
     max-height: 55vh;
     overflow: auto;
+    margin: 15px;
 }
 .tab-content p{
     font-size: 12px;
@@ -829,7 +850,7 @@ p {
     overflow: auto;
     background-color: #fff;
     padding: 10px;
-    width: 250px;
+    width: 190px;
 }
 
 .map-panel__toggle .map-panel__tabs {
@@ -839,12 +860,12 @@ p {
 }
 
 .map-panel__tabs--item {
-    font-size: 10px;
+    font-size: 11px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     flex-grow: 1;
-    padding: 5px;
+    padding: 8px;
     text-align: center;
     background-color: #a8c45d;
     color: #fff;

@@ -22,7 +22,19 @@
 			return promise;
 		};
 
-
+		service.getAirStations = function (options) {
+			var config = {
+				params: {
+					action: 'get-stations',
+					obs_date: options.obs_date
+				}
+			};
+			var promise = $http.get('/api/mapclient/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
 
 	});
 

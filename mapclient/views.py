@@ -13,7 +13,7 @@ def index(request):
         'var_options': json.dumps(var_options),
         'style_options': json.dumps(style_opts),
         'thredds_wms_url': THREDDS_wms,
-        'thredds_options': json.dumps(th_options),
+        'thredds_options': json.dumps(th_options)
     }
 
     return render(request, 'map.html', context)

@@ -24,3 +24,8 @@ THREDDS_wms: Indicates the basic form of WMS requests to the server
   This is a publicly accessible THREDDS server (not necessarily residing in the same server or even on the same network)
 """
 THREDDS_wms = 'https://tethys.servirglobal.net/thredds/wms/'
+
+connection = [{'host': '216.218.240.22'},
+              {'user': 'postgres'},
+              {'password': 'v^[6o9^'},
+              {'dbname': 'nrtdatapcd'}]

@@ -157,4 +157,5 @@ angular.module('baseApp').constant('appSettings', {
             'name': 'Reflectivity'
         }
     ],
+	months : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
 });

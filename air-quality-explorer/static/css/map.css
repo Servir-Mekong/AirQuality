@@ -1,4 +1,5 @@
 
+
 .toggle-slider {
   position: absolute;
   cursor: pointer;
@@ -207,3 +208,264 @@ p {
     margin: 5px;
     font-weight: 800;
 }
+
+
+.sliderContainer {
+    height: 5em;
+    background-color: rgb(238, 238, 238, 0.8);
+    z-index: 400;
+    position: absolute;
+    width: 60%;
+    margin-left: 20%;
+    bottom: 20px;
+    font-size: 11px;
+    border: 1px solid #F1BCBC;
+    padding-bottom: 60px;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(0,0,0,.7);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(0,0,0,.7);
+}
+
+.datePickerSlider {
+    position: relative;
+    width: 80%;
+    margin-left: 4%;
+    bottom: -3.5em;
+    border-color: #ddd;
+}
+
+.slide-backward {
+	position: relative;
+    margin-right: 1%;
+    float: right;
+    margin-top: 1%;
+}
+
+.slide-forward {
+	position: relative;
+    margin-right: 3%;
+    float: right;
+    margin-top: 1%;
+}
+
+/*Slider*/
+
+.noUi-marker {
+	background: black;
+	margin-top: -2px;
+}
+
+.noUi-pips-horizontal {
+    color: #753636;
+    margin-top: -4.5em;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.noUi-horizontal {
+	height: 8px;
+}
+
+.noUi-connect {
+    background: #FFF;
+}
+
+.noUi-tooltip {
+    display: block;
+    position: absolute;
+    border: 0 solid #D9D9D9;
+    border-radius: 3px;
+    background: #fbf4f0;
+    color: #000;
+    padding: 5px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.noUi-handle-lower .noUi-tooltip {
+	bottom: 55px;
+    height: 2em;
+    background-color: #fbf4f0;
+    font-weight: bold;
+    font-size: medium;
+}
+
+.uitooltip-input {
+	width: 100px;
+    text-align: center;
+    border: none;
+    height: 15px;
+    background-color: #fbf4f0;
+    font-size: 12px;
+    color: #333;
+}
+
+
+.noUi-horizontal .noUi-handle-lower .noUi-tooltip:after {
+	content:"";
+    display:block;
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#fffee2;
+    z-index:2;
+    bottom:0;
+    left:50%;
+    -webkit-transform:translate(-50%,50%) rotate(45deg);
+    transform:translate(-50%,50%) rotate(45deg);
+    border-width:0 1px 1px 0;
+    border-color:transparent #f0f0ed #f0f0ed transparent;
+    border-style:solid
+}
+
+.noUi-horizontal .noUi-handle {
+	width: 20px;
+	height: 20px;
+	left: -20px;
+	top: -7px;
+	border-radius: 50%;
+}
+
+.input-tooltip {
+	position: absolute;
+	top: 0;
+	left: 0;
+	max-width: 100px;
+	border: none;
+	height: 30px;
+	padding: 5px;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+.noUi-marker-horizontal.noUi-marker-large {
+    height: 2px;
+}
+
+.noUi-marker-horizontal.noUi-marker {
+    margin-left: -1px;
+    width: 2px;
+    height: 2px;
+}
+
+.noUi-handle {
+    border: 1px solid #753636;
+    border-radius: 3px;
+    background: #FFF;
+    cursor: default;
+    box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #EBEBEB, 0 3px 6px -3px #753636;
+}
+
+.noUi-handle:after, .noUi-handle:before, .noUi-handle:after, .noUi-handle:after {
+	display: none;
+}
+
+.sliderContainer .btn{
+    display: inline-block;
+    padding: 3px 6px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.sliderContainer .btn:hover{
+	background-color: #753636;
+    color: #FFF;
+}
+/*End SLider*/
+
+
+.shadow {
+    box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+.control-panel {
+    background: #753636;
+    bottom: 45%;
+    right: 10px;
+    width: 38px;
+}
+
+.control-panel ul {
+    border-bottom: 1px solid #aaa;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 0;
+    margin: 0;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.control-panel li {
+    border-right: 1px solid #aaa;
+    border-top: 1px solid #aaa;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 38px;
+    width: 38px;
+}
+
+.control-panel li:hover {
+    background-color: #CFCFCF;
+}
+
+
+.map-component {
+    position: absolute;
+    z-index: 9999;
+}
+
+.panel-icon {
+    fill: #555;
+    display: block;
+    margin: auto;
+    height: 25px;
+    width: 25px;
+}
+
+.tooltipmap{position:absolute;background:#fffee2;box-shadow:0 1px 3px rgba(85,85,85,0.25);z-index:1000;margin:0;visibility:hidden;opacity:0;text-transform:uppercase;color:#555;font-weight:400;font-size:12px;line-height:1.25;bottom:100%;text-align:center;padding:6px 8px;white-space:nowrap;pointer-events:none;-webkit-transform:translate(-40%,5px);transform:translate(-40%,5px);}
+.tooltipmap.low{bottom:25%}
+.tooltipmap.low-mid{bottom:50%}
+.tooltipmap.middle{bottom:75%}
+.tooltipmap.top{bottom:100%}
+.tooltipmap.left{left:-200%}
+.tooltipmap.right{left:65%}
+.tooltipmap.fire{left:17%}
+.tooltipmap1{bottom:90%}
+.tooltipmap2{bottom:75%}
+.tooltipmap3{bottom:60%}
+.tooltipmap4{bottom:45%}
+.tooltipmap5{bottom:35%}
+.tooltipmap6{bottom:20%}
+.tooltipmap7{bottom:5%}
+.tabs div:hover .tooltipmap{opacity:1;visibility:visible}
+.control-panel ul li:hover
+.tooltipmap{opacity:1;visibility:visible}
+.layer-checkbox:hover
+.tooltipmap{opacity:1;visibility:visible}

@@ -6,6 +6,7 @@
 		/* global variables to be tossed around like hot potatoes */
 		$scope.initdate = '';
 		$scope.stylesSelectors = appSettings.stylesSelectors;
+		$scope.showTimeSlider = true;
 
 		var map,
 		add_wms,
@@ -32,6 +33,7 @@
 		$modalCompare,
 		$layers_element,
 		thredds_options,
+		stations,
 		thredds_urls,
 		threddss_wms_url;
 
@@ -45,7 +47,19 @@
 		style_options = $meta_element.attr('data-style-options');
 		style_options = JSON.parse(style_options);
 
-		//tabs controller
+		var admin_enabled = false;
+
+		/**
+		* initialize leaflet map
+		*/
+		map = L.map('map',{
+			zoomControl: false,
+			maxBounds: [ [-10, 160],[50, 20]],
+		}).setView([15.8700, 100.9925], 5);
+
+		/**
+		* tabs controller
+		*/
 		$(".map-panel__tabs a").click(function(){
 			$(this).tab('show');
 		});
@@ -58,7 +72,9 @@
 
 		});
 
-		//Toggle layer visibility
+		/**
+		* Toggle layer visibility
+		*/
 		$("#btn_toggle_fire").on('change', function() {
 			var opacity = $('#opacity-slider').val();
 			if ($(this).is(':checked')) {
@@ -166,6 +182,86 @@
 
 		});
 
+		$("#full-extent").click(function(){
+			$("nav").hide();
+			$("body").css("margin-top", "-15px");
+			$(".map").css("height", "100vh");
+			$(".map-panel__sidebar").css("top", "20px");
+		});
+		$("#show-branner").click(function(){
+			$("nav").show();
+			$("body").css("margin-top", "100px");
+			$(".map").css("height", "calc(100vh - 115px)");
+			$(".map-panel__sidebar").css("top", "125px");
+		});
+
+		$("#zoom-in").click(function() {
+			map.zoomIn();
+		});
+		$("#zoom-out").click(function() {
+			map.zoomOut();
+		});
+		$("#time-toggle").click(function() {
+			if($scope.showTimeSlider){
+				$scope.showTimeSlider = false;
+				$scope.$apply();
+			}else{
+				$scope.showTimeSlider = true;
+				$scope.$apply();
+			}
+		});
+		$("#full-screen").click(function() {
+			if($("body").css("margin-top") === "-15px"){
+				$("nav").show();
+				$("body").css("margin-top", "100px");
+				$(".map").css("height", "calc(100vh - 115px)");
+				$(".map-panel__sidebar").css("top", "125px");
+			}else{
+				$("nav").hide();
+				$("body").css("margin-top", "-15px");
+				$(".map").css("height", "100vh");
+				$(".map-panel__sidebar").css("top", "20px");
+			}
+		});
+
+		$("#compare-layers").click(function() {
+			if($modalCompare.modal('hide')){
+				if(map.hasLayer(lwmsLayer)){
+					$modalCompare.modal('hide');
+					map.removeControl(compare);
+					map.removeLayer(lwmsLayer);
+					map.removeLayer(rwmsLayer);
+					tdWmsFireLayer.addTo(map);
+					tdWmsAODLayer.addTo(map);
+					tdWmsGEOSLayer.addTo(map);
+				}else{
+					$modalCompare.modal('show');
+				}
+
+			}else{
+				// $modalCompare.modal('hide');
+				// map.removeControl(compare);
+				// map.removeLayer(lwmsLayer);
+				// map.removeLayer(rwmsLayer);
+				// tdWmsFireLayer.addTo(map);
+				// tdWmsAODLayer.addTo(map);
+				// tdWmsGEOSLayer.addTo(map);
+			}
+		});
+
+		$("#admin-tool").click(function(){
+			if(!admin_enabled){
+				distLayer.setOpacity(0.5);
+				distLayer.addTo(map);
+				L.DomUtil.addClass(map._container, 'crosshair-cursor-enabled');
+				admin_enabled = true;
+			}else{
+				map.removeLayer(distLayer);
+				L.DomUtil.removeClass(map._container, 'crosshair-cursor-enabled');
+				admin_enabled = false;
+			}
+		});
+
 		$('#toggle_print').click(function(){
 			$('#toggle_layer_box').css("display", "none");
 			$('#imagery_layer_box').css("display", "none");
@@ -194,7 +290,9 @@
 		};
 		init_dropdown();
 
-		//set style options
+		/**
+		* set style options
+		*/
 		style_options.forEach(function(item,i){
 			var display_txt = Object.keys(item)[0];
 			var value_txt = Object.values(item)[0];
@@ -209,6 +307,198 @@
 			$("#aod_style_table").append(aodoption);
 			$("#geos_style_table").append(geosoption);
 		});
+
+		// Date Range Slider
+		$scope.broadcastTimeSlider = function () {
+			$timeout(function () {
+				$scope.$broadcast('rzSliderForceRender');
+			});
+		};
+
+		/**
+		 * Time Slider
+		 **/
+		var timeSlider = document.getElementById('datePickerSlider');
+
+		// Create a string representation of the date.
+		$scope.toFormat = function (v, handle) {
+			// where is this string representation
+			// values = "uipipes" ; default is "default"
+			var date = new Date(v);
+			handle = handle || $scope.defaultHandle;
+			if (handle === 'uipipes') {
+				return appSettings.months[date.getMonth()] + ' ' + date.getFullYear();
+			} else if (handle === $scope.defaultHandle) {
+
+				var mm = date.getMonth() + 1; // getMonth() is zero-based
+				var dd = date.getDate();
+
+				return [date.getFullYear(),
+						(mm > 9 ? '' : '0') + mm,
+						(dd > 9 ? '' : '0') + dd
+				].join('-');
+			}
+		};
+
+		noUiSlider.create(timeSlider, {
+			// Create two timestamps to define a range.
+			range: {
+				min: new Date('2000').getTime(),
+				max: new Date().setMonth(new Date().getMonth() + 3)
+			},
+
+			// Steps of one day
+			step: 1 * 24 * 60 * 60 * 1000,
+
+			// Handle starting positions.
+			start: new Date().getTime(),
+
+			//tooltips: true,
+
+			format: { to: $scope.toFormat, from: Number },
+
+			connect: 'lower',
+
+			// Show a scale with the slider
+			pips: {
+				mode: 'count',
+				density: 2,
+				values: 10,
+				stepped: true,
+				format: {
+					to: function (value) {
+						return $scope.toFormat(value, 'uipipes');
+					},
+					from: function (value) {
+						return $scope.toFormat(value, 'uipipes');
+					}
+				}
+			}
+		});
+		var stopPropagation = function (event) {
+			event.stopPropagation();
+		};
+
+		var makeSliderToolTip = function (i, slider) {
+			var tooltip = document.createElement('div'),
+				input = document.createElement('input');
+
+			// Add the input to the tooltip
+			input.className = 'uitooltip-input';
+			tooltip.className = 'noUi-tooltip';
+			tooltip.appendChild(input);
+
+			// On change, set the slider
+			input.addEventListener('change', function () {
+				if (this.value !== $scope.selectedDate) {
+					$scope.selectedDate = this.value;
+					slider.noUiSlider.set(new Date(this.value).getTime());
+					$timeout(function () {
+						$scope.changeTimeSlider();
+					}, 500);
+				}
+
+			});
+
+			// Catch all selections and make sure they don't reach the handle
+			input.addEventListener('mousedown', stopPropagation);
+			input.addEventListener('touchstart', stopPropagation);
+			input.addEventListener('pointerdown', stopPropagation);
+			input.addEventListener('MSPointerDown', stopPropagation);
+
+			// Find the lower slider handle and insert the tooltip
+			document.getElementById('datePickerSlider').querySelector('.noUi-handle-lower').appendChild(tooltip);
+
+			return input;
+		};
+
+		// An 0 indexed array of input elements
+		var tooltipInput = makeSliderToolTip(0, timeSlider);
+		$scope.selectedDate = [
+			new Date().getFullYear(),
+			((new Date().getMonth() + 1) > 9 ? '' : '0') + (new Date().getMonth() + 1) ,
+			(new Date().getDate() > 9 ? '' : '0') + new Date().getDate()
+		].join('-');
+		tooltipInput.value = $scope.selectedDate;
+
+		// When the slider changes, update the tooltip
+		timeSlider.noUiSlider.on('update', function (values, handle) {
+			tooltipInput.value = values[handle];
+		});
+
+		// Event Handler for slider
+		timeSlider.noUiSlider.on('set', function (values, handle) {
+			if (values[handle] !== $scope.selectedDate) {
+				$scope.selectedDate = values[handle];
+				tooltipInput.value = values[handle];
+				// trigger ajax only if it is coming from the default handle, not from input tooltip
+				if (event.target.className.startsWith('noUi')) {
+					$timeout(function () {
+						$scope.changeTimeSlider();
+					}, 500);
+				}
+			}
+		});
+
+		// get PCD station
+		$scope.getPCDStation = function () {
+			var parameters = {
+				obs_date: $scope.selectedDate
+			};
+			MapService.getAirStations(parameters)
+			.then(function (result){
+				var date = $scope.selectedDate;
+				for (var l in overlays) {
+					if(!(l.includes('FIRES_VIIRS'))){
+						overlays[l].options.time = date;
+						overlays[l].redraw();
+					}
+				}
+
+				console.log(result);
+				stations = result;
+				addStations();
+			}), function (error){
+				console.log(error);
+			};
+		};
+
+		$scope.changeTimeSlider = function () {
+			$("#fire_range-max").trigger('change');
+			$("#aod_range-max").trigger('change');
+			$scope.getPCDStation();
+
+			//$scope.updateMap(true);
+		};
+		$scope.getPCDStation();
+		// Forward Slider
+		$scope.slideForward = function () {
+			var date = new Date($scope.selectedDate);
+			date.setDate(date.getDate() + 1);
+			$scope.selectedDate = [
+				date.getFullYear(), ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) , ((date.getDate()) > 9 ? '' : '0') + (date.getDate())
+			].join('-');
+			tooltipInput.value = $scope.selectedDate;
+			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
+			$timeout(function () {
+				$scope.changeTimeSlider();
+			}, 500);
+		};
+
+		// Backward Slider
+		$scope.slideBackward = function () {
+			var date = new Date($scope.selectedDate);
+			date.setDate(date.getDate() - 1);
+			$scope.selectedDate = [
+				date.getFullYear(), ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) , ((date.getDate()) > 9 ? '' : '0') + (date.getDate())
+			].join('-');
+			tooltipInput.value = $scope.selectedDate;
+			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
+			$timeout(function () {
+				$scope.changeTimeSlider();
+			}, 500);
+		};
+
 
 
 		var init_opacity_slider = function(){
@@ -289,21 +579,116 @@
 			tipCtx.fillText(htext.toFixed(2), 5, 15);
 		}
 
-		//initialize leaflet map
-		map = L.map('map',{
-			zoomControl: false,
-			maxBounds: [
-				//south west
-				[-10, 160],
-				//north east
-				[50, 20]
-			],
-		}).setView([15.8700, 100.9925], 5);
+		var myIcon = L.icon({
+			iconUrl: 'static/images/loc2.png',
+			iconRetinaUrl: 'static/images/loc2.png',
+			iconSize: [35, 35],
+			iconAnchor: [9, 21],
+			popupAnchor: [0, -14]
+		});
+
+		function addStations(){
+			//markersLayer.clearLayers();
+			var icon_src;
+			var markersLayer = L.featureGroup().addTo(map);
+
+
+			for (var i = 0; i < stations.length; ++i) {
+				 	var color="red";
+					if(stations[i].pm25>90){
+				 		color="#ed1e02";
+						icon_src = 'static/images/red.png';
+				 		myIcon = L.icon({
+							iconUrl: icon_src,
+							iconRetinaUrl: 'static/images/loc2.png',
+							iconSize: [35, 35],
+							iconAnchor: [9, 21],
+							popupAnchor: [0, -14]
+						});
+					}
+					else if(stations[i].pm25>50 && stations[i].pm25<91){
+				 		color="#eda702";
+						icon_src = 'static/images/orange.png';
+				 		myIcon = L.icon({
+							iconUrl: icon_src,
+							iconRetinaUrl: 'static/images/loc2.png',
+							iconSize: [35, 35],
+							iconAnchor: [9, 21],
+							popupAnchor: [0, -14]
+						});
+					}
+					else if(stations[i].pm25>37 && stations[i].pm25<51){
+				 		color="#eff213";
+						icon_src = 'static/images/yellow.png';
+				 		myIcon = L.icon({
+							iconUrl: icon_src,
+							iconRetinaUrl: 'static/images/loc2.png',
+							iconSize: [35, 35],
+							iconAnchor: [9, 21],
+							popupAnchor: [0, -14]
+						});
+
+					}else if(stations[i].pm25>25 && stations[i].pm25<38){
+				 		color="#24cf1b";
+						icon_src = 'static/images/green.png';
+				 		myIcon = L.icon({
+							iconUrl: icon_src,
+							iconRetinaUrl: 'static/images/loc2.png',
+							iconSize: [35, 35],
+							iconAnchor: [9, 21],
+							popupAnchor: [0, -14]
+						});
+					}else if(stations[i].pm25>=0 && stations[i].pm25<26){
+				 		color="#6ef0ff";
+						icon_src = 'static/images/tt.png';
+				 		myIcon = L.icon({
+							iconUrl: icon_src,
+							iconRetinaUrl: 'static/images/loc2.png',
+							iconSize: [35, 35],
+							iconAnchor: [9, 21],
+							popupAnchor: [0, -14]
+						});
+					}
+				  var oneMarker =
+					 L.marker([stations[i].lat, stations[i].lon], {
+					icon: myIcon
+				});
+					 oneMarker.bindTooltip("<b>Station:</b> "+stations[i].name+
+					 "<br><b>PM 2.5:</b> "+stations[i].pm25+ " (µg<sup>-3</sup>)"+
+					 "<br><b>Data for:</b> "+stations[i].latest_date);
+				oneMarker.name = stations[i].name;
+				oneMarker.lat = stations[i].lat;
+				oneMarker.lon = stations[i].lon;
+				oneMarker.aqi = stations[i].aqi;
+				oneMarker.src = icon_src;
+				oneMarker.latest_date = stations[i].latest_date
+				oneMarker.addTo(markersLayer);
+			}
+			markersLayer.on("click", markerOnClick);
+			markersLayer.setZIndex(500);
+		};
+
+		function markerOnClick(e) {
+			var attributes = e.layer;
+			console.log(attributes);
+			int_type = "Station";
+			$("#station").val(attributes.name+','+attributes.lat+','+attributes.lon);
+			$("#station_name").text(attributes.name);
+			$("#aqi_txt").text("AQI: " + attributes.aqi);
+			$("#aqi_img").attr('src',attributes.src);
+			$("#obs_date").text(attributes.latest_date);
+			//get_ts();
+			// do some stuff…
+		}
+
 
 
 		add_wms = function(run_type,freq,run_date,var_type,rmin,rmax,styling,time = ""){
 
 			var wmsUrl = threddss_wms_url+run_date;
+			console.log(wmsUrl);
+			console.log(threddss_wms_url);
+			console.log(run_date);
 			wms_layer=wmsUrl;
 			run_type = run_type.toUpperCase();
 			if(run_type === 'FIRE'){
@@ -350,39 +735,53 @@
 			});
 
 			if(run_type === 'FIRE'){
-				tdWmsFireLayer = L.timeDimension.layer.wms(wmsLayer,{
-					updateTimeDimension:true,
-					setDefaultTime:true,
-					cache:365,
+				tdWmsFireLayer = L.tileLayer.wms(wmsUrl, {
+					layers: var_type,
+					format: 'image/png',
+					transparent: true,
+					styles: style,
+					colorscalerange: range,
+					opacity:opacity,
+					version:'1.3.0',
 					zIndex:100,
-					updateTimeDimensionMode: 'union',
+					bounds: [[0, 100], [25, 110]],
 				});
 				tdWmsFireLayer.addTo(map);
 				$('#img-legend-fire').attr('src',imgsrc);
-			}else if(run_type === 'GEOS_TAVG1_2D_SLV_NX' || run_type === 'GEOS_TAVG3_2D_AER_NX'){
-				tdWmsGEOSLayer = L.timeDimension.layer.wms(wmsLayer,{
-					updateTimeDimension:true,
-					setDefaultTime:true,
-					cache:365,
+			}else if(run_type === 'GEOS_TAVG1_2D_SLV_NX' || run_type === 'GEOS_TAVG3_2D_AER_NX' || run_type === 'GEOS'){
+				tdWmsGEOSLayer = L.tileLayer.wms(wmsUrl, {
+					layers: var_type,
+					format: 'image/png',
+					transparent: true,
+					styles: style,
+					colorscalerange: range,
+					opacity:opacity,
+					version:'1.3.0',
 					zIndex:100,
-					updateTimeDimensionMode: 'union',
+					bounds: [[0, 100], [25, 110]],
 				});
 				tdWmsGEOSLayer.addTo(map);
 				$('#img-legend-geos').attr('src',imgsrc);
 			}else if(run_type !== 'GEOS_TAVG1_2D_SLV_NX' || run_type !== 'GEOS_TAVG3_2D_AER_NX' || run_type !== 'FIRE'){
-				tdWmsAODLayer = L.timeDimension.layer.wms(wmsLayer,{
-					updateTimeDimension:true,
-					setDefaultTime:true,
-					cache:365,
+				tdWmsAODLayer = L.tileLayer.wms(wmsUrl, {
+					layers: var_type,
+					format: 'image/png',
+					transparent: true,
+					styles: style,
+					colorscalerange: range,
+					opacity:opacity,
+					version:'1.3.0',
 					zIndex:100,
-					updateTimeDimensionMode: 'union',
+					bounds: [[0, 100], [25, 110]],
 				});
 				tdWmsAODLayer.addTo(map);
 				$('#img-legend-aod').attr('src',imgsrc);
 			}
 		};
 
-
+		/**
+		* layers comparing function
+		*/
 		add_compare = function(){
 			map.removeLayer(tdWmsFireLayer);
 			map.removeLayer(tdWmsAODLayer);
@@ -441,7 +840,9 @@
 
 		};
 
-		//open compare layers popup
+		/**
+		* open compare layers popup
+		*/
 		$("#btn-add-compare").on('click',add_compare);
 		$("#btn-close-compare").on('click', function(){
 			$modalCompare.modal('hide');
@@ -484,7 +885,6 @@
 
 			getFeatureInfoUrl: function (latlng) {
 				// Construct a GetFeatureInfo request URL given a point
-				console.log('trss');
 				var point = this._map.latLngToContainerPoint(latlng, this._map.getZoom()),
 				size = this._map.getSize(),
 
@@ -577,13 +977,6 @@
 			}
 		});
 
-
-		var nrt_date = new L.Control.InfoControl({
-			position: "topright",
-			content: '<div id="controls"><button id="prev">Previous Day</button><input id="date"><button id="next">Next Day</button></div>'
-		});
-		map.addControl(nrt_date);
-
 		var leg = new L.Control.InfoControl({
 			position: "topcenter",
 			content: '<div><canvas id="canvas" style="width:20vw;height:4vh;"></canvas><canvas class="tippy hidden" id="tip" width=35 height=25></canvas></div>'
@@ -593,7 +986,8 @@
 		var baselayers = {};
 		var today = new Date();
 		var day = new Date(today.getTime());
-		day = day.toISOString().split('T')[0];
+		day = $scope.selectedDate;
+		console.log("DAY  " + $scope.selectedDate)
 
 		var DATE_FORMAT = 'dd.mm.yy';
 		var strToDateUTC = function(str) {
@@ -741,10 +1135,6 @@
 			collapsed: true
 		}).addTo(map);
 
-		L.control.zoom({
-			position: 'topright'
-		}).addTo(map);
-
 		drawnItems = new L.FeatureGroup();
 		map.addLayer(drawnItems);
 		distLayer = L.tileLayer.betterWms('https://tethys.servirglobal.net/geoserver/wms/', {
@@ -774,71 +1164,6 @@
 
 		map.addControl(drawControlFull);
 
-		compare = L.control.sideBySide({
-			position: 'topright'
-		});
-		var stateChangingButton = L.easyButton({
-			position: 'topright',
-			states: [{
-				stateName: 'enable-compare',        // name the state
-				icon:      'glyphicon-resize-horizontal',               // and define its properties
-				title:     'Enable side by side comparison',      // like its title
-				onClick: function(btn, map) {       // and its callback
-					$modalCompare.modal('show');
-					map.removeControl(compare);
-					// compare = L.control.sideBySide(wmsLayer,wmsLayer);
-					// compare.addTo(map);
-					btn.state('disable-compare');    // change state on click!
-				}
-			}, {
-				stateName: 'disable-compare',
-				icon:      'glyphicon-transfer',
-				title:     'Disable side by side comparison',
-				onClick: function(btn, map) {
-					map.removeControl(compare);
-					map.removeLayer(lwmsLayer);
-					map.removeLayer(rwmsLayer);
-					tdWmsFireLayer.addTo(map);
-					tdWmsAODLayer.addTo(map);
-					tdWmsGEOSLayer.addTo(map);
-					btn.state('enable-compare');
-				}
-			}]
-		});
-
-		stateChangingButton.addTo(map);
-		var crosshairs_enabled = false;
-
-		var selectAdm = L.easyButton({
-			position: 'topright',
-			states: [{
-				stateName: 'enable-compare',        // name the state
-				icon:      'glyphicon-globe',               // and define its properties
-				title:     'Select Admin Region',      // like its title
-				onClick: function(btn, map) {       // and its callback
-					btn.state('disable-compare');    // change state on click!
-					distLayer.setOpacity(0.5);
-					distLayer.addTo(map);
-
-					L.DomUtil.addClass(map._container, 'crosshair-cursor-enabled');
-					crosshairs_enabled = true;
-
-				}
-			}, {
-				stateName: 'disable-compare',
-				icon:      'glyphicon-dashboard',
-				title:     'Disable Admin Region',
-				onClick: function(btn, map) {
-					btn.state('enable-compare');
-					map.removeLayer(distLayer);
-					L.DomUtil.removeClass(map._container, 'crosshair-cursor-enabled');
-					crosshairs_enabled = false;
-
-				}
-			}]
-		});
-
-		selectAdm.addTo(map);
 
 		var customActionToPrint = function (context, mode) {
 			return function () {
@@ -856,16 +1181,9 @@
 			manualMode: false
 		}).addTo(map);
 
-		var alterDate = function(delta) {
-			var date = $.datepicker.parseDate(DATE_FORMAT, $date.val());
-
-			$date
-			.val($.datepicker.formatDate(DATE_FORMAT, new Date(date.valueOf() + delta * oneDay)))
-			.change();
-		};
-
-
-		// Control date navigation for GIBS WMS layers, adjust the options.time and redraw. Exclude FIRE VIIRS layers (not time-enabled)
+		/**
+		* Control date navigation for GIBS WMS layers, adjust the options.time and redraw. Exclude FIRE VIIRS layers (not time-enabled)
+		*/
 		$date.datepicker({
 			dateFormat: DATE_FORMAT,
 			beforeShow: function() {
@@ -883,8 +1201,6 @@
 			}
 		});
 
-		document.getElementById("prev").onclick = alterDate.bind(null, -1);
-		document.getElementById("next").onclick = alterDate.bind(null, 1);
 		map.on("draw:drawstart ", function (e) {
 			clear_coords();
 			drawnItems.clearLayers();
@@ -912,8 +1228,8 @@
 		});
 
 
-		var timeDimensionControl = new L.Control.TimeDimensionCustom(timeDimensionControlOptions);
-		map.addControl(timeDimensionControl);
+		// var timeDimensionControl = new L.Control.TimeDimensionCustom(timeDimensionControlOptions);
+		// map.addControl(timeDimensionControl);
 
 		var mapLink =
 		'<a href="http://openstreetmap.org">OpenStreetMap</a>';
@@ -931,7 +1247,9 @@
 				style:'boxfill/apcp_surface'
 			});
 
-			// Create and add a TimeDimension Layer to the map
+			/**
+			* Create and add a TimeDimension Layer to the map
+			*/
 			tdWmsFireLayer = L.timeDimension.layer.wms(wmsLayer);
 			//tdWmsLayer.addTo(map);
 
@@ -972,63 +1290,12 @@
 				$("#plotter").addClass('hidden');
 
 			};
-			//document.getElementsByClassName("leaflet-control-browser-print").style.display = "none";
 
 			$(function() {
-				//Fire options
-				$.each(thredds_options['catalog']['fire'],function(item,i){
-					if (item === 'combined'){
-						var new_option = new Option(item,item);
-						$("#fire_freq_table").append(new_option);
-					}
-				});
-				$("#fire_freq_table").change(function(){
-					var freq = ($("#fire_freq_table option:selected").val());
-					$("#fire_rd_table").html('');
-					if(thredds_options['catalog']['fire'][freq]){
-						thredds_options['catalog']['fire'][freq].forEach(function(item,i){
-							var opt = item.split('/').reverse()[0];
-							var new_option = new Option(opt,item);
-							$("#fire_rd_table").append(new_option);
-						});
-					}
-					$("#fire_rd_table").trigger('change');
 
-				}).change();
-
-				$("#fire_freq_table").trigger('change');
-
-				var_options.forEach(function(item,i){
-					if(item["category"] === 'fire'){
-						var new_option = new Option(item["display_name"],item["id"]);
-						$("#fire_var_table").append(new_option);
-					}
-				});
-
-				$("#fire_var_table").change(function(){
-					var var_type = ($("#fire_var_table option:selected").val());
-					var index = find_var_index(var_type,var_options);
-					$("#fire_range-min").val(var_options[index]["min"]);
-					$("#fire_range-max").val(var_options[index]["max"]).trigger('change');
-				}).change();
-
-				$("#fire_range-max").on('change',function(){
-					var freq = ($("#fire_freq_table option:selected").val());
-					var rd_type = ($("#fire_rd_table option:selected").val());
-					var var_type = ($("#fire_var_table option:selected").val());
-					var style =  ($("#fire_style_table option:selected").val());
-					var rmin = $("#fire_range-min").val();
-					var rmax = $("#fire_range-max").val();
-					add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
-				}).change();
-
-				$("#fire_style_table").change(function () {
-					var style = ($("#fire_style_table option:selected").val());
-					$("#fire_range-max").trigger('change');
-				}).change();
-
-
-				//AOD options
+				/**
+				* AOD options
+				*/
 				$.each(thredds_options['catalog'],function(item,i){
 					if(item.toUpperCase()!== "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!== "GEOS_TAVG3_2D_AER_NX" && item.toUpperCase()!== "FIRE"){
 						var new_option = new Option(item.toUpperCase(),item);
@@ -1047,7 +1314,7 @@
 						}
 					});
 					$.each(thredds_options['catalog'][run_type],function(item,i){
-						if (item === 'combined'){
+						if (item !== 'combined'){
 							var new_option = new Option(item,item);
 							$("#aod_freq_table").append(new_option);
 						}
@@ -1096,6 +1363,12 @@
 					var run_type = ($("#aod_run_table option:selected").val());
 					var freq = ($("#aod_freq_table option:selected").val());
 					var rd_type = ($("#aod_rd_table option:selected").val());
+					var parameter_url = rd_type.slice(0, -17);
+					var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
+
+					console.log(parameter_url);
+					//var datetime = "201801";
+					var rd_type = parameter_url + "."+ datetime +".MEKONG.nc";
 					var var_type = ($("#aod_var_table option:selected").val());
 					var style =  ($("#aod_style_table option:selected").val());
 					var rmin = $("#aod_range-min").val();
@@ -1108,9 +1381,11 @@
 					$("#aod_range-max").trigger('change');
 				}).change();
 
-				//GEOS options
+				/**
+				* GEOS options
+				*/
 				$.each(thredds_options['catalog'],function(item,i){
-					if(item.toUpperCase() === "GEOS_TAVG1_2D_SLV_NX" || item.toUpperCase() === "GEOS_TAVG3_2D_AER_NX" ){
+					if(item.toUpperCase() === "GEOS_TAVG1_2D_SLV_NX" || item.toUpperCase() === "GEOS_TAVG3_2D_AER_NX" || item.toUpperCase() === "GEOS" ){
 						var new_option = new Option(item.toUpperCase(),item);
 						$("#geos_run_table").append(new_option);
 					}
@@ -1125,7 +1400,12 @@
 					$("#lvar_table").html('');
 					$("#rvar_table").html('');
 					$.each(thredds_options['catalog'][run_type], function (item, i) {
-						if (item == 'combined' || item == '3daytoday' || item == '3dayrecent') {
+						if ((item == '3daytoday' || item == '3dayrecent') && (run_type == "geos_tavg1_2d_slv_Nx" || run_type == "geos_tavg3_2d_aer_Nx" || run_type == "geos")) {
+
+							var new_option = new Option(item, item);
+							$("#geos_freq_table").append(new_option);
+						} else if (item == 'combined') {
+
 							var new_option = new Option(item, item);
 							$("#geos_freq_table").append(new_option);
 						}
@@ -1159,30 +1439,33 @@
 					$("#geos_rd_table").html('');
 					$("#geos_var_table").html('');
 					if(thredds_options['catalog'][run_type][freq]){
-						thredds_options['catalog'][run_type][freq].forEach(function(item,i){
+						thredds_options['catalog'][run_type][freq].forEach(function (item, i) {
+
 							var opt = item.split('/').reverse()[0];
 							var new_option = new Option(opt,item);
 							$("#geos_rd_table").append(new_option);
 						});
+						$("#geos_rd_table").trigger('change');
 					}
-					$("#geos_rd_table").trigger('change');
+
 
 				}).change();
 
-				get_times = function () {
+				get_times = function (rd_type) {
 					$("#hour_table").html('');
 					var freq = ($("#geos_freq_table option:selected").val());
 					var run_type = ($("#geos_run_table option:selected").val());
-					var rd_type = ($("#date_table option:selected").val());
+					console.log(rd_type)
 					var parameters = {
 						run_type: run_type,
 						freq: freq,
-						run_date: rd_type.split('/').reverse()[0]
+						run_date: rd_type
 					};
 					MapService.get_time(parameters)
 					.then(function (result){
 						var times = result["times"];
 						time_global = times[0];
+						console.log(time_global);
 						times.forEach(function (time, i) {
 							var opt = new Option(time, time);
 							$("#hour_table").append(opt);
@@ -1198,13 +1481,15 @@
 					var freq = ($("#geos_freq_table option:selected").val());
 					var run_type = ($("#geos_run_table option:selected").val());
 					var rd_type = ($("#geos_rd_table option:selected").val());
+
 					var str = rd_type.split('/').reverse()[0];
 					var newt = str.substring(0, 4) + '-' + str.substring(4, 6) + '-' + str.substring(6, 8);
 					thredds_options['catalog'][run_type][freq].forEach(function (item, i) {
+
 						var opt = item.split('/').reverse()[0];
-						if (run_type == "geos_tavg1_2d_slv_Nx" || run_type == "geos_tavg3_2d_aer_Nx") {
+						if (run_type == "geos_tavg1_2d_slv_Nx" || run_type == "geos_tavg3_2d_aer_Nx" || run_type == "geos") {
 							$('#info').text("Displaying " + newt + " data on the map..");
-							var new_option2 = new Option(opt.split('_')[0], item);
+							var new_option2 = new Option(opt, item);
 							$("#date_table").append(new_option2);
 						}
 					});
@@ -1221,20 +1506,23 @@
 
 				$("#date_table").change(function () {
 					var run_type = ($("#geos_run_table option:selected").val());
+					if (run_type == "geos_tavg1_2d_slv_Nx" || run_type == "geos_tavg3_2d_aer_Nx" || run_type == "geos") {
+						$('#info').text("Displaying " + ($("#date_table option:selected").val().split('/').reverse()[0]) + " data on the map..");
+
+					}
 					var freq = ($("#geos_freq_table option:selected").val());
 					var rd_type = ($("#geos_rd_table option:selected").val());
 					var z = rd_type.split('/').reverse()[0];
-					if (z.includes("_")) {
-						var y = ($("#date_table option:selected").val());
-						rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
-						var var_type = ($("#geos_var_table option:selected").val());
-						var style = ($("#geos_style_table option:selected").val());
-						//update_style(style);
-						var rmin = $("#geos_range-min").val();
-						var rmax = $("#geos_range-max").val();
-						add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, time_global);
-						get_times();
-					}
+					var y = ($("#date_table option:selected").val());
+					rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+					var var_type = ($("#geos_var_table option:selected").val());
+					var style = ($("#geos_style_table option:selected").val());
+					//update_style(style);
+					var rmin = $("#geos_range-min").val();
+					var rmax = $("#geos_range-max").val();
+					add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, time_global);
+					$("#hour_table").html('');
+					get_times(rd_type.split('/').reverse()[0]);
 				});
 
 				$("#hour_table").change(function () {
@@ -1277,6 +1565,67 @@
 					var style = ($("#geos_style_table option:selected").val());
 					$("#geos_range-max").trigger('change');
 				}).change();
+
+				/**
+				* Fire options
+				*/
+				$.each(thredds_options['catalog']['fire'],function(item,i){
+					if (item !== 'combined'){
+						var new_option = new Option(item,item);
+						$("#fire_freq_table").append(new_option);
+					}
+				});
+				$("#fire_freq_table").change(function(){
+					var freq = ($("#fire_freq_table option:selected").val());
+					$("#fire_rd_table").html('');
+					if(thredds_options['catalog']['fire'][freq]){
+						thredds_options['catalog']['fire'][freq].forEach(function(item,i){
+							var opt = item.split('/').reverse()[0];
+							var new_option = new Option(opt,item);
+							$("#fire_rd_table").append(new_option);
+						});
+					}
+					$("#fire_rd_table").trigger('change');
+
+				}).change();
+
+				$("#fire_freq_table").trigger('change');
+
+				var_options.forEach(function(item,i){
+					if(item["category"] === 'fire'){
+						var new_option = new Option(item["display_name"],item["id"]);
+						$("#fire_var_table").append(new_option);
+					}
+				});
+
+				$("#fire_var_table").change(function(){
+					var var_type = ($("#fire_var_table option:selected").val());
+					var index = find_var_index(var_type,var_options);
+					$("#fire_range-min").val(var_options[index]["min"]);
+					$("#fire_range-max").val(var_options[index]["max"]).trigger('change');
+				}).change();
+
+				$("#fire_range-max").on('change',function(){
+					var freq = ($("#fire_freq_table option:selected").val());
+					var rd_type = ($("#fire_rd_table option:selected").val());
+					var parameter_url = "tethys/MK_AQX/fire/";
+					var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
+
+					console.log(datetime);
+					//var datetime = "201801";
+					var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
+					var var_type = ($("#fire_var_table option:selected").val());
+					var style =  ($("#fire_style_table option:selected").val());
+					var rmin = $("#fire_range-min").val();
+					var rmax = $("#fire_range-max").val();
+					add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
+				}).change();
+
+				$("#fire_style_table").change(function () {
+					var style = ($("#fire_style_table option:selected").val());
+					$("#fire_range-max").trigger('change');
+				}).change();
+
 
 				$.each(thredds_options['catalog'],function(item,i){
 					var new_option = new Option(item.toUpperCase(),item);
@@ -1333,7 +1682,6 @@
 					var index = find_var_index(var_type,var_options);
 					$("#lrange-min").val(var_options[index]["min"]);
 					$("#lrange-max").val(var_options[index]["max"]);
-					console.log('lvar change')
 				}).change();
 
 				$("#rvar_table").change(function(){
@@ -1344,6 +1692,9 @@
 				}).change();
 
 
+				/**
+				* Downloading Air Quality products
+				*/
 				$("#btn-download-fire").click(function(){
 					var fileUrl = threddss_wms_url.replace('wms','fileServer');
 					var rd_type = ($("#fire_rd_table option:selected").val());
@@ -1363,6 +1714,9 @@
 					window.location = (downUrl);
 				});
 
+				/**
+				* Layers transparent
+				*/
 				$("#opacity-slider").on("slide", function(e) {
 					$("#OpacityVal").text(e.value);
 					opacity = e.value;
@@ -1401,8 +1755,14 @@
 					map.printControl.print(modeToUse);
 				});
 
+				/**
+				* hide leaflet print controller
+				*/
 				$("a[title='Air quality Print']").css("display", "none");
 
+				/**
+				* tab controller
+				*/
 				$("#tab-fire").click(function () {
 					$("#legend-tab-fire").css("display", "block");
 					$("#legend-tab-aod").css("display", "none");
@@ -1427,6 +1787,10 @@
 					$("#tab-fire").removeClass("active");
 					$("#tab-aod").removeClass("active");
 				});
+
+				/**
+				* tab defualt
+				*/
 				$("#tab-fire").click();
 			});
 		});
