@@ -199,7 +199,7 @@ p {
 }
 .btn-download:hover{
     background-color: #F0B27A;
-    color: #753636;
+    color: #2b5154;
 }
 
 .map-modal__title {
@@ -255,7 +255,7 @@ p {
 }
 
 .noUi-pips-horizontal {
-    color: #753636;
+    color: #2b5154;
     margin-top: -4.5em;
     font-size: 10px;
     font-weight: 500;
@@ -348,11 +348,11 @@ p {
 }
 
 .noUi-handle {
-    border: 1px solid #753636;
+    border: 1px solid #2b5154;
     border-radius: 3px;
     background: #FFF;
     cursor: default;
-    box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #EBEBEB, 0 3px 6px -3px #753636;
+    box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #EBEBEB, 0 3px 6px -3px #2b5154;
 }
 
 .noUi-handle:after, .noUi-handle:before, .noUi-handle:after, .noUi-handle:after {
@@ -382,7 +382,7 @@ p {
 }
 
 .sliderContainer .btn:hover{
-	background-color: #753636;
+	background-color: #2b5154;
     color: #FFF;
 }
 /*End SLider*/
@@ -393,14 +393,12 @@ p {
 }
 
 .control-panel {
-    background: #753636;
     bottom: 45%;
     right: 10px;
     width: 38px;
 }
 
 .control-panel ul {
-    border-bottom: 1px solid #aaa;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     display: -webkit-box;
@@ -421,9 +419,12 @@ ul {
 }
 
 .control-panel li {
-    border-right: 1px solid #aaa;
-    border-top: 1px solid #aaa;
+    border: 1px solid #B9CFDF;
+    border-radius: 25px;
     box-sizing: border-box;
+    margin-bottom: 3px;
+    background: #FFF;
+    color: #333;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -438,7 +439,7 @@ ul {
 
 .map-component {
     position: absolute;
-    z-index: 9999;
+    z-index: 999;
 }
 
 .panel-icon {
@@ -469,3 +470,34 @@ ul {
 .tooltipmap{opacity:1;visibility:visible}
 .layer-checkbox:hover
 .tooltipmap{opacity:1;visibility:visible}
+
+
+ .extra-marker .fa-number:before{
+   font-family: 'Poppins', sans-serif;
+ }
+
+ .pm25_info {
+     padding: 5px 2px 5px 2px;
+     color: #576279;
+     width: 19%;
+     margin: 3px;
+     float: left;
+     text-align: center;
+     border-radius: 0;
+     font-size: small;
+     height: 45px;
+}
+.pm25_info_content {
+    padding: 5px 2px 5px 2px;
+    color: #576279;
+    width: 17%;
+    margin: 3px;
+    font-size: 10px;
+    float: left;
+    text-align: center;
+    border-radius: 0;
+    height: 32px;
+}
+.modal-content{
+  top: 100px;
+}

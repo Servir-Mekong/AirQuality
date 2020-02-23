@@ -28,7 +28,6 @@
 		drawing_polygon,
 		distLayer,
 		var_options,
-		time_global,
 		style_options,
 		$modalCompare,
 		$layers_element,
@@ -36,9 +35,14 @@
 		stations,
 		thredds_urls,
 		threddss_wms_url,
-		markersLayer;
+		markersLayer,
+		$modalChart,
+		time_global, titleforst, coordinates, selectforGIF, guage_val, field_day1_avg, field_day2_avg, field_day3_avg,
+		forecast_day1_avg, forecast_day2_avg, forecast_day3_avg, sum1 = 0, sum2 = 0,
+		sum3 = 0;
 
 		$modalCompare = $("#compare-modal");
+		$modalChart = $("#chart-modal");
 		var $meta_element = $("#metadata");
 		threddss_wms_url = $meta_element.attr('data-wms-url');
 		var_options = $meta_element.attr('data-var-options');
@@ -55,9 +59,26 @@
 		*/
 		map = L.map('map',{
 			zoomControl: false,
+			minZoom: 5,
+			maxZoom: 16,
 			maxBounds: [ [-10, 160],[50, 20]],
-		}).setView([15.8700, 100.9925], 5);
-
+		}).setView([15.8700, 100.9925], 6);
+		var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+			maxZoom: 16,
+			attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+		});
+		var basemap_gray = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+			attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+			maxZoom: 16
+		})
+		Stadia_AlidadeSmoothDark.addTo(map);
+		//basemap_gray.addTo(map);
+		L.esri.dynamicMapLayer({
+			url: 'https://wwf-sight-maps.org/arcgis/rest/services/Global/Administrative_Boundaries_GADM/MapServer',
+			layers:[0,1],
+			opacity: 0.4,
+			zIndex:99998
+		}).addTo(map);
 		/**
 		* tabs controller
 		*/
@@ -204,6 +225,13 @@
 			$(".map-panel__sidebar").css("top", "125px");
 		});
 
+		$("#menu-burger").click(function() {
+			if($('.map-panel__sidebar').css("display") === "none"){
+				$('.map-panel__sidebar').css("display", "block");
+			}else{
+				$('.map-panel__sidebar').css("display", "none");
+			}
+		});
 		$("#zoom-in").click(function() {
 			map.zoomIn();
 		});
@@ -325,8 +353,8 @@
 		};
 
 		/**
-		 * Time Slider
-		 **/
+		* Time Slider
+		**/
 		var timeSlider = document.getElementById('datePickerSlider');
 
 		// Create a string representation of the date.
@@ -343,8 +371,8 @@
 				var dd = date.getDate();
 
 				return [date.getFullYear(),
-						(mm > 9 ? '' : '0') + mm,
-						(dd > 9 ? '' : '0') + dd
+					(mm > 9 ? '' : '0') + mm,
+					(dd > 9 ? '' : '0') + dd
 				].join('-');
 			}
 		};
@@ -390,7 +418,7 @@
 
 		var makeSliderToolTip = function (i, slider) {
 			var tooltip = document.createElement('div'),
-				input = document.createElement('input');
+			input = document.createElement('input');
 
 			// Add the input to the tooltip
 			input.className = 'uitooltip-input';
@@ -509,7 +537,7 @@
 
 
 		var init_opacity_slider = function(){
-			opacity = 1;
+			opacity = 0.5;
 			$("#opacity").text(opacity);
 			$( "#opacity-slider" ).bootstrapSlider({
 				value: opacity,
@@ -549,14 +577,14 @@
 		function find_var_index(item,data){
 			var index = -1;
 			for (var i = 0; i < data.length; ++i) {
-				if (item.includes(data[i]["id"])) {
+				if (data[i]["id"] === item){
 					index = i;
 					break;
 				}
-			}
-			return index;
-		}
 
+			}
+			return index
+		}
 		function handleMouseMove(e,ctx,width,height){
 			$('.tippy').removeClass('hidden');
 			var offsetX,offsetY;
@@ -586,83 +614,89 @@
 			tipCtx.fillText(htext.toFixed(2), 5, 15);
 		}
 
-		var myIcon = L.icon({
-			iconUrl: 'static/images/loc2.png',
-			iconRetinaUrl: 'static/images/loc2.png',
-			iconSize: [35, 35],
-			iconAnchor: [9, 21],
-			popupAnchor: [0, -14]
+
+
+		var myIcon = L.ExtraMarkers.icon({
+			icon: 'fa-number',
+			markerColor: 'red',
+			shape: 'square',
+			prefix: 'fa'
 		});
 
 		function addStations(){
-			//markersLayer.clearLayers();
+			if(map.hasLayer(markersLayer)){
+				markersLayer.clearLayers();
+			}
+
 			var icon_src;
 			markersLayer = L.featureGroup().addTo(map);
 
 
 			for (var i = 0; i < stations.length; ++i) {
-				 	var color="red";
-					if(stations[i].pm25>90){
-				 		color="#ed1e02";
-						icon_src = 'static/images/red.png';
-				 		myIcon = L.icon({
-							iconUrl: icon_src,
-							iconRetinaUrl: 'static/images/loc2.png',
-							iconSize: [35, 35],
-							iconAnchor: [9, 21],
-							popupAnchor: [0, -14]
-						});
-					}
-					else if(stations[i].pm25>50 && stations[i].pm25<91){
-				 		color="#eda702";
-						icon_src = 'static/images/orange.png';
-				 		myIcon = L.icon({
-							iconUrl: icon_src,
-							iconRetinaUrl: 'static/images/loc2.png',
-							iconSize: [35, 35],
-							iconAnchor: [9, 21],
-							popupAnchor: [0, -14]
-						});
-					}
-					else if(stations[i].pm25>37 && stations[i].pm25<51){
-				 		color="#eff213";
-						icon_src = 'static/images/yellow.png';
-				 		myIcon = L.icon({
-							iconUrl: icon_src,
-							iconRetinaUrl: 'static/images/loc2.png',
-							iconSize: [35, 35],
-							iconAnchor: [9, 21],
-							popupAnchor: [0, -14]
-						});
+				var color="red";
+				var pm2_val = stations[i].pm25;
+				if(pm2_val>90){
+					color="#ed1e02";
+					icon_src = 'static/images/red.png';
+					myIcon = L.ExtraMarkers.icon({
+						icon: 'fa-number',
+						number: pm2_val,
+						markerColor: 'red',
+						shape: 'square',
+						prefix: 'fa'
+					});
+				}
+				else if(pm2_val>50 && pm2_val<91){
+					color="#eda702";
+					icon_src = 'static/images/orange.png';
+					myIcon = L.ExtraMarkers.icon({
+						icon: 'fa-number',
+						number: pm2_val,
+						markerColor: 'orange',
+						shape: 'square',
+						prefix: 'fa'
+					});
+				}
+				else if(pm2_val>37 && pm2_val<51){
+					color="#eff213";
+					icon_src = 'static/images/yellow-light.png';
+					myIcon = L.ExtraMarkers.icon({
+						icon: 'fa-number',
+						number: pm2_val,
+						markerColor: 'yellow',
+						shape: 'square',
+						prefix: 'fa',
+					});
 
-					}else if(stations[i].pm25>25 && stations[i].pm25<38){
-				 		color="#24cf1b";
-						icon_src = 'static/images/green.png';
-				 		myIcon = L.icon({
-							iconUrl: icon_src,
-							iconRetinaUrl: 'static/images/loc2.png',
-							iconSize: [35, 35],
-							iconAnchor: [9, 21],
-							popupAnchor: [0, -14]
-						});
-					}else if(stations[i].pm25>=0 && stations[i].pm25<26){
-				 		color="#6ef0ff";
-						icon_src = 'static/images/tt.png';
-				 		myIcon = L.icon({
-							iconUrl: icon_src,
-							iconRetinaUrl: 'static/images/loc2.png',
-							iconSize: [35, 35],
-							iconAnchor: [9, 21],
-							popupAnchor: [0, -14]
-						});
-					}
-				  var oneMarker =
-					 L.marker([stations[i].lat, stations[i].lon], {
+				}else if(pm2_val>25 && pm2_val<38){
+					color="#24cf1b";
+					icon_src = 'static/images/green.png';
+					myIcon = L.ExtraMarkers.icon({
+						icon: 'fa-number',
+						number: pm2_val,
+						markerColor: 'green-light',
+						shape: 'square',
+						prefix: 'fa'
+					});
+				}else if(pm2_val>=0 && pm2_val<26){
+					color="#6ef0ff";
+					icon_src = 'static/images/tt.png';
+					myIcon = L.ExtraMarkers.icon({
+						icon: 'fa-number',
+						number: pm2_val,
+						markerColor: 'cyan',
+						shape: 'square',
+						prefix: 'fa'
+					});
+				}
+				var oneMarker =
+				L.marker([stations[i].lat, stations[i].lon], {
 					icon: myIcon
 				});
-					 oneMarker.bindTooltip("<b>Station:</b> "+stations[i].name+
-					 "<br><b>PM 2.5:</b> "+stations[i].pm25+ " (µg<sup>-3</sup>)"+
-					 "<br><b>Data for:</b> "+stations[i].latest_date);
+				oneMarker.bindTooltip("<b>Station:</b> "+stations[i].name+
+				"<br><b>PM 2.5:</b> "+pm2_val+ " (µg<sup>-3</sup>)"+
+				"<br><b>Data for:</b> "+stations[i].latest_date);
+				oneMarker.station_id = stations[i].station_id;
 				oneMarker.name = stations[i].name;
 				oneMarker.lat = stations[i].lat;
 				oneMarker.lon = stations[i].lon;
@@ -675,22 +709,28 @@
 			markersLayer.setZIndex(500);
 		};
 
+
 		function markerOnClick(e) {
-			var attributes = e.layer;
-			int_type = "Station";
-			$("#station").val(attributes.name+','+attributes.lat+','+attributes.lon);
-			$("#station_name").text(attributes.name);
-			$("#aqi_txt").text("AQI: " + attributes.aqi);
-			$("#aqi_img").attr('src',attributes.src);
-			$("#obs_date").text(attributes.latest_date);
-			//get_ts();
-			// do some stuff…
+			if ($("#geos_run_table option:selected").val() == "geos") {
+				var attributes = e.layer;
+				int_type = "Station";
+				$("#station").val(attributes.station_id + ',' + attributes.lat + ',' + attributes.lon);
+				titleforst = attributes.name;
+				get_ts();
+
+				$("#station_name").text(attributes.name);
+				$("#aqi_txt").text("AQI: " + attributes.aqi);
+				$("#aqi_img").attr('src',attributes.src);
+				$("#obs_date").text(attributes.latest_date);
+			} else {
+				alert("Please select GEOS as the platform to see the chart for station.")
+
+			}
+
 		}
 
 
-
-		add_wms = function(run_type,freq,run_date,var_type,rmin,rmax,styling,time = ""){
-
+		add_wms = function (run_type, freq, run_date, var_type, rmin, rmax, styling, time = "") {
 			var wmsUrl = threddss_wms_url+run_date;
 			wms_layer=wmsUrl;
 			run_type = run_type.toUpperCase();
@@ -698,11 +738,11 @@
 				if(map.hasLayer(tdWmsFireLayer)){
 					map.removeLayer(tdWmsFireLayer);
 				}
-			}else if(run_type === 'GEOS_TAVG1_2D_SLV_NX' || run_type === 'GEOS_TAVG3_2D_AER_NX'){
+			}else if(run_type === 'GEOS'){
 				if(map.hasLayer(tdWmsGEOSLayer)){
 					map.removeLayer(tdWmsGEOSLayer);
 				}
-			}else if(run_type !== 'GEOS_TAVG1_2D_SLV_NX' || run_type !== 'GEOS_TAVG3_2D_AER_NX' || run_type !== 'FIRE'){
+			}else if(run_type !== 'GEOS' || run_type !== 'FIRE'){
 				if(map.hasLayer(tdWmsAODLayer)){
 					map.removeLayer(tdWmsAODLayer);
 				}
@@ -712,29 +752,13 @@
 			var index = find_var_index(var_type,var_options);
 			// gen_color_bar(var_options[index]["colors_list"],scale);
 			var layer_id = var_options[index]["id"];
-			var range = rmin+','+rmax;
+			var range = (rmin ? rmin : '0') + ',' + (rmax ? rmax : '5');
 
 			var style = 'boxfill/'+styling;
-			opacity = $('#opacity-slider').val();
 
-			var link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&time=" + time + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
-			if (time == "") {
-				link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
-			}
-			var imgsrc = link;
-
-			var wmsLayer = L.tileLayer.wms(wmsUrl, {
-				layers: var_type,
-				format: 'image/png',
-				time: time,
-				transparent: true,
-				styles: style,
-				colorscalerange: range,
-				opacity:opacity,
-				version:'1.3.0',
-				zIndex:100,
-				bounds: [[0, 100], [25, 110]],
-			});
+			var opacity_fire = $('#opacity-slider-fire').val();
+			var opacity_aod = $('#opacity-slider-aod').val();
+			var opacity_geos = Number($('#opacity-slider-geos').val());
 
 			if(run_type === 'FIRE'){
 				tdWmsFireLayer = L.tileLayer.wms(wmsUrl, {
@@ -743,42 +767,53 @@
 					transparent: true,
 					styles: style,
 					colorscalerange: range,
-					opacity:opacity,
+					opacity:opacity_fire,
 					version:'1.3.0',
 					zIndex:100,
-					bounds: [[0, 100], [25, 110]],
+					bounds: [[0, 90], [22, 120]],
 				});
 				tdWmsFireLayer.addTo(map);
 				$('#img-legend-fire').attr('src',imgsrc);
-			}else if(run_type === 'GEOS_TAVG1_2D_SLV_NX' || run_type === 'GEOS_TAVG3_2D_AER_NX' || run_type === 'GEOS'){
+			}else if(run_type === 'GEOS'){
 				tdWmsGEOSLayer = L.tileLayer.wms(wmsUrl, {
 					layers: var_type,
 					format: 'image/png',
+					time: time,
 					transparent: true,
 					styles: style,
 					colorscalerange: range,
-					opacity:opacity,
+					opacity:opacity_geos,
 					version:'1.3.0',
 					zIndex:100,
-					bounds: [[0, 100], [25, 110]],
+					bounds: [[0, 90], [22, 120]],
 				});
 				tdWmsGEOSLayer.addTo(map);
 				$('#img-legend-geos').attr('src',imgsrc);
-			}else if(run_type !== 'GEOS_TAVG1_2D_SLV_NX' || run_type !== 'GEOS_TAVG3_2D_AER_NX' || run_type !== 'FIRE'){
+			}else if(run_type !== 'GEOS' || run_type !== 'FIRE'){
 				tdWmsAODLayer = L.tileLayer.wms(wmsUrl, {
 					layers: var_type,
 					format: 'image/png',
 					transparent: true,
 					styles: style,
 					colorscalerange: range,
-					opacity:opacity,
+					opacity:opacity_aod,
 					version:'1.3.0',
 					zIndex:100,
-					bounds: [[0, 100], [25, 110]],
+					bounds: [[0, 90], [22, 120]],
 				});
 				tdWmsAODLayer.addTo(map);
 				$('#img-legend-aod').attr('src',imgsrc);
 			}
+
+			var link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&time=" + time + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
+			var imgsrc = link;
+
+			if (time == "") {
+
+				link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
+				imgsrc = link;
+			}
+
 		};
 
 		/**
@@ -1163,7 +1198,7 @@
 			}
 		});
 
-		map.addControl(drawControlFull);
+		// map.addControl(drawControlFull);
 
 
 		var customActionToPrint = function (context, mode) {
@@ -1232,563 +1267,1001 @@
 		// var timeDimensionControl = new L.Control.TimeDimensionCustom(timeDimensionControlOptions);
 		// map.addControl(timeDimensionControl);
 
-		var mapLink =
-		'<a href="http://openstreetmap.org">OpenStreetMap</a>';
-		L.tileLayer(
-			'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; ' + mapLink + ' Contributors',
-				maxZoom: 18,
-			}).addTo(map);
 
-			var wmsUrl = "https://tethys.servirglobal.net/thredds/wms/tethys/HIWAT/hkhControl_20180329-1800_latlon.nc";
-			var wmsLayer = L.tileLayer.wms(wmsUrl, {
-				layers: 'APCP_surface',
-				format: 'image/png',
-				transparent: true,
-				style:'boxfill/apcp_surface'
-			});
+		var wmsUrl = "https://tethys.servirglobal.net/thredds/wms/tethys/HIWAT/hkhControl_20180329-1800_latlon.nc";
+		var wmsLayer = L.tileLayer.wms(wmsUrl, {
+			layers: 'APCP_surface',
+			format: 'image/png',
+			transparent: true,
+			style:'boxfill/apcp_surface'
+		});
 
-			/**
-			* Create and add a TimeDimension Layer to the map
-			*/
-			tdWmsFireLayer = L.timeDimension.layer.wms(wmsLayer);
-			//tdWmsLayer.addTo(map);
+		/**
+		* Create and add a TimeDimension Layer to the map
+		*/
+		tdWmsFireLayer = L.timeDimension.layer.wms(wmsLayer);
+		//tdWmsLayer.addTo(map);
 
-			lwmsLayer = L.tileLayer.wms();
+		lwmsLayer = L.tileLayer.wms();
 
-			rwmsLayer = L.tileLayer.wms();
+		rwmsLayer = L.tileLayer.wms();
 
 
-			// var init_events = function(){
-			// 	map.on("mousemove", function (event) {
-			// 		document.getElementById('mouse-position').innerHTML = 'Latitude:'+event.latlng.lat.toFixed(5)+', Longitude:'+event.latlng.lng.toFixed(5);
-			// 	});
-			// };
-			// init_events();
+		// var init_events = function(){
+		// 	map.on("mousemove", function (event) {
+		// 		document.getElementById('mouse-position').innerHTML = 'Latitude:'+event.latlng.lat.toFixed(5)+', Longitude:'+event.latlng.lng.toFixed(5);
+		// 	});
+		// };
+		// init_events();
 
-			get_ts = function () {
-				if ($("#poly-lat-lon").val() == "" && $("#point-lat-lon").val() == "" && $("#shp-lat-lon").val() == "") {
-					$('.error').html('<b>No feature selected. Please create a feature using the map interaction dropdown. Plot cannot be generated without a feature.</b>');
-					return false;
-				} else {
-					$('.error').html('');
-				}
 
-				var interaction = int_type;
+		function gen_chart(field_val, forecast_val) {
+			var myConfig = {
+				type: "gauge",
+				legend: {
+					align: 'center',
+					offsetY:260
 
-				var run_type = ($("#run_table option:selected").val());
-				var freq = ($("#freq_table option:selected").val());
-				var rd_type = ($("#rd_table option:selected").text());
-				var var_type = ($("#var_table option:selected").val());
 
-				if (interaction == "Point") {
-					var geom_data = $("#point-lat-lon").val();
-				} else if (interaction == "Polygon") {
-					var geom_data = $("#poly-lat-lon").val();
-				}
-				$modalChart.modal('show');
-				$("#cube").removeClass('hidden');
-				$("#plotter").addClass('hidden');
+				},
+				scaleR: {
+					"aperture": 200,
+					"values": "0:99:3",
+					center: {
+						"size": 10,
+						"background-color": "#66CCFF #FFCCFF",
+						"border-color": "none"
+					},
+					labels: ['0', '', '', '', '12', '', '', '', '24', '', '', '', '36', '', '', '', '48', '', '', '', '60', '', '', '', '72', '', '', '', '84', '', '', '', '', 'Max'],
+					item: {  //Scale Label Styling
+						"font-color": "black",
+						"font-family": "Arial",
+						"font-size": 12,
+						"font-weight": "bold",   //or "normal"
+						"font-style": "normal",   //or "italic"
+						"offset-r": 0,
+						"angle": "auto"
+					},
 
+					ring: {  //Ring with Rules
+						"size": 20,
+						"rules": [
+							{
+								"rule": "%v >= 0 && %v < 25",
+								"background-color": "#6ef0ff"
+							},
+							{
+								"rule": "%v >= 25 && %v < 37",
+								"background-color": "#24cf1b"
+							},
+							{
+								"rule": "%v >= 37 && %v < 50",
+								"background-color": "#eff213"
+							},
+							{
+								"rule": "%v >= 50 && %v < 90",
+								"background-color": "#eda702"
+							},
+							{
+								"rule": "%v >= 90",
+								"background-color": "#ed1e02"
+							}
+						]
+					}
+				},
+				series: [
+					{
+						values: [Math.round(field_val) >= 99 ? 99 : Math.round(field_val)], // starting value
+						// backgroundColor: 'black',
+						// indicator: [5, 5, 5, 5, 0.75],
+						animation: {
+							effect: 2,
+							method: 1,
+							sequence: 4,
+							speed: 900
+						},
+						csize: "7%",     //Needle Width
+						size: "90%",    //Needle Length
+						'background-color': "blue",  //Needle Color
+						text: "PM2.5 Measurement"
+					},
+					{
+						values: [Math.round(forecast_val) >= 99 ? 99 : Math.round(forecast_val)],
+						animation: {
+							effect: 2,
+							method: 1,
+							sequence: 4,
+							speed: 700
+						},
+						csize: "7%",
+						size: "90%",
+						'background-color': "green",
+						text: "PM2.5 Forecast"
+					}
+
+
+				]
 			};
 
-			$(function() {
-
-				/**
-				* AOD options
-				*/
-				$.each(thredds_options['catalog'],function(item,i){
-					if(item.toUpperCase()!== "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!== "GEOS_TAVG3_2D_AER_NX" && item.toUpperCase()!== "FIRE"){
-						var new_option = new Option(item.toUpperCase(),item);
-						$("#aod_run_table").append(new_option);
-					}
-				});
-
-				$("#aod_run_table").change(function(){
-					var run_type = ($("#aod_run_table option:selected").val());
-					$("#aod_freq_table").html('');
-					$("#aod_var_table").html('');
-					var_options.forEach(function(item,i){
-						if(item["category"] === run_type){
-							var option = new Option(item["display_name"],item["id"]);
-							$("#aod_var_table").append(option);
-						}
-					});
-					$.each(thredds_options['catalog'][run_type],function(item,i){
-						if (item !== 'combined'){
-							var new_option = new Option(item,item);
-							$("#aod_freq_table").append(new_option);
-						}
-					});
-					$("#aod_freq_table").trigger('change');
-				}).change();
-
-				$("#aod_freq_table").change(function(){
-					var freq = ($("#aod_freq_table option:selected").val());
-					var run_type = ($("#aod_run_table option:selected").val());
-					$("#aod_rd_table").html('');
-					$("#aod_var_table").html('');
-					if(thredds_options['catalog'][run_type][freq]){
-						thredds_options['catalog'][run_type][freq].forEach(function(item,i){
-							var opt = item.split('/').reverse()[0];
-							var new_option = new Option(opt,item);
-							$("#aod_rd_table").append(new_option);
-						});
-					}
-					$("#aod_rd_table").trigger('change');
-
-				}).change();
-
-				$("#aod_rd_table").change(function(){
-					var freq = ($("#aod_freq_table option:selected").val());
-					var run_type = ($("#aod_run_table option:selected").val());
-					var rd_type = ($("#aod_rd_table option:selected").val());
-					$("#aod_var_table").html('');
-					var_options.forEach(function(item,i){
-						if(item["category"] === run_type){
-							var new_option = new Option(item["display_name"],item["id"]);
-							$("#aod_var_table").append(new_option);
-						}
-					});
-					$("#aod_var_table").trigger('change');
-				}).change();
-
-				$("#aod_var_table").change(function(){
-					var var_type = ($("#aod_var_table option:selected").val());
-					var index = find_var_index(var_type,var_options);
-					$("#aod_range-min").val(var_options[index]["min"]);
-					$("#aod_range-max").val(var_options[index]["max"]).trigger('change');
-				}).change();
-
-				$("#aod_range-max").on('change',function(){
-					var run_type = ($("#aod_run_table option:selected").val());
-					var freq = ($("#aod_freq_table option:selected").val());
-					var rd_type = ($("#aod_rd_table option:selected").val());
-					var parameter_url = rd_type.slice(0, -17);
-					var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
-
-					//var datetime = "201801";
-					var rd_type = parameter_url + "."+ datetime +".MEKONG.nc";
-					var var_type = ($("#aod_var_table option:selected").val());
-					var style =  ($("#aod_style_table option:selected").val());
-					var rmin = $("#aod_range-min").val();
-					var rmax = $("#aod_range-max").val();
-					add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
-				}).change();
-
-				$("#aod_style_table").change(function () {
-					var style = ($("#aod_style_table option:selected").val());
-					$("#aod_range-max").trigger('change');
-				}).change();
-
-				/**
-				* GEOS options
-				*/
-				$.each(thredds_options['catalog'],function(item,i){
-					if(item.toUpperCase() === "GEOS_TAVG1_2D_SLV_NX" || item.toUpperCase() === "GEOS_TAVG3_2D_AER_NX" || item.toUpperCase() === "GEOS" ){
-						var new_option = new Option(item.toUpperCase(),item);
-						$("#geos_run_table").append(new_option);
-					}
-				});
-
-				$("#geos_run_table").change(function(){
-					var run_type = ($("#geos_run_table option:selected").val());
-					$("#geos_freq_table").html('');
-					$("#geos_var_table").html('');
-					$("#lrd_table").html('');
-					$("#rrd_table").html('');
-					$("#lvar_table").html('');
-					$("#rvar_table").html('');
-					$.each(thredds_options['catalog'][run_type], function (item, i) {
-						if ((item == '3daytoday' || item == '3dayrecent') && (run_type == "geos_tavg1_2d_slv_Nx" || run_type == "geos_tavg3_2d_aer_Nx" || run_type == "geos")) {
-
-							var new_option = new Option(item, item);
-							$("#geos_freq_table").append(new_option);
-						} else if (item == 'combined') {
-
-							var new_option = new Option(item, item);
-							$("#geos_freq_table").append(new_option);
-						}
-					});
-					$("#geos_freq_table").trigger('change');
-					if (thredds_options['catalog'][run_type]['monthly']) {
-						thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
-							var opt = item.split('/').reverse()[0];
-							var new_option = new Option(opt, item);
-							var noption = new Option(opt, item);
-							$("#lrd_table").append(new_option);
-							$("#rrd_table").append(noption);
-						});
-					}
-
-					var_options.forEach(function (item, i) {
-						if (item["category"] == run_type) {
-							var new_option = new Option(item["display_name"]);
-							// +' ('+item["units"]+')'
-							var noption = new Option(item["display_name"], item["id"]);
-							$("#lvar_table").append(new_option);
-							$("#rvar_table").append(noption);
-						}
-					});
-
-				}).change();
-
-				$("#geos_freq_table").change(function(){
-					var freq = $("#geos_freq_table option:selected").val();
-					var run_type = $("#geos_run_table option:selected").val();
-					$("#geos_rd_table").html('');
-					$("#geos_var_table").html('');
-					if(thredds_options['catalog'][run_type][freq]){
-						thredds_options['catalog'][run_type][freq].forEach(function (item, i) {
-
-							var opt = item.split('/').reverse()[0];
-							var new_option = new Option(opt,item);
-							$("#geos_rd_table").append(new_option);
-						});
-						$("#geos_rd_table").trigger('change');
-					}
-
-
-				}).change();
-
-				get_times = function (rd_type) {
-					$("#hour_table").html('');
-					var freq = ($("#geos_freq_table option:selected").val());
-					var run_type = ($("#geos_run_table option:selected").val());
-					var parameters = {
-						run_type: run_type,
-						freq: freq,
-						run_date: rd_type
-					};
-					MapService.get_time(parameters)
-					.then(function (result){
-						var times = result["times"];
-						time_global = times[0];
-						times.forEach(function (time, i) {
-							var opt = new Option(time, time);
-							$("#hour_table").append(opt);
-						});
-					}), function (error){
-						console.log(error);
-					};
-				};
-
-				$("#geos_rd_table").change(function(){
-					$("#date_table").empty();
-					$("#hour_table").empty();
-					var freq = ($("#geos_freq_table option:selected").val());
-					var run_type = ($("#geos_run_table option:selected").val());
-					var rd_type = ($("#geos_rd_table option:selected").val());
-
-					var str = rd_type.split('/').reverse()[0];
-					var newt = str.substring(0, 4) + '-' + str.substring(4, 6) + '-' + str.substring(6, 8);
-					thredds_options['catalog'][run_type][freq].forEach(function (item, i) {
-
-						var opt = item.split('/').reverse()[0];
-						if (run_type == "geos_tavg1_2d_slv_Nx" || run_type == "geos_tavg3_2d_aer_Nx" || run_type == "geos") {
-							$('#info').text("Displaying " + newt + " data on the map..");
-							var new_option2 = new Option(opt, item);
-							$("#date_table").append(new_option2);
-						}
-					});
-					$("#geos_var_table").html('');
-					var_options.forEach(function (item, i) {
-						if (item["category"] == run_type) {
-							var new_option = new Option(item["display_name"], item["id"]);
-							$("#geos_var_table").append(new_option);
-						}
-					});
-					$("#geos_var_table").trigger('change');
-				}).change();
-
-
-				$("#date_table").change(function () {
-					var run_type = ($("#geos_run_table option:selected").val());
-					if (run_type == "geos_tavg1_2d_slv_Nx" || run_type == "geos_tavg3_2d_aer_Nx" || run_type == "geos") {
-						$('#info').text("Displaying " + ($("#date_table option:selected").val().split('/').reverse()[0]) + " data on the map..");
-
-					}
-					var freq = ($("#geos_freq_table option:selected").val());
-					var rd_type = ($("#geos_rd_table option:selected").val());
-					var z = rd_type.split('/').reverse()[0];
-					var y = ($("#date_table option:selected").val());
-					rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
-					var var_type = ($("#geos_var_table option:selected").val());
-					var style = ($("#geos_style_table option:selected").val());
-					//update_style(style);
-					var rmin = $("#geos_range-min").val();
-					var rmax = $("#geos_range-max").val();
-					add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, time_global);
-					$("#hour_table").html('');
-					get_times(rd_type.split('/').reverse()[0]);
-				});
-
-				$("#hour_table").change(function () {
-					var run_type = ($("#geos_run_table option:selected").val());
-					var freq = ($("#geos_freq_table option:selected").val());
-					var rd_type = ($("#geos_rd_table option:selected").val());
-					var z = rd_type.split('/').reverse()[0];
-					if (z.includes("_")) {
-						var y = ($("#date_table option:selected").val());
-						rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
-						var var_type = ($("#geos_var_table option:selected").val());
-						var style = ($("#geos_style_table option:selected").val());
-						//update_style(style);
-						var rmin = $("#geos_range-min").val();
-						var rmax = $("#geos_range-max").val();
-						add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
-					}
-
-				});
-
-				$("#geos_var_table").change(function(){
-					var var_type = ($("#geos_var_table option:selected").val());
-					var index = find_var_index(var_type,var_options);
-					$("#geos_range-min").val(var_options[index]["min"]);
-					$("#geos_range-max").val(var_options[index]["max"]).trigger('change');
-
-				}).change();
-
-				$("#geos_range-max").on('change',function(){
-					var run_type = ($("#geos_run_table option:selected").val());
-					var freq = ($("#geos_freq_table option:selected").val());
-					var rd_type = ($("#geos_rd_table option:selected").val());
-					var var_type = ($("#geos_var_table option:selected").val());
-					var rmin = $("#geos_range-min").val();
-					var rmax = $("#geos_range-max").val();
-					$("#date_table").trigger('change');
-
-				}).change();
-				$("#geos_style_table").change(function () {
-					var style = ($("#geos_style_table option:selected").val());
-					$("#geos_range-max").trigger('change');
-				}).change();
-
-				/**
-				* Fire options
-				*/
-				$.each(thredds_options['catalog']['fire'],function(item,i){
-					if (item !== 'combined'){
-						var new_option = new Option(item,item);
-						$("#fire_freq_table").append(new_option);
-					}
-				});
-				$("#fire_freq_table").change(function(){
-					var freq = ($("#fire_freq_table option:selected").val());
-					$("#fire_rd_table").html('');
-					if(thredds_options['catalog']['fire'][freq]){
-						thredds_options['catalog']['fire'][freq].forEach(function(item,i){
-							var opt = item.split('/').reverse()[0];
-							var new_option = new Option(opt,item);
-							$("#fire_rd_table").append(new_option);
-						});
-					}
-					$("#fire_rd_table").trigger('change');
-
-				}).change();
-
-				$("#fire_freq_table").trigger('change');
-
-				var_options.forEach(function(item,i){
-					if(item["category"] === 'fire'){
-						var new_option = new Option(item["display_name"],item["id"]);
-						$("#fire_var_table").append(new_option);
-					}
-				});
-
-				$("#fire_var_table").change(function(){
-					var var_type = ($("#fire_var_table option:selected").val());
-					var index = find_var_index(var_type,var_options);
-					$("#fire_range-min").val(var_options[index]["min"]);
-					$("#fire_range-max").val(var_options[index]["max"]).trigger('change');
-				}).change();
-
-				$("#fire_range-max").on('change',function(){
-					var freq = ($("#fire_freq_table option:selected").val());
-					var rd_type = ($("#fire_rd_table option:selected").val());
-					var parameter_url = "tethys/MK_AQX/fire/";
-					var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
-
-					//var datetime = "201801";
-					var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
-					var var_type = ($("#fire_var_table option:selected").val());
-					var style =  ($("#fire_style_table option:selected").val());
-					var rmin = $("#fire_range-min").val();
-					var rmax = $("#fire_range-max").val();
-					add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
-				}).change();
-
-				$("#fire_style_table").change(function () {
-					var style = ($("#fire_style_table option:selected").val());
-					$("#fire_range-max").trigger('change');
-				}).change();
-
-
-				$.each(thredds_options['catalog'],function(item,i){
-					var new_option = new Option(item.toUpperCase(),item);
-					var noption = new Option(item.toUpperCase(),item);
-					var noption2 = new Option(item.toUpperCase(),item);
-					$("#lrun_table").append(noption);
-					$("#rrun_table").append(noption2);
-				});
-
-				$("#lrun_table").change(function(){
-					var run_type = ($("#lrun_table option:selected").val());
-					$("#lrd_table").html('');
-					$("#lvar_table").html('');
-					if (thredds_options['catalog'][run_type]['monthly']) {
-						thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
-							var opt = item.split('/').reverse()[0];
-							var new_option = new Option(opt, item);
-							$("#lrd_table").append(new_option);
-						});
-					}
-					var_options.forEach(function (item, i) {
-						if (item["category"] == run_type) {
-							var new_option = new Option(item["display_name"], item["id"]);
-							$("#lvar_table").append(new_option);
-						}
-					});
-					$("#lvar_table").trigger('change');
-
-				}).change();
-
-				$("#rrun_table").change(function(){
-					var run_type = ($("#rrun_table option:selected").val());
-					$("#rrd_table").html('');
-					$("#rvar_table").html('');
-					if (thredds_options['catalog'][run_type]['monthly']) {
-						thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
-							var opt = item.split('/').reverse()[0];
-							var new_option = new Option(opt, item);
-							$("#rrd_table").append(new_option);
-						});
-					}
-					var_options.forEach(function (item, i) {
-						if (item["category"] == run_type) {
-							var new_option = new Option(item["display_name"], item["id"]);
-							$("#rvar_table").append(new_option);
-						}
-					});
-					$("#rvar_table").trigger('change');
-
-				}).change();
-
-				$("#lvar_table").change(function(){
-					var var_type = ($("#lvar_table option:selected").val());
-					var index = find_var_index(var_type,var_options);
-					$("#lrange-min").val(var_options[index]["min"]);
-					$("#lrange-max").val(var_options[index]["max"]);
-				}).change();
-
-				$("#rvar_table").change(function(){
-					var var_type = ($("#rvar_table option:selected").val());
-					var index = find_var_index(var_type,var_options);
-					$("#rrange-min").val(var_options[index]["min"]);
-					$("#rrange-max").val(var_options[index]["max"]);
-				}).change();
-
-
-				/**
-				* Downloading Air Quality products
-				*/
-				$("#btn-download-fire").click(function(){
-					var fileUrl = threddss_wms_url.replace('wms','fileServer');
-					var rd_type = ($("#fire_rd_table option:selected").val());
-					var downUrl = fileUrl+rd_type;
-					window.location = (downUrl);
-				});
-				$("#btn-download-aod").click(function(){
-					var fileUrl = threddss_wms_url.replace('wms','fileServer');
-					var rd_type = ($("#aod_rd_table option:selected").val());
-					var downUrl = fileUrl+rd_type;
-					window.location = (downUrl);
-				});
-				$("#btn-download-geos").click(function(){
-					var fileUrl = threddss_wms_url.replace('wms','fileServer');
-					var rd_type = ($("#geos_rd_table option:selected").val());
-					var downUrl = fileUrl+rd_type;
-					window.location = (downUrl);
-				});
-
-				/**
-				* Layers transparent
-				*/
-				$("#opacity-slider").on("slide", function(e) {
-					$("#OpacityVal").text(e.value);
-					opacity = e.value;
-					tdWmsFireLayer.setOpacity(opacity);
-				});
-
-				$("#opacity-slider-aod").on("slide", function(e) {
-					$("#OpacityVal2").text(e.value);
-					opacity = e.value;
-					tdWmsAODLayer.setOpacity(opacity);
-				});
-
-				$("#opacity-slider-geos").on("slide", function(e) {
-					$("#OpacityVal3").text(e.value);
-					opacity = e.value;
-					tdWmsGEOSLayer.setOpacity(opacity);
-				});
-
-				/**
-				* legend controller
-				*/
-				$(".legend-info-button").click(function () {
-					$(".legend-tabs").toggle();
-					$("#legend-content").toggle();
-					if ($("#legend-content").is(":visible") === true) {
-						$("#legend-collapse").css("display","inline-block");
-						$("#legend-expand").css("display","none");
-					}
-					else {
-						$("#legend-collapse").css("display","none");
-						$("#legend-expand").css("display","inline-block");
-					}
-				});
-				$("#btn-print").click(function () {
-					var modeToUse = L.control.browserPrint.mode.auto();
-					map.printControl.print(modeToUse);
-				});
-
-				/**
-				* hide leaflet print controller
-				*/
-				$("a[title='Air quality Print']").css("display", "none");
-
-				/**
-				* tab controller
-				*/
-				$("#tab-fire").click(function () {
-					$("#legend-tab-fire").css("display", "block");
-					$("#legend-tab-aod").css("display", "none");
-					$("#legend-tab-geos").css("display", "none");
-					$("#tab-fire").addClass("active");
-					$("#tab-aod").removeClass("active");
-					$("#tab-geos").removeClass("active");
-				});
-				$("#tab-aod").click(function () {
-					$("#legend-tab-fire").css("display", "none");
-					$("#legend-tab-aod").css("display", "block");
-					$("#legend-tab-geos").css("display", "none");
-					$("#tab-aod").addClass("active");
-					$("#tab-fire").removeClass("active");
-					$("#tab-geos").removeClass("active");
-				});
-				$("#tab-geos").click(function () {
-					$("#legend-tab-geos").css("display", "block");
-					$("#legend-tab-fire").css("display", "none");
-					$("#legend-tab-aod").css("display", "none");
-					$("#tab-geos").addClass("active");
-					$("#tab-fire").removeClass("active");
-					$("#tab-aod").removeClass("active");
-				});
-
-				/**
-				* tab defualt
-				*/
-				$("#tab-fire").click();
+			zingchart.render({
+				id: 'guage_chart',
+				data: myConfig,
+				height: 350,
+				width: '100%'
 			});
+		}
+
+		get_ts = function () {
+
+			var interaction = int_type;
+			if (interaction == "Station") {
+				//console.log("station");
+			} else if ($("#poly-lat-lon").val() == "" && $("#point-lat-lon").val() == "" && $("#shp-lat-lon").val() == "") {
+				// $('.error').html('<b>No feature selected. Please create a feature using the map interaction dropdown. Plot cannot be generated without a feature.</b>');
+				return false;
+			} else {
+				$('.error').html('');
+			}
+
+
+
+			var run_type = ($("#geos_run_table option:selected").val());
+			var freq = ($("#geos_freq_table option:selected").val());
+			var rd_type = ($("#geos_rd_table option:selected").text());
+			var var_type = ($("#geos_var_table option:selected").val());
+			var z = rd_type.split('/').reverse()[0];
+			var y = ($("#date_table option:selected").val());
+			if (($("#date_table option:selected").val()) != undefined)
+			rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+			if (interaction == "Point") {
+				var geom_data = $("#point-lat-lon").val();
+			} else if (interaction == "Polygon") {
+				var geom_data = $("#poly-lat-lon").val();
+			} else if (interaction == "Station") {
+				var geom_data = $("#station").val();
+			}
+
+			$modalChart.modal('show');
+			$("#cube").removeClass('hidden');
+			$("#plotter").addClass('hidden');
+			var serieses = [];
+
+			var parameters = {
+				run_type: run_type,
+				freq: freq,
+				run_date: rd_type,
+				var_type: var_type,
+				interaction:interaction,
+				geom_data: geom_data
+			};
+
+			MapService.getChartData(parameters)
+			.then(function (result){
+				if ("success" in result) {
+
+					if (interaction == "Station") {
+						var values = result.data["field_data"];
+						var forecast_values = result.data["bc_mlpm25"];
+						var firstday = rd_type.substring(0, 4) + '-' + rd_type.substring(4, 6) + '-' + rd_type.substring(6, 8);
+						var d1 = new Date(firstday);
+						var date1 = d1.toISOString().split('T')[0];
+						d1.setDate(d1.getDate() + 1);
+						var d2 = new Date(firstday)
+						d2.setDate(d2.getDate() + 2);
+						var secondday = d1.toISOString().split('T')[0];
+						var thirdday = d2.toISOString().split('T')[0];
+						// document.getElementById("firstday").innerHTML = date1;
+						// document.getElementById("secondday").innerHTML = secondday;
+						// document.getElementById("thirdday").innerHTML = thirdday;
+						document.getElementById("day1_guage").innerHTML = date1;
+						document.getElementById("day2_guage").innerHTML = secondday;
+						document.getElementById("day3_guage").innerHTML = thirdday;
+
+						//     populateValues(values);
+						field_day1_avg = 0
+						field_day2_avg = 0;
+						field_day3_avg = 0;
+
+						forecast_day1_avg = 0
+						forecast_day2_avg = 0;
+						forecast_day3_avg = 0;
+						sum1 = 0, sum2 = 0, sum3 = 0;
+						var count1 = 0, count2 = 0, count3 = 0
+						for (var i = 0; i < 8; i++) {
+							if (values[i] != -1) count1 = count1 + 1;
+							if (values[i + 8] != -1) count2 = count2 + 1;
+							if (values[i + 16] != -1) count3 = count3 + 1;
+
+							sum1 = sum1 + (values[i] ? values[i][1] : 0);
+							sum2 = sum2 + (values[i + 8] ? values[i + 8][1] : 0);
+							sum3 = sum3 + (values[i + 16] ? values[i + 16][1] : 0);
+
+						}
+						field_day1_avg = sum1 / count1;
+						field_day2_avg = sum2 / count2;
+						field_day3_avg = sum3 / count3;
+						sum1 = 0, sum2 = 0, sum3 = 0;
+						count1 = 0, count2 = 0, count3 = 0
+						for (var i = 0; i < 8; i++) {
+
+							if (i >= 2 && forecast_values[i] != -1) {
+								count1 = count1 + 1;
+								sum1 = sum1 + (forecast_values[i] ? forecast_values[i][1] : 0);
+							}
+							if (forecast_values[i + 8] != -1) count2 = count2 + 1;
+							sum2 = sum2 + (forecast_values[i + 8] ? forecast_values[i + 8][1] : 0);
+							if ((i + 16) < 22 && forecast_values[i + 16] != -1) {
+								count3 = count3 + 1;
+								sum3 = sum3 + (forecast_values[i + 16] ? forecast_values[i + 16][1] : 0);
+							}
+
+
+						}
+						forecast_day1_avg = sum1 / count1;
+						forecast_day2_avg = sum2 / count2;
+						forecast_day3_avg = sum3 / count3;
+
+						//console.log("station");
+						gen_chart(field_day1_avg < 0 ? -1 : field_day1_avg, forecast_day1_avg < 0 ? -1 : forecast_day1_avg);
+						document.getElementById("datevalue").innerHTML = document.getElementById("day1_guage").innerHTML;
+						document.getElementById("fromd").innerHTML = document.getElementById("day1_guage").innerHTML+" 08:30";
+						document.getElementById("tod").innerHTML = document.getElementById("day1_guage").innerHTML+" 23:30";
+						$("#day1_guage").css("background-color", "#43a8c5");
+						$("#day1_guage").css("color", "white");
+						$("#day2_guage").css("background-color", "gray");
+						$("#day2_guage").css("color", "white");
+						$("#day3_guage").css("background-color", "gray");
+						$("#day3_guage").css("color", "white");
+					}
+
+					var arr = [];
+					var title = "";
+					var index = find_var_index(var_type, var_options);
+					var display_name = var_options[index]["display_name"] == "BC_MLPM25" ? "PM 2.5" : var_options[index]["display_name"];
+					var units = var_options[index]["units"];
+					if (units == 'mcgm-3') {
+						units = '&micro;gm<sup>-3</sup>';
+					}
+
+					if (interaction == "Station") {
+						document.getElementsByClassName("forpm25")[0].style.display = 'table';
+						document.getElementsByClassName("forpm25")[1].style.display = 'table';
+						// document.getElementsByClassName("forpm25")[2].style.display = 'table';
+						// document.getElementsByClassName("forpm25")[2].style.width = 'inherit';
+						document.getElementById("chartonly").style.width = '50%';
+						document.getElementById("modalchart").style.width = "60%";
+						document.getElementById("modalchart").style.display = "flex";
+						document.getElementById("modalchart").style.alignItems = "center";
+						document.getElementById("modalchart").style.justifyContent = "center";
+						serieses = [
+							/*{
+							data: result.data["ml_pm25"],
+							name: "ML PM25",
+							color: "blue",
+							marker: {
+							enabled: true,
+							radius: 3
+						}
+					},*/ {
+					data: result.data["field_data"],
+					name: "PM2.5 Measurement",
+					color: "blue"
+				},
+				{
+					data: result.data["bc_mlpm25"],
+					name: "PM2.5 Forecast",//
+					color: "green"
+				},
+				/*   {
+				data: result.data["geos_pm25"],
+				name: "GEOS PM25 data",
+				color: "red"
+			}*/
+		];
+		document.getElementById('pmlabel').style.display="block";
+	} else {
+
+		document.getElementsByClassName("forpm25")[0].style.display = 'none';
+		document.getElementsByClassName("forpm25")[1].style.display = 'none';
+		//          document.getElementsByClassName("forpm25")[2].style.display = 'none';
+		document.getElementById("chartonly").style.width = '100%';
+		document.getElementById("modalchart").style.width = "";
+		document.getElementById("modalchart").style.display = "";
+		document.getElementById("modalchart").style.alignItems = "";
+		document.getElementById("modalchart").style.justifyContent = "";
+		serieses = [{
+			data: result.data["plot"],
+			name: display_name,
+			color: "black",
+			marker: {
+				enabled: true,
+				radius: 3
+			}
+		}];
+		document.getElementById('pmlabel').style.display="none";
+	}
+	if (interaction == "Station") {
+
+		arr = [{
+			color: "#6ef0ff",
+			from: 0,
+			to: 25
+		},
+		{
+			color: "#24cf1b",
+			from: 25,
+			to: 37
+		},
+		{
+			color: "#eff213",
+			from: 37,
+			to: 50
+		},
+		{
+			color: "#eda702",
+			from: 50,
+			to: 90
+		},
+		{
+			color: "#ed1e02",
+			from: 90,
+			to: 200
+		}];
+		title = "PM2.5 values at " + titleforst;
+
+	} else {
+		arr = [];
+		title = $("#var_table option:selected").text() + " values at " + result.data["geom"];
+	}
+	$('.error').html('');
+	$('#plotter').highcharts({
+		chart: {
+			style: {
+				fontFamily: 'Poppins'
+			},
+			type: 'spline',
+			zoomType: 'x',
+			events: {
+				load: function () {
+					var label = this.renderer.label("Graph dates and times are in Bangkok time")
+					.css({
+						width: '400px',
+						fontSize: '12px'
+					})
+					.attr({
+						'stroke': 'silver',
+						'stroke-width': 1,
+						'r': 2,
+						'padding': 5
+					})
+					.add();
+
+					label.align(Highcharts.extend(label.getBBox(), {
+						align: 'center',
+						x: 20, // offset
+						verticalAlign: 'bottom',
+						y: 0 // offset
+					}), null, 'spacingBox');
+
+				}
+			},
+			paddingBottom: 50
+		},
+		credits: {
+			enabled: false
+		},
+		tooltip: {
+			backgroundColor: '#FCFFC5',
+			borderColor: 'black',
+			borderRadius: 10,
+			borderWidth: 3
+		},
+		title: {
+			text: title,
+			style: {
+				fontSize: '14px'
+			}
+		},
+		xAxis: {
+			type: 'datetime',
+			labels: {
+				format: '{value: %Y-%m-%d}'
+				// rotation: 45,
+				// align: 'left'
+			},
+			title: {
+				text: 'Date'
+			}
+		},
+		legend: {
+			align: 'center',
+			verticalAlign: 'bottom',
+			y: -25
+		},
+		yAxis: {
+			title: {
+				useHTML: true,
+				text: units
+			},
+			plotBands: arr,
+
+		},
+		plotOptions: {
+			series: {
+				color: "black"
+			}
+		},
+		exporting: {
+			enabled: true
+		},
+		series: serieses
+
+	});
+	$("#cube").addClass('hidden');
+	$("#plotter").removeClass('hidden');
+} else {
+	$("#cube").addClass('hidden');
+	$(".error").append('<h3>Error Processing Request.</h3>');
+	$("#plotter").removeClass('hidden');
+}
+
+
+}), function (error){
+	console.log(error);
+};
+
+};
+$(function() {
+
+	/**
+	* AOD options
+	*/
+	$.each(thredds_options['catalog'],function(item,i){
+		if(item.toUpperCase()!== "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!== "GEOS_TAVG3_2D_AER_NX" && item.toUpperCase()!== "GEOS" && item.toUpperCase()!== "FIRE"){
+			var new_option = new Option(item.toUpperCase(),item);
+			$("#aod_run_table").append(new_option);
+		}
+	});
+
+	$("#aod_run_table").change(function(){
+		var run_type = ($("#aod_run_table option:selected").val());
+		$("#aod_freq_table").html('');
+		$("#aod_var_table").html('');
+		var_options.forEach(function(item,i){
+			if(item["category"] === run_type){
+				var option = new Option(item["display_name"],item["id"]);
+				$("#aod_var_table").append(option);
+			}
 		});
-	})();
+		$.each(thredds_options['catalog'][run_type],function(item,i){
+			if (item !== 'combined'){
+				var new_option = new Option(item,item);
+				$("#aod_freq_table").append(new_option);
+			}
+		});
+		$("#aod_freq_table").trigger('change');
+	}).change();
+
+	$("#aod_freq_table").change(function(){
+		var freq = ($("#aod_freq_table option:selected").val());
+		var run_type = ($("#aod_run_table option:selected").val());
+		$("#aod_rd_table").html('');
+		$("#aod_var_table").html('');
+		if(thredds_options['catalog'][run_type][freq]){
+			thredds_options['catalog'][run_type][freq].forEach(function(item,i){
+				var opt = item.split('/').reverse()[0];
+				var new_option = new Option(opt,item);
+				$("#aod_rd_table").append(new_option);
+			});
+		}
+		$("#aod_rd_table").trigger('change');
+
+	}).change();
+
+	$("#aod_rd_table").change(function(){
+		var freq = ($("#aod_freq_table option:selected").val());
+		var run_type = ($("#aod_run_table option:selected").val());
+		var rd_type = ($("#aod_rd_table option:selected").val());
+		$("#aod_var_table").html('');
+		var_options.forEach(function(item,i){
+			if(item["category"] === run_type){
+				var new_option = new Option(item["display_name"],item["id"]);
+				$("#aod_var_table").append(new_option);
+			}
+		});
+		$("#aod_var_table").trigger('change');
+	}).change();
+
+	$("#aod_var_table").change(function(){
+		var var_type = ($("#aod_var_table option:selected").val());
+		var index = find_var_index(var_type,var_options);
+		$("#aod_range-min").val(var_options[index]["min"]);
+		$("#aod_range-max").val(var_options[index]["max"]).trigger('change');
+	}).change();
+
+	$("#aod_range-max").on('change',function(){
+		var run_type = ($("#aod_run_table option:selected").val());
+		var freq = ($("#aod_freq_table option:selected").val());
+		var rd_type = ($("#aod_rd_table option:selected").val());
+		var parameter_url = rd_type.slice(0, -17);
+		var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
+
+		//var datetime = "201801";
+		var rd_type = parameter_url + "."+ datetime +".MEKONG.nc";
+		var var_type = ($("#aod_var_table option:selected").val());
+		var style =  ($("#aod_style_table option:selected").val());
+		var rmin = $("#aod_range-min").val();
+		var rmax = $("#aod_range-max").val();
+		time_global = "";
+		add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
+	}).change();
+
+	$("#aod_style_table").change(function () {
+		var style = ($("#aod_style_table option:selected").val());
+		$("#aod_range-max").trigger('change');
+	}).change();
+
+	/**
+	* GEOS options
+	*/
+	$.each(thredds_options['catalog'],function(item,i){
+		// if(item.toUpperCase() === "GEOS_TAVG1_2D_SLV_NX" || item.toUpperCase() === "GEOS_TAVG3_2D_AER_NX" || item.toUpperCase() === "GEOS" ){
+		if(item.toUpperCase() === "GEOS" ){
+			var new_option = new Option(item.toUpperCase(),item);
+			$("#geos_run_table").append(new_option);
+		}
+	});
+
+	$("#geos_run_table").change(function(){
+		var run_type = ($("#geos_run_table option:selected").val());
+		$("#geos_freq_table").html('');
+		$("#geos_var_table").html('');
+		$("#lrd_table").html('');
+		$("#rrd_table").html('');
+		$("#lvar_table").html('');
+		$("#rvar_table").html('');
+		$.each(thredds_options['catalog'][run_type], function (item, i) {
+			if ((item == '3daytoday' || item == '3dayrecent') && (run_type == "geos")) {
+
+				var new_option = new Option(item, item);
+				$("#geos_freq_table").append(new_option);
+			} else if (item == 'combined') {
+
+				var new_option = new Option(item, item);
+				$("#geos_freq_table").append(new_option);
+			}
+		});
+		$("#geos_freq_table").trigger('change');
+		if (thredds_options['catalog'][run_type]['monthly']) {
+			thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
+				var opt = item.split('/').reverse()[0];
+				var new_option = new Option(opt, item);
+				var noption = new Option(opt, item);
+				$("#lrd_table").append(new_option);
+				$("#rrd_table").append(noption);
+			});
+		}
+
+		var_options.forEach(function (item, i) {
+			if (item["category"] == run_type) {
+				var new_option = new Option(item["display_name"]);
+				// +' ('+item["units"]+')'
+				var noption = new Option(item["display_name"], item["id"]);
+				$("#lvar_table").append(new_option);
+				$("#rvar_table").append(noption);
+			}
+		});
+
+	}).change();
+
+	$("#geos_freq_table").change(function(){
+		var freq = $("#geos_freq_table option:selected").val();
+		var run_type = $("#geos_run_table option:selected").val();
+		$("#geos_rd_table").html('');
+		$("#geos_var_table").html('');
+		if(thredds_options['catalog'][run_type][freq]){
+			thredds_options['catalog'][run_type][freq].forEach(function (item, i) {
+
+				var opt = item.split('/').reverse()[0];
+				var new_option = new Option(opt,item);
+				$("#geos_rd_table").append(new_option);
+			});
+			$("#geos_rd_table").trigger('change');
+		}
+
+
+	}).change();
+
+	get_times = function (rd_type) {
+		$("#hour_table").html('');
+		var freq = ($("#geos_freq_table option:selected").val());
+		var run_type = ($("#geos_run_table option:selected").val());
+		var parameters = {
+			run_type: run_type,
+			freq: freq,
+			run_date: rd_type.split('/').reverse()[0]
+		};
+
+		MapService.get_time(parameters)
+		.then(function (result){
+					var times = result["times"];
+					time_global = times[0];
+						$("#hour_table").html('');
+					times.forEach(function (time, i) {
+							var date= new Date(time);
+							date.setHours(date.getHours() + 7);
+							var date_val = new Date(time);
+							date_val.setHours(date_val.getHours());
+							var date_value = date.setHours(date.getHours());
+							var opt = new Option(date.toISOString(), date_val.toISOString());
+
+							$("#hour_table").append(opt);
+					});
+		}), function (error){
+			console.log(error);
+		};
+	};
+
+	$("#geos_rd_table").change(function(){
+		$("#date_table").empty();
+		$("#hour_table").empty();
+		var freq = ($("#geos_freq_table option:selected").val());
+		var run_type = ($("#geos_run_table option:selected").val());
+		var rd_type = ($("#geos_rd_table option:selected").val());
+		var str = rd_type.split('/').reverse()[0];
+
+		thredds_options['catalog'][run_type][freq].forEach(function (item, i) {
+
+			var opt = item.split('/').reverse()[0];
+			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6) + '-' + opt.substring(6, 8)+", 07:00:00";
+			if (run_type == "geos") {
+				var new_option2 = new Option(newdate, item);
+
+				$("#date_table").append(new_option2);
+			}
+
+		});
+
+		$("#geos_var_table").html('');
+
+		var_options.forEach(function (item, i) {
+			if (item["category"] == run_type) {
+				var value = item["display_name"] == "BC_MLPM25" ? "PM 2.5" : item["display_name"];
+				var new_option = new Option(value, item["id"]);
+				$("#geos_var_table").append(new_option);
+				if (item["id"].toUpperCase() == "BC_MLPM25") {
+					new_option.selected = true;
+				}
+			}
+		});
+
+		$("#geos_var_table").trigger('change');
+
+	}).change();
+
+
+	$("#date_table").change(function () {
+		var run_type = ($("#geos_run_table option:selected").val());
+		if (run_type == "geos") {
+			var datestr = ($("#date_table option:selected").val().split('/').reverse()[0]);
+			datestr = datestr.substring(0, 4) + '-' + datestr.substring(4, 6) + '-' + datestr.substring(6, 8);
+			$('#info').text("Displaying " + datestr + " data on the map..");
+
+		}
+		var freq = ($("#geos_freq_table option:selected").val());
+		var rd_type = ($("#geos_rd_table option:selected").val());
+		var z = rd_type.split('/').reverse()[0];
+		var y = ($("#date_table option:selected").val());
+		rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+		var var_type = ($("#geos_var_table option:selected").val());
+		var style = ($("#geos_style_table option:selected").val());
+		//update_style(style);
+		var rmin = $("#geos_range-min").val();
+		var rmax = $("#geos_range-max").val();
+		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, datestr + 'T01:30:00Z');
+		$("#hour_table").html('');
+		get_times(rd_type);
+	});
+
+	$("#hour_table").change(function () {
+		var run_type = ($("#geos_run_table option:selected").val());
+		var freq = ($("#geos_freq_table option:selected").val());
+		var rd_type = ($("#geos_rd_table option:selected").val());
+		var z = rd_type.split('/').reverse()[0];
+		var y = ($("#date_table option:selected").val());
+		rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+		var var_type = ($("#geos_var_table option:selected").val());
+		var style = ($("#geos_style_table option:selected").val());
+		//update_style(style);
+		var rmin = $("#geos_range-min").val();
+		var rmax = $("#geos_range-max").val();
+
+		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+
+	}).change();
+
+	$("#geos_var_table").change(function(){
+		var var_type = ($("#geos_var_table option:selected").val());
+		var index = find_var_index(var_type,var_options);
+		$("#geos_range-min").val(var_options[index]["min"]);
+		$("#geos_range-max").val(var_options[index]["max"]).trigger('change');
+
+	}).change();
+
+	$("#geos_range-max").on('change',function(){
+		var run_type = ($("#geos_run_table option:selected").val());
+		var freq = ($("#geos_freq_table option:selected").val());
+		var rd_type = ($("#geos_rd_table option:selected").val());
+		var var_type = ($("#geos_var_table option:selected").val());
+		var style = ($("#geos_style_table option:selected").val());
+		var rmin = $("#geos_range-min").val();
+		var rmax = $("#geos_range-max").val();
+		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+		$("#date_table").trigger('change');
+
+	}).change();
+	$("#geos_style_table").change(function () {
+		var style = ($("#geos_style_table option:selected").val());
+		$("#geos_range-max").trigger('change');
+	}).change();
+
+	/**
+	* Fire options
+	*/
+	$.each(thredds_options['catalog']['fire'],function(item,i){
+		if (item !== 'combined'){
+			var new_option = new Option(item,item);
+			$("#fire_freq_table").append(new_option);
+		}
+	});
+	$("#fire_freq_table").change(function(){
+		var freq = ($("#fire_freq_table option:selected").val());
+		$("#fire_rd_table").html('');
+		if(thredds_options['catalog']['fire'][freq]){
+			thredds_options['catalog']['fire'][freq].forEach(function(item,i){
+				var opt = item.split('/').reverse()[0];
+				var new_option = new Option(opt,item);
+				$("#fire_rd_table").append(new_option);
+			});
+		}
+		$("#fire_rd_table").trigger('change');
+
+	}).change();
+
+	$("#fire_freq_table").trigger('change');
+
+	var_options.forEach(function(item,i){
+		if(item["category"] === 'fire'){
+			var new_option = new Option(item["display_name"],item["id"]);
+			$("#fire_var_table").append(new_option);
+		}
+	});
+
+	$("#fire_var_table").change(function(){
+		var var_type = ($("#fire_var_table option:selected").val());
+		var index = find_var_index(var_type,var_options);
+		$("#fire_range-min").val(var_options[index]["min"]);
+		$("#fire_range-max").val(var_options[index]["max"]).trigger('change');
+	}).change();
+
+	$("#fire_range-max").on('change',function(){
+		var freq = ($("#fire_freq_table option:selected").val());
+		var rd_type = ($("#fire_rd_table option:selected").val());
+		var parameter_url = "tethys/MK_AQX/fire/";
+		var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
+
+		//var datetime = "201801";
+		var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
+		var var_type = ($("#fire_var_table option:selected").val());
+		var style =  ($("#fire_style_table option:selected").val());
+		var rmin = $("#fire_range-min").val();
+		var rmax = $("#fire_range-max").val();
+		time_global = "";
+		add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
+	}).change();
+
+	$("#fire_style_table").change(function () {
+		var style = ($("#fire_style_table option:selected").val());
+		$("#fire_range-max").trigger('change');
+	}).change();
+
+
+	$.each(thredds_options['catalog'], function(item,i){
+		if (item.toUpperCase() != "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase() != "GEOS_TAVG3_2D_AER_NX") {
+			var new_option = new Option(item.toUpperCase(),item);
+			var noption = new Option(item.toUpperCase(),item);
+			var noption2 = new Option(item.toUpperCase(),item);
+			$("#lrun_table").append(noption);
+			$("#rrun_table").append(noption2);
+		}
+	});
+
+	$("#lrun_table").change(function(){
+		var run_type = ($("#lrun_table option:selected").val());
+		$("#lrd_table").html('');
+		$("#lvar_table").html('');
+		if (thredds_options['catalog'][run_type]['monthly']) {
+			thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
+				var opt = item.split('/').reverse()[0];
+				var new_option = new Option(opt, item);
+				$("#lrd_table").append(new_option);
+			});
+		}
+		var_options.forEach(function (item, i) {
+			if (item["category"] == run_type) {
+				var new_option = new Option(item["display_name"], item["id"]);
+				$("#lvar_table").append(new_option);
+			}
+		});
+		$("#lvar_table").trigger('change');
+
+	}).change();
+
+	$("#rrun_table").change(function(){
+		var run_type = ($("#rrun_table option:selected").val());
+		$("#rrd_table").html('');
+		$("#rvar_table").html('');
+		if (thredds_options['catalog'][run_type]['monthly']) {
+			thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
+				var opt = item.split('/').reverse()[0];
+				var new_option = new Option(opt, item);
+				$("#rrd_table").append(new_option);
+			});
+		}
+		var_options.forEach(function (item, i) {
+			if (item["category"] == run_type) {
+				var new_option = new Option(item["display_name"], item["id"]);
+				$("#rvar_table").append(new_option);
+			}
+		});
+		$("#rvar_table").trigger('change');
+
+	}).change();
+
+	$("#lvar_table").change(function(){
+		var var_type = ($("#lvar_table option:selected").val());
+		var index = find_var_index(var_type,var_options);
+		$("#lrange-min").val(var_options[index]["min"]);
+		$("#lrange-max").val(var_options[index]["max"]);
+	}).change();
+
+	$("#rvar_table").change(function(){
+		var var_type = ($("#rvar_table option:selected").val());
+		var index = find_var_index(var_type,var_options);
+		$("#rrange-min").val(var_options[index]["min"]);
+		$("#rrange-max").val(var_options[index]["max"]);
+	}).change();
+
+
+	/**
+	* Downloading Air Quality products
+	*/
+	$("#btn-download-fire").click(function(){
+		var fileUrl = threddss_wms_url.replace('wms','fileServer');
+		var rd_type = ($("#fire_rd_table option:selected").val());
+		var downUrl = fileUrl+rd_type;
+		window.location = (downUrl);
+	});
+	$("#btn-download-aod").click(function(){
+		var fileUrl = threddss_wms_url.replace('wms','fileServer');
+		var rd_type = ($("#aod_rd_table option:selected").val());
+		var downUrl = fileUrl+rd_type;
+		window.location = (downUrl);
+	});
+	$("#btn-download-geos").click(function(){
+		var fileUrl = threddss_wms_url.replace('wms','fileServer');
+		var rd_type = ($("#geos_rd_table option:selected").val());
+		var downUrl = fileUrl+rd_type;
+		window.location = (downUrl);
+	});
+
+	/**
+	* Layers transparent
+	*/
+	$("#opacity-slider").on("slide", function(e) {
+		$("#OpacityVal").text(e.value);
+		opacity = e.value;
+		tdWmsFireLayer.setOpacity(opacity);
+	});
+
+	$("#opacity-slider-aod").on("slide", function(e) {
+		$("#OpacityVal2").text(e.value);
+		opacity = e.value;
+		tdWmsAODLayer.setOpacity(opacity);
+	});
+
+	$("#opacity-slider-geos").on("slide", function(e) {
+		$("#OpacityVal3").text(e.value);
+		opacity = e.value;
+		tdWmsGEOSLayer.setOpacity(opacity);
+	});
+
+	/**
+	* legend controller
+	*/
+	$(".legend-info-button").click(function () {
+		$(".legend-tabs").toggle();
+		$("#legend-content").toggle();
+		if ($("#legend-content").is(":visible") === true) {
+			$("#legend-collapse").css("display","inline-block");
+			$("#legend-expand").css("display","none");
+		}
+		else {
+			$("#legend-collapse").css("display","none");
+			$("#legend-expand").css("display","inline-block");
+		}
+	});
+	$("#btn-print").click(function () {
+		var modeToUse = L.control.browserPrint.mode.auto();
+		map.printControl.print(modeToUse);
+	});
+
+	$("#day1_guage").click(function () {
+		gen_chart(field_day1_avg < 0 ? -1 : field_day1_avg, forecast_day1_avg < 0 ? -1 : forecast_day1_avg);
+		document.getElementById("datevalue").innerHTML = document.getElementById("day1_guage").innerHTML;
+		document.getElementById("fromd").innerHTML = document.getElementById("day1_guage").innerHTML+" 08:30";
+		document.getElementById("tod").innerHTML = document.getElementById("day1_guage").innerHTML+" 23:30";
+		$(this).css("background-color", "#43a8c5");
+		$("#day2_guage").css("background-color", "gray");
+		$("#day3_guage").css("background-color", "gray");
+	});
+	$("#day2_guage").click(function () {
+		gen_chart(field_day2_avg < 0 ? -1 : field_day2_avg, forecast_day2_avg < 0 ? -1 : forecast_day2_avg);
+		document.getElementById("datevalue").innerHTML = document.getElementById("day2_guage").innerHTML;
+		document.getElementById("fromd").innerHTML = document.getElementById("day2_guage").innerHTML+" 02:30";
+		document.getElementById("tod").innerHTML = document.getElementById("day2_guage").innerHTML+" 23:30";
+		$(this).css("background-color", "#43a8c5");
+		$("#day1_guage").css("background-color", "gray");
+		$("#day3_guage").css("background-color", "gray");
+	});
+	$("#day3_guage").click(function () {
+		gen_chart(field_day3_avg < 0 ? -1 : field_day3_avg, forecast_day3_avg < 0 ? -1 : forecast_day3_avg);
+		document.getElementById("datevalue").innerHTML = document.getElementById("day3_guage").innerHTML;
+		document.getElementById("fromd").innerHTML = document.getElementById("day3_guage").innerHTML+" 02:30";
+		document.getElementById("tod").innerHTML = document.getElementById("day3_guage").innerHTML+" 23:30";
+		$(this).css("background-color", "#43a8c5");
+		$("#day2_guage").css("background-color", "gray");
+		$("#day1_guage").css("background-color", "gray");
+	});
+	/**
+	* hide leaflet print controller
+	*/
+	$("a[title='Air quality Print']").css("display", "none");
+
+	/**
+	* tab controller
+	*/
+	$("#tab-fire").click(function () {
+		$("#legend-tab-fire").css("display", "block");
+		$("#legend-tab-aod").css("display", "none");
+		$("#legend-tab-geos").css("display", "none");
+		$("#tab-fire").addClass("active");
+		$("#tab-aod").removeClass("active");
+		$("#tab-geos").removeClass("active");
+	});
+	$("#tab-aod").click(function () {
+		$("#legend-tab-fire").css("display", "none");
+		$("#legend-tab-aod").css("display", "block");
+		$("#legend-tab-geos").css("display", "none");
+		$("#tab-aod").addClass("active");
+		$("#tab-fire").removeClass("active");
+		$("#tab-geos").removeClass("active");
+	});
+	$("#tab-geos").click(function () {
+		$("#legend-tab-geos").css("display", "block");
+		$("#legend-tab-fire").css("display", "none");
+		$("#legend-tab-aod").css("display", "none");
+		$("#tab-geos").addClass("active");
+		$("#tab-fire").removeClass("active");
+		$("#tab-aod").removeClass("active");
+	});
+
+	/**
+	* tab defualt
+	*/
+	$("#tab-fire").click();
+
+
+});
+});
+})();

@@ -36,6 +36,27 @@
 			return promise;
 		};
 
+
+		service.getChartData = function (options) {
+			var config = {
+				params: {
+					action: 'get-chartData',
+					variable: options.var_type,
+					run_type_chart: options.run_type,
+					freq_chart: options.freq,
+					run_date_chart: options.run_date,
+					interaction: options.interaction,
+					geom_data: options.geom_data
+				}
+			};
+			var promise = $http.get('/api/mapclient/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
+
+
 	});
 
 })();

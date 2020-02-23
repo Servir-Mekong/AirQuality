@@ -25,7 +25,7 @@ THREDDS_wms: Indicates the basic form of WMS requests to the server
 """
 THREDDS_wms = 'https://tethys.servirglobal.net/thredds/wms/'
 
-connection = [{'host': '216.218.240.22'},
-              {'user': 'postgres'},
-              {'password': 'v^[6o9^'},
-              {'dbname': 'nrtdatapcd'}]
+connection = [{'host': 'host'},
+              {'user': 'your_username'},
+              {'password': 'your_password'},
+              {'dbname': 'your_database'}]

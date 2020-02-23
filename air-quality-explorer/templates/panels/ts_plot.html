@@ -1,0 +1,115 @@
+<!--Show TS Plot -->
+<div class="modal fade" id="chart-modal" tabindex="-1" role="dialog" aria-labelledby="chart-modal-label">
+<div class="modal-dialog" id="modalchart" role="document">
+   <div class="modal-content">
+      <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+         <h5 class="modal-title" id="chart-modal-label">Chart</h5>
+      </div>
+      <div class="modal-body" style="display: table;width:100%">
+         <div class="error"></div>
+         <div class="chart-wrapper" id="chartonly" style="display: table-cell;float:left;">
+            <div class="chart-inner" style="width:100%;height:100%;">
+               <div  align="center" id="cube" class="sk-cube-grid hidden">
+                  <div class="sk-cube sk-cube1"></div>
+                  <div class="sk-cube sk-cube2"></div>
+                  <div class="sk-cube sk-cube3"></div>
+                  <div class="sk-cube sk-cube4"></div>
+                  <div class="sk-cube sk-cube5"></div>
+                  <div class="sk-cube sk-cube6"></div>
+                  <div class="sk-cube sk-cube7"></div>
+                  <div class="sk-cube sk-cube8"></div>
+                  <div class="sk-cube sk-cube9"></div>
+               </div>
+               <div id="plotter" name="plotter" style="height:100%;width:100%;" >
+               </div>
+            </div>
+         </div>
+         <div class="forpm25" style="display: table-cell;float: left;width:50%;display: none">
+            <div>
+               <p align="center"><b>Average PM 2.5 value on <span id="datevalue"></span></b></p>
+               <p align="center"><i>Values are averaged from <span id="fromd"></span> to <span id="tod"></span></i></p>
+               <div style="display: table;table-layout: fixed;margin:auto">
+                  <button class="guagebutton" id="day1_guage" style="display: table-cell;">Jan 22</button>
+                  <button class="guagebutton" id="day2_guage" style="display: table-cell;">Jan 23</button>
+                  <button class="guagebutton" id="day3_guage" style="display: table-cell;">Jan 24</button>
+               </div>
+               <div id='guage_chart'></div>
+            </div>
+            <!--<p>-->
+            <!--Fine particulate matter (<2.5µm)</p>-->
+            <!--<p>Sources</p>-->
+            <!--<p>Main sources are combustion processes (e.g. power plants, indoor heating, car exhausts, wildfires), mechanical processes (e.g. construction, mineral dust) and biological particles (e.g. bacteria, viruses)</p>-->
+            <!--<p>Effects</p>-->
+            <!--<p>Fine particles can penetrate into the lungs and bloodstream. Short term exposure can cause irritation of the airways, coughing and aggravation of heart and lung diseases, expressed as difficulty breathing, heart attacks and even premature death.</p>-->
+            <!--<hr>-->
+         </div>
+         <div id="pmlabel" style="text-align: center;padding:0 0 15px 0;font-style: italic;display: none">PM2.5 index is based on Thai Pollution Control Department standard</div>
+         <div class="forpm25"  style="display: table;width:100%;display: none">
+            <div class="pm25_info" style="background-color: #6ef0ff"><label>Air quality is very good</label></div>
+            <div class="pm25_info" style="background-color: #24cf1b"><label>Good air quality</label></div>
+            <div class="pm25_info" style="background-color: #eff213"><label>Moderate air quality</label></div>
+            <div class="pm25_info" style="background-color: #eda702"><label>Air quality began to affect health</label></div>
+            <div class="pm25_info" style="background-color: #ed1e02"><label>Affecting health</label></div>
+         </div>
+         <!--  <div class="forpm25"  id="add_info" style="display: none;">
+            <p>Air Quality 3 hour forecast values :</p>
+            <table>
+            <tr>
+               <td>Times</td>
+               <td>01:30</td>
+                <td >04:30</td>
+                <td>07:30</td>
+                <td>10:30</td>
+                <td>13:30</td>
+                <td>16:30</td>
+                <td>19:30</td>
+
+                <td>22:30</td>
+            </tr>
+               <tr>
+                  <td id="firstday">22 Jan 2020</td>
+
+                  <td id="day1_0130">Good</td>
+                  <td id="day1_0430">Good</td>
+                  <td id="day1_0730">Good</td>
+                  <td id="day1_1030">Good</td>
+                  <td id="day1_1330">Good</td>
+                  <td id="day1_1630">Good</td>
+                  <td id="day1_1930">Good</td>
+                  <td id="day1_2230">Good</td>
+               </tr>
+               <tr>
+                  <td id="secondday">23 Jan 2020</td>
+
+                 <td id="day2_0130">Good</td>
+                  <td id="day2_0430">Good</td>
+                  <td id="day2_0730">Good</td>
+                  <td id="day2_1030">Good</td>
+                  <td id="day2_1330">Good</td>
+                  <td id="day2_1630">Good</td>
+                  <td id="day2_1930">Good</td>
+                  <td id="day2_2230">Good</td>
+               </tr>
+                 <tr>
+                  <td id="thirdday">23 Jan 2020</td>
+
+                <td id="day3_0130">Good</td>
+                  <td id="day3_0430">Good</td>
+                  <td id="day3_0730">Good</td>
+                  <td id="day3_1030">Good</td>
+                  <td id="day3_1330">Good</td>
+                  <td id="day3_1630">Good</td>
+                  <td id="day3_1930">Good</td>
+                  <td id="day3_2230">Good</td>
+               </tr>
+            </table>
+
+
+
+
+            </div>-->
+      </div>
+   </div>
+</div>
+</div>

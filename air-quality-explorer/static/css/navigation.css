@@ -126,6 +126,6 @@
 }
 
 #toggle-nav:hover, .nav > li > a:hover {
-    background-color: #009f9d !important;
+    color: #009f9d !important;
     font-weight: 700;
 }
