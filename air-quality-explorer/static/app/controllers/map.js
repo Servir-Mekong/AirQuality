@@ -1437,8 +1437,7 @@
 
 			MapService.getChartData(parameters)
 			.then(function (result){
-				if ("success" in result) {
-
+					result = JSON.parse(result);
 					if (interaction == "Station") {
 						var values = result.data["field_data"];
 						var forecast_values = result.data["bc_mlpm25"];
@@ -1699,11 +1698,7 @@
 	});
 	$("#cube").addClass('hidden');
 	$("#plotter").removeClass('hidden');
-} else {
-	$("#cube").addClass('hidden');
-	$(".error").append('<h3>Error Processing Request.</h3>');
-	$("#plotter").removeClass('hidden');
-}
+
 
 
 }), function (error){
