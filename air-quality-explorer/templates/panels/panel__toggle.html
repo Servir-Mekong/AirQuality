@@ -21,14 +21,14 @@
               <input id="btn_toggle_geos" type="checkbox" checked>
               <span class="slider_toggle round"></span>
             </label>
-            <label>GEOS Data</label>
+            <label>PM 2.5 (GEOS)</label>
         </li>
         <li class="toggle">
             <label class="switch_layer">
               <input id="btn_toggle_stations" type="checkbox" checked>
               <span class="slider_toggle round"></span>
             </label>
-            <label>PCD Stations</label>
+            <label>PM 2.5 (PCD)</label>
         </li>
     </ul>
 </div>
@@ -69,7 +69,7 @@
                     </g>
                 </svg>
             </button>
-            <label class="download-label">GEOS Data</label>
+            <label class="download-label">GEOS</label>
         </li>
     </ul>
 
@@ -113,13 +113,13 @@
     <div class="legend-line"></div>
     <div id='legend-content'>
         <div id="legend-tab-fire" class="legend-tab-content">
-            <img class="legend-cb" id="img-legend-fire" src="{% static 'images/precip_colorbar.png' %}" alt="AOD Colorbar">
+            <img class="legend-cb" id="img-legend-fire" src="{% static '' %}" alt="AOD Colorbar">
         </div>
         <div id="legend-tab-aod" class="legend-tab-content">
-            <img class="legend-cb" id="img-legend-aod" src="{% static 'images/precip_colorbar.png' %}" alt="AOD Colorbar">
+            <img class="legend-cb" id="img-legend-aod" src="{% static '' %}" alt="AOD Colorbar">
         </div>
         <div id="legend-tab-geos" class="legend-tab-content">
-            <img class="legend-cb" id="img-legend-geos" src="{% static 'images/precip_colorbar.png' %}" alt="GEOS Colorbar">
+            <img class="legend-cb" id="img-legend-geos" src="{% static '' %}" alt="GEOS Colorbar">
         </div>
     </div>
 </div>

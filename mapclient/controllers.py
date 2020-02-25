@@ -412,16 +412,23 @@ def get_station_data():
 
 
 def get_current_station(obs_date):
-    current_time = datetime.now().strftime('%H:%M:%S')
-    enddatetime_str = (obs_date + " "+ datetime.now().strftime('%H:%M:%S'))
-    strtodate =  datetime.strptime(enddatetime_str, '%Y-%m-%d %H:%M:%S').date()
-    _3hourago = strtodate - timedelta(hours = 3)
-    last_hour_date_time = _3hourago.strftime('%Y-%m-%d %H:%M:%S')
+    # current_time = datetime.now().strftime('%H:%M:%S')
+    # enddatetime_str = (obs_date + " "+ datetime.now().strftime('%H:%M:%S'))
+    # strtodate =  datetime.strptime(enddatetime_str, '%Y-%m-%d %H:%M:%S').date()
+    # _3hourago = strtodate - timedelta(hours = 3)
+    # last_hour_date_time = _3hourago.strftime('%Y-%m-%d %H:%M:%S')
     with connection.cursor() as cursor:
+        # sql = """SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en, m.aqi, m.aqi_level
+        #         from stations s, nrt_measurements m
+        #         where s.station_id = m.station_id and pm25 is not null
+        #         and m.datetime between '"""+last_hour_date_time+"""' and '"""+enddatetime_str+"""' ORDER BY s.station_id, m.datetime DESC"""
+
         sql = """SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en, m.aqi, m.aqi_level
-                from stations s, measurements m
-                where s.station_id = m.station_id and pm25 is not null
-                and m.datetime between '"""+last_hour_date_time+"""' and '"""+enddatetime_str+"""' ORDER BY s.station_id, m.datetime DESC"""
+                    from stations s, measurements m
+                    where s.station_id = m.station_id and pm25 is not null and m.datetime = '"""+obs_date+"""'
+                    ORDER BY s.station_id, m.datetime DESC"""
+
+
         cursor.execute(sql)
         data = cursor.fetchall()
         stations=[]

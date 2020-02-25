@@ -1,4 +1,4 @@
-
+.control-panel
 
 .toggle-slider {
   position: absolute;
@@ -216,8 +216,8 @@ p {
     z-index: 400;
     position: absolute;
     width: 60%;
-    margin-left: 20%;
-    bottom: 20px;
+    margin-left: 15%;
+    bottom: 30px;
     font-size: 11px;
     border: 1px solid #F1BCBC;
     padding-bottom: 60px;
@@ -393,7 +393,7 @@ p {
 }
 
 .control-panel {
-    bottom: 45%;
+    bottom: 30%;
     right: 10px;
     width: 38px;
 }

@@ -71,14 +71,30 @@
 			attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
 			maxZoom: 16
 		})
-		Stadia_AlidadeSmoothDark.addTo(map);
-		//basemap_gray.addTo(map);
+		var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+
+		var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
+			streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+
+		//Stadia_AlidadeSmoothDark.addTo(map);
+		grayscale.addTo(map);
 		L.esri.dynamicMapLayer({
 			url: 'https://wwf-sight-maps.org/arcgis/rest/services/Global/Administrative_Boundaries_GADM/MapServer',
 			layers:[0,1],
-			opacity: 0.4,
+			opacity: 0.7,
 			zIndex:99998
 		}).addTo(map);
+
+    // L.esri.tiledMapLayer({
+    //     url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
+    //     layers:[0],
+    //     opacity: 0.7,
+    //     zIndex:99999
+    //   }).addTo(map);
+
 		/**
 		* tabs controller
 		*/
@@ -343,6 +359,9 @@
 			$("#fire_style_table").append(fireoption);
 			$("#aod_style_table").append(aodoption);
 			$("#geos_style_table").append(geosoption);
+			if (value_txt.toUpperCase() == "PM25") {
+				geosoption.selected = true;
+			}
 		});
 
 		// Date Range Slider
@@ -369,26 +388,24 @@
 
 				var mm = date.getMonth() + 1; // getMonth() is zero-based
 				var dd = date.getDate();
+				var hh = date.getHours();
 
-				return [date.getFullYear(),
-					(mm > 9 ? '' : '0') + mm,
-					(dd > 9 ? '' : '0') + dd
-				].join('-');
+				return [date.getFullYear() + '-' + (mm > 9 ? '' : '0') + mm +	'-' + (dd > 9 ? '' : '0') + dd + ' ' + (hh > 9 ? '' : '0') + hh + ':00:00'];
 			}
 		};
 
 		noUiSlider.create(timeSlider, {
 			// Create two timestamps to define a range.
 			range: {
-				min: new Date('2000').getTime(),
-				max: new Date().setMonth(new Date().getMonth() + 3)
+				min: new Date('2020').getTime(),
+				max: new Date().setDate(new Date().getDate() + 3)
 			},
-
-			// Steps of one day
-			step: 1 * 24 * 60 * 60 * 1000,
 
 			// Handle starting positions.
 			start: new Date().getTime(),
+
+			// Steps of 3 hours
+			step: 3 * 60 * 60 * 1000,
 
 			//tooltips: true,
 
@@ -452,10 +469,9 @@
 		// An 0 indexed array of input elements
 		var tooltipInput = makeSliderToolTip(0, timeSlider);
 		$scope.selectedDate = [
-			new Date().getFullYear(),
-			((new Date().getMonth() + 1) > 9 ? '' : '0') + (new Date().getMonth() + 1) ,
-			(new Date().getDate() > 9 ? '' : '0') + new Date().getDate()
-		].join('-');
+			new Date().getFullYear() +	'-' + ((new Date().getMonth() + 1) > 9 ? '' : '0') + (new Date().getMonth() + 1) +	'-' + (new Date().getDate() > 9 ? '' : '0') + new Date().getDate() + ' ' + (new Date().getHours() > 9 ? '' : '0') + new Date().getHours() + ':00:00'
+		];
+
 		tooltipInput.value = $scope.selectedDate;
 
 		// When the slider changes, update the tooltip
@@ -469,16 +485,19 @@
 				$scope.selectedDate = values[handle];
 				tooltipInput.value = values[handle];
 				// trigger ajax only if it is coming from the default handle, not from input tooltip
-				if (event.target.className.startsWith('noUi')) {
+
 					$timeout(function () {
 						$scope.changeTimeSlider();
 					}, 500);
-				}
+
 			}
 		});
 
 		// get PCD station
 		$scope.getPCDStation = function () {
+			var date = new Date($scope.selectedDate);
+			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
+
 			var parameters = {
 				obs_date: $scope.selectedDate
 			};
@@ -502,17 +521,15 @@
 			$("#fire_range-max").trigger('change');
 			$("#aod_range-max").trigger('change');
 			$scope.getPCDStation();
-
+			$scope.selectedDate
 			//$scope.updateMap(true);
 		};
-		$scope.getPCDStation();
+
 		// Forward Slider
 		$scope.slideForward = function () {
 			var date = new Date($scope.selectedDate);
-			date.setDate(date.getDate() + 1);
-			$scope.selectedDate = [
-				date.getFullYear(), ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) , ((date.getDate()) > 9 ? '' : '0') + (date.getDate())
-			].join('-');
+			date.setHours(date.getHours() + 3);
+			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			tooltipInput.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
 			$timeout(function () {
@@ -522,11 +539,10 @@
 
 		// Backward Slider
 		$scope.slideBackward = function () {
+			//var date = new Date($scope.selectedDate);
 			var date = new Date($scope.selectedDate);
-			date.setDate(date.getDate() - 1);
-			$scope.selectedDate = [
-				date.getFullYear(), ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) , ((date.getDate()) > 9 ? '' : '0') + (date.getDate())
-			].join('-');
+			date.setHours(date.getHours() - 3);
+			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			tooltipInput.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
 			$timeout(function () {
@@ -534,10 +550,12 @@
 			}, 500);
 		};
 
+		//$scope.slideBackward();
+
 
 
 		var init_opacity_slider = function(){
-			opacity = 0.5;
+			opacity = 0.8;
 			$("#opacity").text(opacity);
 			$( "#opacity-slider" ).bootstrapSlider({
 				value: opacity,
@@ -700,7 +718,7 @@
 				oneMarker.name = stations[i].name;
 				oneMarker.lat = stations[i].lat;
 				oneMarker.lon = stations[i].lon;
-				oneMarker.aqi = stations[i].aqi;
+				oneMarker.pm25 = stations[i].pm25;
 				oneMarker.src = icon_src;
 				oneMarker.latest_date = stations[i].latest_date
 				oneMarker.addTo(markersLayer);
@@ -719,7 +737,7 @@
 				get_ts();
 
 				$("#station_name").text(attributes.name);
-				$("#aqi_txt").text("AQI: " + attributes.aqi);
+				$("#aqi_txt").text("PM2.5: " + attributes.pm25 +" µg./m3");
 				$("#aqi_img").attr('src',attributes.src);
 				$("#obs_date").text(attributes.latest_date);
 			} else {
@@ -754,6 +772,14 @@
 			var layer_id = var_options[index]["id"];
 			var range = (rmin ? rmin : '0') + ',' + (rmax ? rmax : '5');
 
+			var link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&time=" + time + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
+			var imgsrc = link;
+
+			if (time == "") {
+
+				link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
+				imgsrc = link;
+			}
 			var style = 'boxfill/'+styling;
 
 			var opacity_fire = $('#opacity-slider-fire').val();
@@ -803,15 +829,6 @@
 				});
 				tdWmsAODLayer.addTo(map);
 				$('#img-legend-aod').attr('src',imgsrc);
-			}
-
-			var link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&time=" + time + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
-			var imgsrc = link;
-
-			if (time == "") {
-
-				link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
-				imgsrc = link;
 			}
 
 		};
@@ -1779,16 +1796,16 @@ $(function() {
 		var freq = ($("#aod_freq_table option:selected").val());
 		var rd_type = ($("#aod_rd_table option:selected").val());
 		var parameter_url = rd_type.slice(0, -17);
-		var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
+		//var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
 
 		//var datetime = "201801";
-		var rd_type = parameter_url + "."+ datetime +".MEKONG.nc";
+		var rd_type = parameter_url + "."+ 'datetime' +".MEKONG.nc";
 		var var_type = ($("#aod_var_table option:selected").val());
 		var style =  ($("#aod_style_table option:selected").val());
 		var rmin = $("#aod_range-min").val();
 		var rmax = $("#aod_range-max").val();
 		time_global = "";
-		add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
+	//add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
 
 	$("#aod_style_table").change(function () {
@@ -2043,16 +2060,16 @@ $(function() {
 		var freq = ($("#fire_freq_table option:selected").val());
 		var rd_type = ($("#fire_rd_table option:selected").val());
 		var parameter_url = "tethys/MK_AQX/fire/";
-		var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
+		//var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
 
 		//var datetime = "201801";
-		var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
+		var rd_type = parameter_url + "MCD14ML."+ 'datetime' +"..MEKONG.nc";
 		var var_type = ($("#fire_var_table option:selected").val());
 		var style =  ($("#fire_style_table option:selected").val());
 		var rmin = $("#fire_range-min").val();
 		var rmax = $("#fire_range-max").val();
 		time_global = "";
-		add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
+		//add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
 
 	$("#fire_style_table").change(function () {
@@ -2255,6 +2272,7 @@ $(function() {
 	* tab defualt
 	*/
 	$("#tab-fire").click();
+	$('.slide-backward').click();
 
 
 });
