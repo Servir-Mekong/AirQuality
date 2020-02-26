@@ -85,6 +85,7 @@ def download_files(links):
                    r = requests.get(url+link,timeout=10)
                    with open(direc3+'/'+str(link), 'wb') as f:
                        f.write(r.content)
+                   os.chmod(direc3+'/'+str(link), 0o777)
                except:
                    logError('Error while downloading '+link)
        if ('tavg1_2d_slv_Nx' in link and currentYear+currentMonth+currentDay+'_0030' not in link):
@@ -96,10 +97,11 @@ def download_files(links):
            if(len(unique)<=3):
               if count%3==0:
                   try:
-                      logDebug('Downlaoding '+ link+'...')
+                      logDebug('Downloading '+ link+'...')
                       r = requests.get(url+link,timeout=10)
                       with open(direc1+'/'+str(link), 'wb') as f:
                           f.write(r.content)
+                      os.chmod(direc1+'/'+str(link), 0o777)
                   except:
                       logError('Error while downloading '+link)
               count=count+1

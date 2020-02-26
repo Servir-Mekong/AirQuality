@@ -152,6 +152,7 @@ if path.exists('final_combined.nc'):
     forcing_xr['TOTEXTTAU'].attrs = { 'long_name':'TOTEXTTAU','units':'\u03BCg/m\u00b3','description':'TOTEXTTAU' }
     forcing_xr['BCSMASS'].attrs = { 'long_name':'BCSMASS','units':'\u03BCg/m\u00b3','description':'BCSMASS' }
     forcing_xr.to_netcdf(path=config['dataDownloadPath']+date_str+'.nc')
+    os.chmod(config['dataDownloadPath']+date_str+'.nc',0o777)
     logInfo("Delete unnecessary directories")
 
     if os.path.exists('slv_subset_file.nc'):
