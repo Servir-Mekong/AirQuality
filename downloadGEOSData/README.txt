@@ -5,4 +5,4 @@
    b) If you want to get specific date's data, then run the script like this "sh combine.sh YYYY-MM-DD". This will download data of the specific date.
 4. This script currently stores only the processed files with date on the filename like "YYYYMMDD.nc"
 5. Please make sure you edit downloadGEOSDataParams.json file with the file paths that you need.
-6. If you think there is any issue while running script, please check the log file in the path that you provided in downloadGEOSDataParams.py
+6. If you think there is any issue while running script, please check the log file in the path that you provided in downloadGEOSDataParams.json
