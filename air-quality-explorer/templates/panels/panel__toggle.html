@@ -2,28 +2,28 @@
 <div id="toggle_layer_box" class="map-panel__toggle--panel" style="display: block;">
     <p>Toggle layer visibility</p>
     <ul class="toggles-list">
-        <li class="toggle">
+        <li class="toggle" ng-show="toggle_fire">
             <label class="switch_layer">
               <input id="btn_toggle_fire" type="checkbox" checked>
               <span class="slider_toggle round"></span>
             </label>
             <label>Fire Locations</label>
         </li>
-        <li class="toggle">
+        <li class="toggle" ng-show="toggle_aod">
             <label class="switch_layer">
               <input id="btn_toggle_aod" type="checkbox" checked>
               <span class="slider_toggle round"></span>
             </label>
             <label>AOD</label>
         </li>
-        <li class="toggle">
+        <li class="toggle" ng-show="toggle_geos">
             <label class="switch_layer">
               <input id="btn_toggle_geos" type="checkbox" checked>
               <span class="slider_toggle round"></span>
             </label>
             <label>PM 2.5 (GEOS)</label>
         </li>
-        <li class="toggle">
+        <li class="toggle" ng-show="toggle_pcd">
             <label class="switch_layer">
               <input id="btn_toggle_stations" type="checkbox" checked>
               <span class="slider_toggle round"></span>

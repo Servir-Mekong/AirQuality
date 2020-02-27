@@ -7,6 +7,14 @@
 		$scope.initdate = '';
 		$scope.stylesSelectors = appSettings.stylesSelectors;
 		$scope.showTimeSlider = true;
+		$scope.showTimeSlider_fire = false;
+		$scope.showTimeSlider_aod = false;
+		$scope.selectedDate_fire = '';
+		$scope.selectedDate_aod = '';
+		$scope.toggle_pcd = true;
+		$scope.toggle_fire = false;
+		$scope.toggle_aod = false;
+		$scope.toggle_geos = true;
 
 		var map,
 		add_wms,
@@ -85,7 +93,7 @@
 			url: 'https://wwf-sight-maps.org/arcgis/rest/services/Global/Administrative_Boundaries_GADM/MapServer',
 			layers:[0,1],
 			opacity: 0.7,
-			zIndex:99998
+			zIndex:999
 		}).addTo(map);
 
     // L.esri.tiledMapLayer({
@@ -227,6 +235,51 @@
 			}
 
 		});
+		$('#fire_tab').click(function(){
+			$("#opacity-slider").bootstrapSlider('setValue', 0.7)
+			var opacity = $("#opacity-slider").val();
+			tdWmsAODLayer.setOpacity(0);
+			tdWmsFireLayer.setOpacity(opacity);
+			tdWmsGEOSLayer.setOpacity(0);
+			$scope.showTimeSlider_fire = true;
+			$scope.showTimeSlider = false;
+			$scope.showTimeSlider_aod = false;
+			
+			$scope.toggle_geos = false;
+			$scope.toggle_fire = true;
+			$scope.toggle_aod = false;
+			$scope.$apply();
+		});
+		$('#aod_tab').click(function(){
+			$("#opacity-slider-aod").bootstrapSlider('setValue', 0.7)
+			var opacity = $("#opacity-slider-aod").val();
+			tdWmsAODLayer.setOpacity(opacity);
+			tdWmsFireLayer.setOpacity(0);
+			tdWmsGEOSLayer.setOpacity(0);
+			$scope.showTimeSlider_aod = true;
+			$scope.showTimeSlider = false;
+			$scope.showTimeSlider_fire = false;
+
+			$scope.toggle_geos = false;
+			$scope.toggle_fire = false;
+			$scope.toggle_aod = true;
+			$scope.$apply();
+		});
+		$('#geos_tab').click(function(){
+			var opacity = $("#opacity-slider-geos").val();
+			tdWmsAODLayer.setOpacity(0);
+			tdWmsFireLayer.setOpacity(0);
+			tdWmsGEOSLayer.setOpacity(opacity);
+			$scope.showTimeSlider = true;
+			$scope.showTimeSlider_fire = false;
+			$scope.showTimeSlider_aod = false;
+
+			$scope.toggle_geos = true;
+			$scope.toggle_fire = false;
+			$scope.toggle_aod = false;
+			$scope.$apply();
+		});
+
 
 		$("#full-extent").click(function(){
 			$("nav").hide();
@@ -255,11 +308,21 @@
 			map.zoomOut();
 		});
 		$("#time-toggle").click(function() {
-			if($scope.showTimeSlider){
+			if($scope.showTimeSlider || $scope.showTimeSlider_fire || $scope.showTimeSlider_aod){
 				$scope.showTimeSlider = false;
+				$scope.showTimeSlider_fire = false;
+				$scope.showTimeSlider_aod = false;
 				$scope.$apply();
 			}else{
-				$scope.showTimeSlider = true;
+				if($scope.toggle_fire){
+					$scope.showTimeSlider_fire = true;
+				}
+				if($scope.toggle_aod){
+					$scope.showTimeSlider_aod = true;
+				}
+				if($scope.toggle_geos){
+					$scope.showTimeSlider = true;
+				}
 				$scope.$apply();
 			}
 		});
@@ -493,6 +556,256 @@
 			}
 		});
 
+		/**
+		 * Time Slider for fire location
+		 **/
+		var timeSlider_fire = document.getElementById('datePickerSlider_fire');
+
+		// Create a string representation of the date.
+		$scope.toFormat = function (v, handle) {
+			// where is this string representation
+			// values = "uipipes" ; default is "default"
+			var date = new Date(v);
+			handle = handle || $scope.defaultHandle;
+			if (handle === 'uipipes') {
+				return appSettings.months[date.getMonth()] + ' ' + date.getFullYear();
+			} else if (handle === $scope.defaultHandle) {
+
+				var mm = date.getMonth() + 1; // getMonth() is zero-based
+				var dd = date.getDate();
+
+				return [date.getFullYear(),
+						(mm > 9 ? '' : '0') + mm
+				].join('-');
+			}
+		};
+
+		noUiSlider.create(timeSlider_fire, {
+			// Create two timestamps to define a range.
+			range: {
+				min: new Date('2001').getTime(),
+				max: new Date(2018,9,14).getTime()
+			},
+
+			// Steps of one month
+			// step: 14 * 24 * 60 * 60 * 1000,
+
+			// Handle starting positions.
+			start: new Date(2018,9,14).getTime(),
+
+			//tooltips: true,
+
+			format: { to: $scope.toFormat, from: Number },
+
+			connect: 'lower',
+
+			// Show a scale with the slider
+			pips: {
+				mode: 'count',
+				density: 2,
+				values: 10,
+				stepped: true,
+				format: {
+					to: function (value) {
+						return $scope.toFormat(value, 'uipipes');
+					},
+					from: function (value) {
+						return $scope.toFormat(value, 'uipipes');
+					}
+				}
+			}
+		});
+		var stopPropagation = function (event) {
+			event.stopPropagation();
+		};
+
+		var makeSliderToolTip_fire = function (i, slider) {
+			var tooltip = document.createElement('div'),
+				input = document.createElement('input');
+
+			// Add the input to the tooltip
+			input.className = 'uitooltip-input';
+			tooltip.className = 'noUi-tooltip';
+			tooltip.appendChild(input);
+
+			// On change, set the slider
+			input.addEventListener('change', function () {
+				if (this.value !== $scope.selectedDate_fire) {
+					$scope.selectedDate_fire = this.value;
+					slider.noUiSlider.set(new Date(this.value).getTime());
+					console.log($scope.selectedDate_fire)
+					$timeout(function () {
+						$scope.changeTimeSlider_fire();
+					}, 500);
+				}
+
+			});
+
+			// Catch all selections and make sure they don't reach the handle
+			input.addEventListener('mousedown', stopPropagation);
+			input.addEventListener('touchstart', stopPropagation);
+			input.addEventListener('pointerdown', stopPropagation);
+			input.addEventListener('MSPointerDown', stopPropagation);
+
+			// Find the lower slider handle and insert the tooltip
+			document.getElementById('datePickerSlider_fire').querySelector('.noUi-handle-lower').appendChild(tooltip);
+
+			return input;
+		};
+
+		// An 0 indexed array of input elements
+		var tooltipInput_fire = makeSliderToolTip_fire(0, timeSlider_fire);
+		$scope.selectedDate_fire = [
+			'2018', '10' ,'01'
+		].join('-');
+		tooltipInput_fire.value = $scope.selectedDate_fire;
+
+		// When the slider changes, update the tooltip
+		timeSlider_fire.noUiSlider.on('update', function (values, handle) {
+			tooltipInput_fire.value = values[handle];
+		});
+
+		// Event Handler for slider
+		timeSlider_fire.noUiSlider.on('set', function (values, handle) {
+			if (values[handle] !== $scope.selectedDate_fire) {
+				$scope.selectedDate_fire = values[handle];
+				tooltipInput_fire.value = values[handle];
+				// trigger ajax only if it is coming from the default handle, not from input tooltip
+				if (event.target.className.startsWith('noUi')) {
+					$timeout(function () {
+						$scope.changeTimeSlider_fire();
+					}, 500);
+				}
+			}
+		});
+
+// --------------------------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Time Slider for fire location
+ **/
+var timeSlider_aod = document.getElementById('datePickerSlider_aod');
+
+// Create a string representation of the date.
+$scope.toFormat_aod = function (v, handle) {
+	// where is this string representation
+	// values = "uipipes" ; default is "default"
+	var date = new Date(v);
+	handle = handle || $scope.defaultHandle;
+	if (handle === 'uipipes') {
+		return appSettings.months[date.getMonth()] + ' ' + date.getFullYear();
+	} else if (handle === $scope.defaultHandle) {
+
+		var mm = date.getMonth() + 1; // getMonth() is zero-based
+		var dd = date.getDate();
+
+		return [date.getFullYear(),
+				(mm > 9 ? '' : '0') + mm
+		].join('-');
+	}
+};
+
+noUiSlider.create(timeSlider_aod, {
+	// Create two timestamps to define a range.
+	range: {
+		min: new Date('2000').getTime(),
+		max: new Date(2019,1,14).getTime()
+	},
+
+	// Steps of one month
+	// step: 14 * 24 * 60 * 60 * 1000,
+
+	// Handle starting positions.
+	start: new Date(2019,1,30).getTime(),
+
+	//tooltips: true,
+
+	format: { to: $scope.toFormat_aod, from: Number },
+
+	connect: 'lower',
+
+	// Show a scale with the slider
+	pips: {
+		mode: 'count',
+		density: 2,
+		values: 10,
+		stepped: true,
+		format: {
+			to: function (value) {
+				return $scope.toFormat_aod(value, 'uipipes');
+			},
+			from: function (value) {
+				return $scope.toFormat_aod(value, 'uipipes');
+			}
+		}
+	}
+});
+var stopPropagation = function (event) {
+	event.stopPropagation();
+};
+
+var makeSliderToolTip_aod = function (i, slider) {
+	var tooltip = document.createElement('div'),
+		input = document.createElement('input');
+
+	// Add the input to the tooltip
+	input.className = 'uitooltip-input';
+	tooltip.className = 'noUi-tooltip';
+	tooltip.appendChild(input);
+
+	// On change, set the slider
+	input.addEventListener('change', function () {
+		if (this.value !== $scope.selectedDate_aod) {
+			$scope.selectedDate_aod = this.value;
+			slider.noUiSlider.set(new Date(this.value).getTime());
+			console.log($scope.selectedDate_aod)
+			$timeout(function () {
+				$scope.changeTimeSlider_aod();
+			}, 500);
+		}
+
+	});
+
+	// Catch all selections and make sure they don't reach the handle
+	input.addEventListener('mousedown', stopPropagation);
+	input.addEventListener('touchstart', stopPropagation);
+	input.addEventListener('pointerdown', stopPropagation);
+	input.addEventListener('MSPointerDown', stopPropagation);
+
+	// Find the lower slider handle and insert the tooltip
+	document.getElementById('datePickerSlider_aod').querySelector('.noUi-handle-lower').appendChild(tooltip);
+
+	return input;
+};
+
+// An 0 indexed array of input elements
+var tooltipInput_aod = makeSliderToolTip_aod(0, timeSlider_aod);
+$scope.selectedDate_aod = [
+	'2019', '01' ,'01'
+].join('-');
+tooltipInput_aod.value = $scope.selectedDate_aod;
+
+// When the slider changes, update the tooltip
+timeSlider_aod.noUiSlider.on('update', function (values, handle) {
+	tooltipInput_aod.value = values[handle];
+});
+
+// Event Handler for slider
+timeSlider_aod.noUiSlider.on('set', function (values, handle) {
+	if (values[handle] !== $scope.selectedDate_aod) {
+		$scope.selectedDate_aod = values[handle];
+		tooltipInput_aod.value = values[handle];
+		// trigger ajax only if it is coming from the default handle, not from input tooltip
+		if (event.target.className.startsWith('noUi')) {
+			$timeout(function () {
+				$scope.changeTimeSlider_aod();
+			}, 500);
+		}
+	}
+});
+
+// --------------------------------------------------------------------------------------------------------------------------------------
+
 		// get PCD station
 		$scope.getPCDStation = function () {
 			var date = new Date($scope.selectedDate);
@@ -503,10 +816,13 @@
 			};
 			MapService.getAirStations(parameters)
 			.then(function (result){
-				var date = $scope.selectedDate;
+				var day = $scope.selectedDate;
+				day = day[0].split(' ');
+				day = day[0];
+				console.log(day);
 				for (var l in overlays) {
 					if(!(l.includes('FIRES_VIIRS'))){
-						overlays[l].options.time = date;
+						overlays[l].options.time = day;
 						overlays[l].redraw();
 					}
 				}
@@ -518,10 +834,26 @@
 		};
 
 		$scope.changeTimeSlider = function () {
-			$("#fire_range-max").trigger('change');
-			$("#aod_range-max").trigger('change');
+			//$("#fire_range-max").trigger('change');
+			//$("#aod_range-max").trigger('change');
 			$scope.getPCDStation();
 			$scope.selectedDate
+			//$scope.updateMap(true);
+		};
+
+		$scope.changeTimeSlider_fire = function () {
+			$("#fire_range-max").trigger('change');
+			//$("#aod_range-max").trigger('change');
+			//$scope.getPCDStation();
+			//$scope.selectedDate
+			//$scope.updateMap(true);
+		};
+
+		$scope.changeTimeSlider_aod = function () {
+			//$("#fire_range-max").trigger('change');
+			$("#aod_range-max").trigger('change');
+			//$scope.getPCDStation();
+			//$scope.selectedDate
 			//$scope.updateMap(true);
 		};
 
@@ -530,7 +862,7 @@
 			var date = new Date($scope.selectedDate);
 			date.setHours(date.getHours() + 3);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
-			tooltipInput.value = $scope.selectedDate;
+			tooltipInput_fire.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
 			$timeout(function () {
 				$scope.changeTimeSlider();
@@ -550,6 +882,59 @@
 			}, 500);
 		};
 
+
+		// Forward Slider fire
+		$scope.slideForward_fire = function () {
+			var date = new Date($scope.selectedDate_fire);
+			date.setMonth(date.getMonth() + 1);
+			$scope.selectedDate_fire = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + '-01'] ;
+			tooltipInput_fire.value = $scope.selectedDate_fire;
+			timeSlider_fire.noUiSlider.set(new Date($scope.selectedDate_fire).getTime());
+			$timeout(function () {
+				$scope.changeTimeSlider_fire();
+			}, 500);
+		};
+
+		// Backward Slider fire
+		$scope.slideBackward_fire = function () {
+			//var date = new Date($scope.selectedDate_fire);
+			var date = new Date($scope.selectedDate_fire);
+			date.setMonth(date.getMonth() - 1);
+			$scope.selectedDate_fire = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + '-01'];
+			tooltipInput_fire.value = $scope.selectedDate_fire;
+			timeSlider_fire.noUiSlider.set(new Date($scope.selectedDate_fire).getTime());
+			$timeout(function () {
+				$scope.changeTimeSlider_fire();
+			}, 500);
+		};
+
+
+		// Forward Slider AOD
+		$scope.slideForward_aod = function () {
+			var date = new Date($scope.selectedDate_aod);
+			date.setMonth(date.getMonth() + 1);
+			$scope.selectedDate_aod = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + '-01'] ;
+			tooltipInput_aod.value = $scope.selectedDate_aod;
+			timeSlider_aod.noUiSlider.set(new Date($scope.selectedDate_aod).getTime());
+			$timeout(function () {
+				$scope.changeTimeSlider_aod();
+			}, 500);
+		};
+
+		// Backward Slider fire
+		$scope.slideBackward_aod = function () {
+			//var date = new Date($scope.selectedDate_fire);
+			var date = new Date($scope.selectedDate_aod);
+			date.setMonth(date.getMonth() - 1);
+			$scope.selectedDate_aod = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + '-01'];
+			tooltipInput_aod.value = $scope.selectedDate_aod;
+			timeSlider_aod.noUiSlider.set(new Date($scope.selectedDate_aod).getTime());
+			$timeout(function () {
+				$scope.changeTimeSlider_aod();
+			}, 500);
+		};
+
+
 		//$scope.slideBackward();
 
 
@@ -558,16 +943,16 @@
 			opacity = 0.8;
 			$("#opacity").text(opacity);
 			$( "#opacity-slider" ).bootstrapSlider({
-				value: opacity,
-				min: 0.2,
+				value: 0,
+				min: 0.0,
 				max: 1,
 				step: 0.1, //Assigning the slider step based on the depths that were retrieved in the controller
 				animate:"fast",
 				slide: function( event, ui ){}
 			});
 			$( "#opacity-slider-aod" ).bootstrapSlider({
-				value: opacity,
-				min: 0.2,
+				value: 0,
+				min: 0.0,
 				max: 1,
 				step: 0.1, //Assigning the slider step based on the depths that were retrieved in the controller
 				animate:"fast",
@@ -575,7 +960,7 @@
 			});
 			$( "#opacity-slider-geos" ).bootstrapSlider({
 				value: opacity,
-				min: 0.2,
+				min: 0.0,
 				max: 1,
 				step: 0.1, //Assigning the slider step based on the depths that were retrieved in the controller
 				animate:"fast",
@@ -655,18 +1040,16 @@
 				var pm2_val = stations[i].pm25;
 				if(pm2_val>90){
 					color="#ed1e02";
-					icon_src = 'static/images/red.png';
 					myIcon = L.ExtraMarkers.icon({
 						icon: 'fa-number',
 						number: pm2_val,
-						markerColor: 'red',
+						markerColor: 'orange-dark',
 						shape: 'square',
 						prefix: 'fa'
 					});
 				}
 				else if(pm2_val>50 && pm2_val<91){
 					color="#eda702";
-					icon_src = 'static/images/orange.png';
 					myIcon = L.ExtraMarkers.icon({
 						icon: 'fa-number',
 						number: pm2_val,
@@ -677,18 +1060,17 @@
 				}
 				else if(pm2_val>37 && pm2_val<51){
 					color="#eff213";
-					icon_src = 'static/images/yellow-light.png';
 					myIcon = L.ExtraMarkers.icon({
 						icon: 'fa-number',
 						number: pm2_val,
 						markerColor: 'yellow',
 						shape: 'square',
 						prefix: 'fa',
+						iconColor: '#aaa'
 					});
 
 				}else if(pm2_val>25 && pm2_val<38){
 					color="#24cf1b";
-					icon_src = 'static/images/green.png';
 					myIcon = L.ExtraMarkers.icon({
 						icon: 'fa-number',
 						number: pm2_val,
@@ -698,11 +1080,10 @@
 					});
 				}else if(pm2_val>=0 && pm2_val<26){
 					color="#6ef0ff";
-					icon_src = 'static/images/tt.png';
 					myIcon = L.ExtraMarkers.icon({
 						icon: 'fa-number',
 						number: pm2_val,
-						markerColor: 'cyan',
+						markerColor: 'blue-dark',
 						shape: 'square',
 						prefix: 'fa'
 					});
@@ -782,7 +1163,7 @@
 			}
 			var style = 'boxfill/'+styling;
 
-			var opacity_fire = $('#opacity-slider-fire').val();
+			var opacity_fire = $('#opacity-slider').val();
 			var opacity_aod = $('#opacity-slider-aod').val();
 			var opacity_geos = Number($('#opacity-slider-geos').val());
 
@@ -1041,6 +1422,9 @@
 		var today = new Date();
 		var day = new Date(today.getTime());
 		day = $scope.selectedDate;
+		day = day[0].split(' ');
+		day = day[0];
+		console.log(day);
 
 		var DATE_FORMAT = 'dd.mm.yy';
 		var strToDateUTC = function(str) {
@@ -1171,14 +1555,18 @@
 				noWrap: true,
 				continuousWorld: true
 			}),
-			'FIRES_VIIRS_24':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
+			'FIRES_VIIRS_24':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/key/c135d300c93ef6c81f32f095073a9a7d/?REQUEST=GetMap&WIDTH=1024&HEIGHT=512&colors=240+40+40,250+200+50&size=5,2&BBOX=90,-10,120,30",{
 				layers:'fires_viirs_24',
 				format: 'image/png',
+				time:day,
+				symbols:'circle,circle',
 				transparent: true
 			}),
-			'FIRES_VIIRS_48':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
+			'FIRES_VIIRS_48':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/key/37601af187a7c4054759a42043b19adc/?REQUEST=GetMap&WIDTH=1024&HEIGHT=512&colors=240+40+40,250+200+50&size=5,2&BBOX=90,-10,120,30",{
 				layers:'fires_viirs_48',
 				format: 'image/png',
+				time:day,
+				symbols:'circle,circle',
 				transparent: true
 			}),
 
@@ -1796,16 +2184,18 @@ $(function() {
 		var freq = ($("#aod_freq_table option:selected").val());
 		var rd_type = ($("#aod_rd_table option:selected").val());
 		var parameter_url = rd_type.slice(0, -17);
-		//var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
+		var datetime = $scope.selectedDate_aod.replace("-","").substring(0, 6);
+		if(datetime === ''){
+			datetime = "201902";
+		}
 
-		//var datetime = "201801";
-		var rd_type = parameter_url + "."+ 'datetime' +".MEKONG.nc";
+		var rd_type = parameter_url + "."+ datetime +".MEKONG.nc";
 		var var_type = ($("#aod_var_table option:selected").val());
 		var style =  ($("#aod_style_table option:selected").val());
 		var rmin = $("#aod_range-min").val();
 		var rmax = $("#aod_range-max").val();
 		time_global = "";
-	//add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
+	  add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
 
 	$("#aod_style_table").change(function () {
@@ -1905,7 +2295,8 @@ $(function() {
 							var date_val = new Date(time);
 							date_val.setHours(date_val.getHours());
 							var date_value = date.setHours(date.getHours());
-							var opt = new Option(date.toISOString(), date_val.toISOString());
+							var date_text = date.toISOString().replace('T', ' ').replace('.000Z', '');
+							var opt = new Option(date_text, date_val.toISOString());
 
 							$("#hour_table").append(opt);
 					});
@@ -2060,16 +2451,18 @@ $(function() {
 		var freq = ($("#fire_freq_table option:selected").val());
 		var rd_type = ($("#fire_rd_table option:selected").val());
 		var parameter_url = "tethys/MK_AQX/fire/";
-		//var datetime = $scope.selectedDate.replace("-","").substring(0, 6);
-
-		//var datetime = "201801";
-		var rd_type = parameter_url + "MCD14ML."+ 'datetime' +"..MEKONG.nc";
+		console.log($scope.selectedDate_fire);
+		var datetime = $scope.selectedDate_fire.replace("-","").substring(0, 6);
+		if(datetime === ''){
+			datetime = "201810";
+		}
+		var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
 		var var_type = ($("#fire_var_table option:selected").val());
 		var style =  ($("#fire_style_table option:selected").val());
 		var rmin = $("#fire_range-min").val();
 		var rmax = $("#fire_range-max").val();
 		time_global = "";
-		//add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
+		add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
 
 	$("#fire_style_table").change(function () {
@@ -2271,7 +2664,7 @@ $(function() {
 	/**
 	* tab defualt
 	*/
-	$("#tab-fire").click();
+	$("#tab-geos").click();
 	$('.slide-backward').click();
 
 

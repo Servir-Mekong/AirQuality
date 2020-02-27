@@ -290,7 +290,7 @@ p {
 }
 
 .uitooltip-input {
-	width: 100px;
+	   width: 95px;
     text-align: center;
     border: none;
     height: 15px;
@@ -393,7 +393,7 @@ p {
 }
 
 .control-panel {
-    bottom: 30%;
+    bottom: 35%;
     right: 10px;
     width: 38px;
 }
