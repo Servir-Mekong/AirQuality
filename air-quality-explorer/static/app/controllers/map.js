@@ -470,7 +470,7 @@
 			start:  startdate,
 
 			// Steps of 1 hours
-			step: 1 * 60 * 60 * 1000,
+			step: 3 * 60 * 60 * 1000,
 
 			//tooltips: true,
 
@@ -552,7 +552,7 @@
 				// trigger ajax only if it is coming from the default handle, not from input tooltip
 
 					$timeout(function () {
-						$scope.changeTimeSlider();
+						//$scope.changeTimeSlider();
 					}, 500);
 
 			}
@@ -856,6 +856,8 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			    }
 			}
 			$('#date_table').change();
+
+
 		};
 
 		$scope.changeTimeSlider_fire = function () {
@@ -877,7 +879,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		// Forward Slider
 		$scope.slideForward = function () {
 			var date = new Date($scope.selectedDate);
-			date.setHours(date.getHours() + 1);
+			date.setHours(date.getHours() + 3);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			tooltipInput_fire.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
@@ -890,7 +892,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		$scope.slideBackward = function () {
 			//var date = new Date($scope.selectedDate);
 			var date = new Date($scope.selectedDate);
-			date.setHours(date.getHours() - 1);
+			date.setHours(date.getHours() - 3);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			tooltipInput.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
@@ -2330,6 +2332,21 @@ $(function() {
 
 							if (date_text === _time1 || date_text === hour || date_text === _time2) {
 								opt.selected = true;
+
+								var run_type = ($("#geos_run_table option:selected").val());
+								var freq = ($("#geos_freq_table option:selected").val());
+								var rd_type = ($("#geos_rd_table option:selected").val());
+								var z = rd_type.split('/').reverse()[0];
+								var y = ($("#date_table option:selected").val());
+								rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+								var var_type = ($("#geos_var_table option:selected").val());
+								var style = ($("#geos_style_table option:selected").val());
+								//update_style(style);
+								var rmin = $("#geos_range-min").val();
+								var rmax = $("#geos_range-max").val();
+
+								add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, date_val.toISOString());
+
 							}
 							$("#hour_table").append(opt);
 
@@ -2382,7 +2399,7 @@ $(function() {
 		if (run_type == "geos") {
 			var datestr = ($("#date_table option:selected").val().split('/').reverse()[0]);
 			datestr = datestr.substring(0, 4) + '-' + datestr.substring(4, 6) + '-' + datestr.substring(6, 8);
-			$('#info').text("Displaying " + datestr + " data on the map..");
+			//$('#info').text("Displaying " + datestr + " data on the map..");
 
 		}
 		var freq = ($("#geos_freq_table option:selected").val());
@@ -2395,7 +2412,7 @@ $(function() {
 		//update_style(style);
 		var rmin = $("#geos_range-min").val();
 		var rmax = $("#geos_range-max").val();
-		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, datestr + 'T01:30:00Z');
+		//add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, datestr + 'T01:30:00Z');
 		$("#hour_table").html('');
 		get_times(rd_type);
 	});
@@ -2413,9 +2430,9 @@ $(function() {
 		var rmin = $("#geos_range-min").val();
 		var rmax = $("#geos_range-max").val();
 
-		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+	add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
 
-	}).change();
+	});
 
 	$("#geos_var_table").change(function(){
 		var var_type = ($("#geos_var_table option:selected").val());
@@ -2433,7 +2450,7 @@ $(function() {
 		var style = ($("#geos_style_table option:selected").val());
 		var rmin = $("#geos_range-min").val();
 		var rmax = $("#geos_range-max").val();
-		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+		//add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
 		$("#date_table").trigger('change');
 
 	}).change();
