@@ -93,15 +93,15 @@
 			url: 'https://wwf-sight-maps.org/arcgis/rest/services/Global/Administrative_Boundaries_GADM/MapServer',
 			layers:[0,1],
 			opacity: 0.7,
-			zIndex:999
+			zIndex:9999
 		}).addTo(map);
 
-    // L.esri.tiledMapLayer({
-    //     url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
-    //     layers:[0],
-    //     opacity: 0.7,
-    //     zIndex:99999
-    //   }).addTo(map);
+    L.esri.tiledMapLayer({
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
+        layers:[0],
+        opacity: 0.7,
+        zIndex:99999
+      }).addTo(map);
 
 		/**
 		* tabs controller
@@ -244,7 +244,7 @@
 			$scope.showTimeSlider_fire = true;
 			$scope.showTimeSlider = false;
 			$scope.showTimeSlider_aod = false;
-			
+
 			$scope.toggle_geos = false;
 			$scope.toggle_fire = true;
 			$scope.toggle_aod = false;
@@ -456,19 +456,21 @@
 				return [date.getFullYear() + '-' + (mm > 9 ? '' : '0') + mm +	'-' + (dd > 9 ? '' : '0') + dd + ' ' + (hh > 9 ? '' : '0') + hh + ':00:00'];
 			}
 		};
+		var startdate = new Date();
+		startdate.setTime(startdate.getTime() - (1 * 60 * 60 * 1000));
 
 		noUiSlider.create(timeSlider, {
 			// Create two timestamps to define a range.
 			range: {
 				min: new Date('2020').getTime(),
-				max: new Date().setDate(new Date().getDate() + 3)
+				max: new Date().setDate(new Date().getDate() + 2)
 			},
 
 			// Handle starting positions.
-			start: new Date().getTime(),
+			start:  startdate,
 
-			// Steps of 3 hours
-			step: 3 * 60 * 60 * 1000,
+			// Steps of 1 hours
+			step: 1 * 60 * 60 * 1000,
 
 			//tooltips: true,
 
@@ -632,8 +634,7 @@
 			input.addEventListener('change', function () {
 				if (this.value !== $scope.selectedDate_fire) {
 					$scope.selectedDate_fire = this.value;
-					slider.noUiSlider.set(new Date(this.value).getTime());
-					console.log($scope.selectedDate_fire)
+					slider.noUiSlider.set(new Date(this.value).getTime())
 					$timeout(function () {
 						$scope.changeTimeSlider_fire();
 					}, 500);
@@ -758,7 +759,6 @@ var makeSliderToolTip_aod = function (i, slider) {
 		if (this.value !== $scope.selectedDate_aod) {
 			$scope.selectedDate_aod = this.value;
 			slider.noUiSlider.set(new Date(this.value).getTime());
-			console.log($scope.selectedDate_aod)
 			$timeout(function () {
 				$scope.changeTimeSlider_aod();
 			}, 500);
@@ -819,7 +819,6 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 				var day = $scope.selectedDate;
 				day = day[0].split(' ');
 				day = day[0];
-				console.log(day);
 				for (var l in overlays) {
 					if(!(l.includes('FIRES_VIIRS'))){
 						overlays[l].options.time = day;
@@ -837,8 +836,26 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			//$("#fire_range-max").trigger('change');
 			//$("#aod_range-max").trigger('change');
 			$scope.getPCDStation();
-			$scope.selectedDate
-			//$scope.updateMap(true);
+			$scope.selectedDate;
+			var dd = document.getElementById('date_table');
+			var date_arr = [];
+			for (var i = 0; i < dd.options.length; i++) {
+			    date_arr.push(dd.options[i].text);
+			}
+			var date = new Date($scope.selectedDate[0].split(" ")[0]);
+			if(date_arr.includes($scope.selectedDate[0].split(" ")[0])){
+				date.setDate(date.getDate());
+			}else{
+				date.setDate(date.getDate()-1);
+			}
+			date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+			for (var i = 0; i < dd.options.length; i++) {
+			    if (dd.options[i].text === date) {
+			        dd.selectedIndex = i;
+			        break;
+			    }
+			}
+			$('#date_table').change();
 		};
 
 		$scope.changeTimeSlider_fire = function () {
@@ -860,7 +877,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		// Forward Slider
 		$scope.slideForward = function () {
 			var date = new Date($scope.selectedDate);
-			date.setHours(date.getHours() + 3);
+			date.setHours(date.getHours() + 1);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			tooltipInput_fire.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
@@ -873,7 +890,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		$scope.slideBackward = function () {
 			//var date = new Date($scope.selectedDate);
 			var date = new Date($scope.selectedDate);
-			date.setHours(date.getHours() - 3);
+			date.setHours(date.getHours() - 1);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			tooltipInput.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
@@ -1100,6 +1117,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 				oneMarker.lat = stations[i].lat;
 				oneMarker.lon = stations[i].lon;
 				oneMarker.pm25 = stations[i].pm25;
+				oneMarker.aqi = stations[i].aqi;
 				oneMarker.src = icon_src;
 				oneMarker.latest_date = stations[i].latest_date
 				oneMarker.addTo(markersLayer);
@@ -1118,7 +1136,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 				get_ts();
 
 				$("#station_name").text(attributes.name);
-				$("#aqi_txt").text("PM2.5: " + attributes.pm25 +" µg./m3");
+				$("#aqi_txt").text("AQI: " + attributes.aqi );
 				$("#aqi_img").attr('src',attributes.src);
 				$("#obs_date").text(attributes.latest_date);
 			} else {
@@ -1424,7 +1442,6 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		day = $scope.selectedDate;
 		day = day[0].split(' ');
 		day = day[0];
-		console.log(day);
 
 		var DATE_FORMAT = 'dd.mm.yy';
 		var strToDateUTC = function(str) {
@@ -2298,7 +2315,24 @@ $(function() {
 							var date_text = date.toISOString().replace('T', ' ').replace('.000Z', '');
 							var opt = new Option(date_text, date_val.toISOString());
 
+							$scope.selectedDate;
+							var date = new Date($scope.selectedDate[0].split(" ")[0]);
+							date.setDate(date.getDate());
+							date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+							var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
+							var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+							var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+							_time1.setHours(_time1.getHours() - 1);
+							_time2.setHours(_time2.getHours() + 1);
+
+							_time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
+							_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
+
+							if (date_text === _time1 || date_text === hour || date_text === _time2) {
+								opt.selected = true;
+							}
 							$("#hour_table").append(opt);
+
 					});
 		}), function (error){
 			console.log(error);
@@ -2316,7 +2350,7 @@ $(function() {
 		thredds_options['catalog'][run_type][freq].forEach(function (item, i) {
 
 			var opt = item.split('/').reverse()[0];
-			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6) + '-' + opt.substring(6, 8)+", 07:00:00";
+			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6) + '-' + opt.substring(6, 8);
 			if (run_type == "geos") {
 				var new_option2 = new Option(newdate, item);
 
@@ -2451,7 +2485,6 @@ $(function() {
 		var freq = ($("#fire_freq_table option:selected").val());
 		var rd_type = ($("#fire_rd_table option:selected").val());
 		var parameter_url = "tethys/MK_AQX/fire/";
-		console.log($scope.selectedDate_fire);
 		var datetime = $scope.selectedDate_fire.replace("-","").substring(0, 6);
 		if(datetime === ''){
 			datetime = "201810";
@@ -2666,7 +2699,7 @@ $(function() {
 	*/
 	$("#tab-geos").click();
 	$('.slide-backward').click();
-
+	$('#toggle_legend').click();
 
 });
 });

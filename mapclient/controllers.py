@@ -423,11 +423,21 @@ def get_current_station(obs_date):
         #         where s.station_id = m.station_id and pm25 is not null
         #         and m.datetime between '"""+last_hour_date_time+"""' and '"""+enddatetime_str+"""' ORDER BY s.station_id, m.datetime DESC"""
 
-        sql = """SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en, m.aqi, m.aqi_level
-                    from stations s, measurements m
-                    where s.station_id = m.station_id and pm25 is not null and m.datetime = '"""+obs_date+"""'
-                    ORDER BY s.station_id, m.datetime DESC"""
+        # sql = """SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en, m.aqi, m.aqi_level
+        #             from stations s, nrt_measurements m
+        #             where s.station_id = m.station_id and pm25 is not null and m.datetime = '"""+obs_date+"""'
+        #             ORDER BY s.station_id, m.datetime DESC"""
 
+        sql = """SELECT tbl1.station_id, tbl1.rid, tbl1.datetime, tbl1.lat, tbl1.long, tbl1.pm25, tbl1.name_en, tbl2.aqi, tbl2.aqi_level FROM
+        (SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en
+        FROM stations s, nrt_measurements m
+        WHERE s.station_id = m.station_id AND m.pm25 IS NOT null AND m.datetime = '"""+obs_date+"""'
+        ORDER BY s.station_id, m.datetime DESC) AS tbl1
+        LEFT JOIN
+        (SELECT station_id, aqi, aqi_level from measurements
+        WHERE datetime = '"""+obs_date+"""'
+        AND station_id IN (SELECT station_id FROM nrt_measurements WHERE datetime = '"""+obs_date+"""' AND pm25 IS NOT null) ) AS tbl2
+        ON tbl1.station_id = tbl2.station_id"""
 
         cursor.execute(sql)
         data = cursor.fetchall()
