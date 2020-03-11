@@ -100,6 +100,10 @@ p {
     height: 32px;
 }
 
+.leaflet-draw-section {
+    display: none;
+}
+
 .tooltip-inner {
     background-color: #a8c45d;
 }
@@ -242,7 +246,7 @@ p {
 
 .slide-forward {
 	position: relative;
-    margin-right: 3%;
+    margin-right: 1%;
     float: right;
     margin-top: 1%;
 }
@@ -500,4 +504,22 @@ ul {
 }
 .modal-content{
   top: 100px;
+}
+
+.pm25-legend{
+  top: 5px;
+  right: 60px;
+  height: 55px;
+  position: absolute;
+  width: 350px;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  color:#FFF;
+  padding: 10px;
+}
+
+
+.datepicker_wrapper{
+position:relative;
 }

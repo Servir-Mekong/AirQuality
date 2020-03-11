@@ -317,7 +317,7 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
 
     """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
     if "geos" in run_type:
-        infile = os.path.join(DATA_DIR, run_type, 'run_date')
+        infile = os.path.join(DATA_DIR, run_type, run_date)
     else:
         infile = os.path.join(DATA_DIR, run_type, freq, run_date)
     nc_fid = netCDF4.Dataset(infile, 'r')

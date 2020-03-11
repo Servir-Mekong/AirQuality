@@ -15,6 +15,9 @@
 		$scope.toggle_fire = false;
 		$scope.toggle_aod = false;
 		$scope.toggle_geos = true;
+		$scope.showPlayButton = true;
+		$scope.showPauseButton = false;
+
 
 		var map,
 		add_wms,
@@ -47,7 +50,12 @@
 		$modalChart,
 		time_global, titleforst, coordinates, selectforGIF, guage_val, field_day1_avg, field_day2_avg, field_day3_avg,
 		forecast_day1_avg, forecast_day2_avg, forecast_day3_avg, sum1 = 0, sum2 = 0,
+		enableDates=[],
 		sum3 = 0;
+
+		var playLoop;
+	  var intervaltime;
+	  var fiveMinutes = 10 * 1;
 
 		$modalCompare = $("#compare-modal");
 		$modalChart = $("#chart-modal");
@@ -87,7 +95,7 @@
 		var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
 			streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
 
-		//Stadia_AlidadeSmoothDark.addTo(map);
+	  //Stadia_AlidadeSmoothDark.addTo(map);
 		grayscale.addTo(map);
 		L.esri.dynamicMapLayer({
 			url: 'https://wwf-sight-maps.org/arcgis/rest/services/Global/Administrative_Boundaries_GADM/MapServer',
@@ -326,6 +334,19 @@
 				$scope.$apply();
 			}
 		});
+
+		$("#draw-tool").click(function() {
+			new L.Draw.Rectangle(map, drawControlFull.options.draw.rectangle).enable();
+		});
+		$("#draw-marker").click(function(){
+			var event = document.createEvent('Event');
+			event.initEvent('click', true, true);
+			var cb = document.getElementsByClassName('leaflet-draw-draw-marker');
+			!cb[0].dispatchEvent(event);
+			return false;
+		});
+
+
 		$("#full-screen").click(function() {
 			if($("body").css("margin-top") === "-15px"){
 				$("nav").show();
@@ -365,18 +386,20 @@
 			}
 		});
 
-		$("#admin-tool").click(function(){
-			if(!admin_enabled){
-				distLayer.setOpacity(0.5);
-				distLayer.addTo(map);
-				L.DomUtil.addClass(map._container, 'crosshair-cursor-enabled');
-				admin_enabled = true;
-			}else{
-				map.removeLayer(distLayer);
-				L.DomUtil.removeClass(map._container, 'crosshair-cursor-enabled');
-				admin_enabled = false;
-			}
-		});
+		// $("#admin-tool").click(function(){
+		// 	if(!admin_enabled){
+		// 		distLayer.setOpacity(0.5);
+		// 		distLayer.addTo(map);
+		// 		L.DomUtil.addClass(map._container, 'crosshair-cursor-enabled');
+		// 		admin_enabled = true;
+		// 	}else{
+		// 		map.removeLayer(distLayer);
+		// 		L.DomUtil.removeClass(map._container, 'crosshair-cursor-enabled');
+		// 		admin_enabled = false;
+		// 	}
+		// });
+
+
 
 		$('#toggle_print').click(function(){
 			$('#toggle_layer_box').css("display", "none");
@@ -424,15 +447,10 @@
 			$("#geos_style_table").append(geosoption);
 			if (value_txt.toUpperCase() == "PM25") {
 				geosoption.selected = true;
+				aodoption.selected = true;
+				fireoption.selected = true;
 			}
 		});
-
-		// Date Range Slider
-		$scope.broadcastTimeSlider = function () {
-			$timeout(function () {
-				$scope.$broadcast('rzSliderForceRender');
-			});
-		};
 
 		/**
 		* Time Slider
@@ -477,7 +495,7 @@
 			start:  converttimeZ(new Date()).getTime(),
 
 			// Steps of 1 hours
-			step: 1 * 60 * 60 * 1000,
+			step: 3 * 60 * 60 * 1000,
 
 			//tooltips: true,
 
@@ -518,7 +536,7 @@
 			input.addEventListener('change', function () {
 				if (this.value !== $scope.selectedDate) {
 					$scope.selectedDate = this.value;
-					slider.noUiSlider.set(new Date(this.value).getTime());
+					//slider.noUiSlider.set(new Date(this.value).getTime());
 					$timeout(function () {
 						//$scope.changeTimeSlider();
 					}, 500);
@@ -561,10 +579,13 @@
 
 					$timeout(function () {
 						$scope.changeTimeSlider();
-					}, 500);
+					}, 0);
 
 			}
 		});
+
+		$scope.lastDateonNoUIslider = timeSlider.noUiSlider.get()[0];
+		$scope.runDateonNoUIslider;
 
 		/**
 		 * Time Slider for fire location
@@ -812,10 +833,12 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 	}
 });
 
+
 // --------------------------------------------------------------------------------------------------------------------------------------
 
 		// get PCD station
 		$scope.getPCDStation = function () {
+
 			var date = new Date($scope.selectedDate);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 
@@ -838,6 +861,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			}), function (error){
 				console.log(error);
 			};
+
 		};
 		$scope.getPCDStation();
 
@@ -873,7 +897,11 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			        break;
 			    }
 			}
-			$('#date_table').change();
+
+			 $("#date_selector").datepicker("setDate", date);
+
+
+			 //$('#date_selector').change();
 
 
 		};
@@ -897,9 +925,9 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		// Forward Slider
 		$scope.slideForward = function () {
 			var date = new Date($scope.selectedDate);
-			date.setHours(date.getHours() + 1);
+			date.setHours(date.getHours() + 3);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
-			tooltipInput_fire.value = $scope.selectedDate;
+			tooltipInput.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
 		};
 
@@ -907,12 +935,73 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		$scope.slideBackward = function () {
 			//var date = new Date($scope.selectedDate);
 			var date = new Date($scope.selectedDate);
-			date.setHours(date.getHours() - 1);
+			date.setHours(date.getHours() - 3);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			tooltipInput.value = $scope.selectedDate;
 			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
 
 		};
+
+	  function startTimer(duration) {
+	 		 var timer = duration, minutes, seconds;
+	 		 intervaltime = setInterval(function () {
+	 				 minutes = parseInt(timer / 60, 10)
+	 				 seconds = parseInt(timer % 60, 10);
+
+	 				 minutes = minutes < 10 ? "0" + minutes : minutes;
+	 				 seconds = seconds < 10 ? "0" + seconds : seconds;
+
+	 				 if (--timer < 0) {
+	 						 timer = duration;
+	 				 }
+	 		 }, 1000);
+	  }
+	  function stopINT(){
+	 		 clearInterval(intervaltime);
+	  }
+	  function playAnimation () {
+	 		 if(playLoop > 0){var time = 2500;}else{var time=0;} //every 10 s.
+	 		 setTimeout(function () {
+	 				 $scope.slideForward();
+	 				 playLoop++;
+	 				 if($scope.runDateonNoUIslider === $scope.lastDateonNoUIslider || timeSlider.noUiSlider.get()[0] === $scope.lastDateonNoUIslider){
+	 						 stopINT();
+	 				 }
+					 else{
+						 clearInterval(intervaltime);
+						 startTimer(fiveMinutes);
+						 playAnimation();
+					 }
+	 		 }, time)
+	  }
+
+
+		// Backward Slider
+		// $scope.slidePlay = function () {
+		// 	//var date = new Date($scope.selectedDate);
+		// 	if(i > 0){var time = 11000;}else{var time=0;} //every 10 s.
+		// 	setTimeout(function () {
+		// 			//postFB(i);
+		// 			alert(i); //do the stuffffff
+		// 			i++;
+		// 			if(i == 3){
+		// 					stopINT();
+		// 			}
+		// 			if (i <= 2) {
+		// 					clearInterval(intervaltime);
+		// 					startTimer(fiveMinutes);
+		// 					scope.slidePlay();
+		// 			}
+		// 	}, time)
+		//
+		//
+		// };
+
+
+
+
+
+
 
 
 		// Forward Slider fire
@@ -1072,15 +1161,15 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 				var pm2_val = stations[i].pm25;
 				var aqi_level = stations[i].aqi_level;
 				if(aqi_level === 1){
-					icon_src = 'static/images/blue.png';
+					icon_src = 'static/images/B1_Excellent.png';
 				}else if(aqi_level === 2){
-					icon_src = 'static/images/green.png';
+					icon_src = 'static/images/B2_Satisfactory.png';
 				}else if(aqi_level === 3){
-					icon_src = 'static/images/yellow.png';
+					icon_src = 'static/images/B3_Moderate.png';
 				}else if(aqi_level === 4){
-					icon_src = 'static/images/orange.png';
+					icon_src = 'static/images/B4_Unhealthy.png';
 				}else if(aqi_level === 5){
-					icon_src = 'static/images/red.png';
+					icon_src = 'static/images/B5_V-Unhealthy.png';
 				}
 
 				if(pm2_val>90){
@@ -1152,6 +1241,14 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			}
 			markersLayer.on("click", markerOnClick);
 			markersLayer.setZIndex(500);
+
+			if ($("#btn_toggle_stations").is(':checked')) {
+				map.addLayer(markersLayer);
+			}
+			else {
+				map.removeLayer(markersLayer);
+			}
+
 		};
 
 
@@ -1171,7 +1268,6 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 				alert("Please select GEOS as the platform to see the chart for station.")
 
 			}
-
 		}
 
 
@@ -1191,7 +1287,6 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 				if(map.hasLayer(tdWmsAODLayer)){
 					map.removeLayer(tdWmsAODLayer);
 				}
-
 			}
 
 			var index = find_var_index(var_type,var_options);
@@ -1290,7 +1385,6 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			// var rrange = var_options[rindex]["min"]+','+var_options[rindex]["max"];
 			var lstyling = 'boxfill/'+lstyle;
 			var rstyling = 'boxfill/'+rstyle;
-			//opacity = $('#opacity-slider').slider("option", "value");
 
 			lwmsLayer = L.tileLayer.wms(lwmsUrl, {
 				layers: l_var,
@@ -1600,18 +1694,16 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 				noWrap: true,
 				continuousWorld: true
 			}),
-			'FIRES_VIIRS_24':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/key/c135d300c93ef6c81f32f095073a9a7d/?REQUEST=GetMap&WIDTH=1024&HEIGHT=512&colors=240+40+40,250+200+50&size=5,2&BBOX=90,-10,120,30",{
+			'FIRES_VIIRS_24':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
 				layers:'fires_viirs_24',
 				format: 'image/png',
 				time:day,
-				symbols:'circle,circle',
 				transparent: true
 			}),
-			'FIRES_VIIRS_48':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/key/37601af187a7c4054759a42043b19adc/?REQUEST=GetMap&WIDTH=1024&HEIGHT=512&colors=240+40+40,250+200+50&size=5,2&BBOX=90,-10,120,30",{
+			'FIRES_VIIRS_48':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
 				layers:'fires_viirs_48',
 				format: 'image/png',
 				time:day,
-				symbols:'circle,circle',
 				transparent: true
 			}),
 
@@ -1632,23 +1724,39 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			cql_filter: "NAME_0 IN ('Thailand', 'Laos', 'Myanmar', 'Vietnam', 'Cambodia')"
 
 		});
-
-		var drawControlFull = new L.Control.DrawPlus({
-			position: 'topright',
-			edit: {
-				featureGroup: drawnItems,
-				edit: false,
-			},
+		var drawPluginOptions = {
 			draw: {
-				polyline: false,
-				circlemarker:false,
-				rectangle:{shapeOptions: {  color: '#007df3', weight: 4}},
-				circle:false,
-				polygon:false,
-			}
-		});
+				polygon: {
+					allowIntersection: false, // Restricts shapes to simple polygons
+					drawError: {
+						color: '#e1e100', // Color the shape will turn when intersects
+						message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+					},
+					shapeOptions: {
+						color: '#fd5a24',
+						strokeWeight: 2,
+						fillOpacity: 0
+					}
+				},
 
-		// map.addControl(drawControlFull);
+				// disable toolbar item by setting it to false
+				polyline: false,
+				circle: false, // Turns off this drawing tool
+				circlemarker: false,
+				rectangle: {
+					shapeOptions: {
+						color: '#fd5a24',
+						strokeWeight: 2,
+						fillOpacity: 0
+					}
+				},
+				marker: true,
+			}
+		};
+
+		var drawControlFull = new L.Control.Draw(drawPluginOptions);
+
+		map.addControl(drawControlFull);
 
 
 		var customActionToPrint = function (context, mode) {
@@ -1705,11 +1813,11 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			if (type === 'Point'){
 				coords = feature["features"][0]["geometry"]["coordinates"];
 				$("#point-lat-lon").val(coords);
-				// get_ts();
+				get_ts();
 			} else if (type === 'Polygon'){
 				coords = feature["features"][0]["geometry"];
 				$("#poly-lat-lon").val(JSON.stringify(coords.coordinates[0]));
-				// get_ts();
+				get_ts();
 			}
 		});
 
@@ -1854,15 +1962,34 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			}
 
 
+			if($scope.toggle_geos){
+				var run_type = ($("#geos_run_table option:selected").val());
+				var freq = ($("#geos_freq_table option:selected").val());
+				var rd_type = ($("#geos_rd_table option:selected").text());
+				var var_type = ($("#geos_var_table option:selected").val());
+				var z = rd_type.split('/').reverse()[0];
 
-			var run_type = ($("#geos_run_table option:selected").val());
-			var freq = ($("#geos_freq_table option:selected").val());
-			var rd_type = ($("#geos_rd_table option:selected").text());
-			var var_type = ($("#geos_var_table option:selected").val());
-			var z = rd_type.split('/').reverse()[0];
-			var y = ($("#date_table option:selected").val());
-			if (($("#date_table option:selected").val()) != undefined)
-			rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+				var rd_type = ($("#geos_rd_table option:selected").val());
+				var z = rd_type.split('/').reverse()[0];
+				var y = ($("#date_selector").val());
+				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+				// var y = ($("#date_table option:selected").val());
+				// if (($("#date_table option:selected").val()) != undefined)
+				// rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+				rd_type = rd_type.split('/').reverse()[0];
+			}else if($scope.toggle_fire){
+				var run_type = 'fire';
+				var freq = ($("#fire_freq_table option:selected").val());
+				var rd_type = ($("#fire_rd_table option:selected").text());
+				var var_type = ($("#fire_var_table option:selected").val());
+			}else if($scope.toggle_aod){
+				var run_type = ($("#aod_run_table option:selected").val());
+				var freq = ($("#aod_freq_table option:selected").val());
+				var rd_type = ($("#aod_rd_table option:selected").text());
+				var var_type = ($("#aod_var_table option:selected").val());
+			}
+
+
 			if (interaction == "Point") {
 				var geom_data = $("#point-lat-lon").val();
 			} else if (interaction == "Polygon") {
@@ -2179,7 +2306,7 @@ $(function() {
 			}
 		});
 		$.each(thredds_options['catalog'][run_type],function(item,i){
-			if (item !== 'combined'){
+			if (item === 'combined'){
 				var new_option = new Option(item,item);
 				$("#aod_freq_table").append(new_option);
 			}
@@ -2227,19 +2354,25 @@ $(function() {
 	$("#aod_range-max").on('change',function(){
 		var run_type = ($("#aod_run_table option:selected").val());
 		var freq = ($("#aod_freq_table option:selected").val());
-		var rd_type = ($("#aod_rd_table option:selected").val());
-		var parameter_url = rd_type.slice(0, -17);
 		var datetime = $scope.selectedDate_aod.replace("-","").substring(0, 6);
 		if(datetime === ''){
 			datetime = "201902";
 		}
-
-		var rd_type = parameter_url + "."+ datetime +".MEKONG.nc";
 		var var_type = ($("#aod_var_table option:selected").val());
 		var style =  ($("#aod_style_table option:selected").val());
 		var rmin = $("#aod_range-min").val();
 		var rmax = $("#aod_range-max").val();
 		time_global = "";
+
+		if(run_type.toUpperCase() === 'AOD_AQUA'){
+			var parameter_url = "tethys/MK_AQX/"+ run_type;
+			var rd_type = parameter_url + "/MYD04_L2."+ datetime +".MEKONG.nc";
+		}
+		if(run_type.toUpperCase() === 'AOD_TERRA'){
+			var parameter_url = "tethys/MK_AQX/"+ run_type;
+			var rd_type = parameter_url + "/MOD04_L2."+ datetime +".MEKONG.nc";
+		}
+
 	  add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
 
@@ -2357,15 +2490,23 @@ $(function() {
 
 							_time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
 							_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
+							//console.log(_time1, "  ", hour, "   ", _time2)
 							if (date_text === _time1 || date_text === hour || date_text === _time2) {
 								opt.selected = true;
 
 								var run_type = ($("#geos_run_table option:selected").val());
 								var freq = ($("#geos_freq_table option:selected").val());
+								// var rd_type = ($("#geos_rd_table option:selected").val());
+								// var z = rd_type.split('/').reverse()[0];
+								// var y = ($("#date_table option:selected").val());
+								// rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+
 								var rd_type = ($("#geos_rd_table option:selected").val());
 								var z = rd_type.split('/').reverse()[0];
-								var y = ($("#date_table option:selected").val());
-								rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+								var y = $("#date_selector").val();
+								rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+
+
 								var var_type = ($("#geos_var_table option:selected").val());
 								var style = ($("#geos_style_table option:selected").val());
 								//update_style(style);
@@ -2376,6 +2517,7 @@ $(function() {
 
 							}
 							$("#hour_table").append(opt);
+							//$("#hour_table").trigger('change');
 
 					});
 		}), function (error){
@@ -2395,6 +2537,7 @@ $(function() {
 
 			var opt = item.split('/').reverse()[0];
 			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6) + '-' + opt.substring(6, 8);
+			enableDates.push(newdate)
 			if (run_type == "geos") {
 				var new_option2 = new Option(newdate, item);
 
@@ -2421,7 +2564,59 @@ $(function() {
 	}).change();
 
 
-	$("#date_table").change(function () {
+		var recent_date = enableDates[0];
+		var enableDatesArray=[];
+		$("#date_selector").datepicker("destroy");
+				 for (var i = 0; i < enableDates.length; i++) {
+							 var dt = enableDates[i];
+							 var dd, mm, yyy;
+							 if (parseInt(dt.split('-')[2]) <= 9 || parseInt(dt.split('-')[1]) <= 9) {
+												 dd = parseInt(dt.split('-')[2]);
+												mm = parseInt(dt.split('-')[1]);
+												yyy = dt.split('-')[0];
+											 enableDatesArray.push(yyy + '-' + mm + '-' + dd);
+									}
+									else {
+									 enableDatesArray.push(dt);
+						 }
+		}
+		$('#date_selector').datepicker({
+			beforeShow: function (input, inst) {
+										$(".datepicker").css("top", "150px");
+						        setTimeout(function () {
+
+						            inst.dpDiv.css({
+						                top: $(".datepicker").offset().top +888,
+						                left: $(".datepicker").offset().left + 0,
+						            });
+						        }, 0);
+						    },
+			beforeShowDay: function (date) {
+						var dt_ddmmyyyy = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() ;
+						if (enableDatesArray.indexOf(dt_ddmmyyyy) !== -1) {
+								return {
+										tooltip: 'There is data available',
+										classes: 'active'
+								};
+						} else {
+								return false;
+						}
+				}
+		});
+		var ddate, mmonth, yyear, setDate;
+		if (parseInt(recent_date.split('-')[2]) <= 9 || parseInt(recent_date.split('-')[1]) <= 9) {
+				 ddate = parseInt(recent_date.split('-')[2]);
+				 mmonth = parseInt(recent_date.split('-')[1]);
+				 yyear = recent_date.split('-')[0];
+				 setDate = yyear + '-' + mmonth + '-' + ddate;
+			 }
+		 $("#date_selector").datepicker("setDate", setDate);
+		 //$("#date_selector").trigger("change");
+
+
+
+
+	$("#date_selector").change(function () {
 		var run_type = ($("#geos_run_table option:selected").val());
 		if (run_type == "geos") {
 			var datestr = ($("#date_table option:selected").val().split('/').reverse()[0]);
@@ -2432,8 +2627,8 @@ $(function() {
 		var freq = ($("#geos_freq_table option:selected").val());
 		var rd_type = ($("#geos_rd_table option:selected").val());
 		var z = rd_type.split('/').reverse()[0];
-		var y = ($("#date_table option:selected").val());
-		rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+		var y = ($("#date_selector").val());
+		rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
 		var var_type = ($("#geos_var_table option:selected").val());
 		var style = ($("#geos_style_table option:selected").val());
 		//update_style(style);
@@ -2450,15 +2645,15 @@ $(function() {
 		var freq = ($("#geos_freq_table option:selected").val());
 		var rd_type = ($("#geos_rd_table option:selected").val());
 		var z = rd_type.split('/').reverse()[0];
-		var y = ($("#date_table option:selected").val());
-		rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+		var y = ($("#date_selector").val());
+		rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
 		var var_type = ($("#geos_var_table option:selected").val());
 		var style = ($("#geos_style_table option:selected").val());
 		//update_style(style);
 		var rmin = $("#geos_range-min").val();
 		var rmax = $("#geos_range-max").val();
 
-	add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
 
 	});
 
@@ -2491,7 +2686,7 @@ $(function() {
 	* Fire options
 	*/
 	$.each(thredds_options['catalog']['fire'],function(item,i){
-		if (item !== 'combined'){
+		if (item === 'combined'){
 			var new_option = new Option(item,item);
 			$("#fire_freq_table").append(new_option);
 		}
@@ -2711,6 +2906,21 @@ $(function() {
 	*/
 	$("a[title='Air quality Print']").css("display", "none");
 
+	$("#btn-play").click(function(){
+			$scope.showPlayButton = false;
+			$scope.showPauseButton = true;
+			$scope.runDateonNoUIslider = '';
+			$scope.$apply();
+			playLoop = 0;
+			playAnimation();
+	});
+	$("#btn-stop").click(function(){
+			$scope.showPlayButton = true;
+			$scope.showPauseButton = false;
+			$scope.runDateonNoUIslider = $scope.lastDateonNoUIslider;
+			$scope.$apply();
+
+	});
 	/**
 	* tab controller
 	*/
@@ -2743,7 +2953,10 @@ $(function() {
 	* tab defualt
 	*/
 	$("#tab-geos").click();
-	$('#toggle_legend').click();
+	//$('#toggle_layers').click();
+	//$(".datepicker .datepicker-dropdown .dropdown-menu .datepicker-orient-left .datepicker-orient-top").css("top", '30px');
+
+
 
 });
 });

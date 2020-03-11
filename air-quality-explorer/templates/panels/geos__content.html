@@ -43,9 +43,19 @@
     <br>
     <p> Note: Date and hour are enabled for GEOS datasets in Bangkok time</p>
     <p><b>Forecast Initialization Date</b></p>
-    <select class="form-control" name="date_table" id="date_table" style="width: 100%">
-
-    </select>
+    <select class="form-control hidden" name="date_table" id="date_table" style="width: 100%"></select>
+      <div class="form-group">
+        <input class = "form-control" id="date_selector"
+        name="date_selector"
+        type="text"
+        orientation="bottom"
+        data-date-autoclose="true"
+        data-date-format="yyyy-mm-dd"
+        data-date-min-view-mode="days"
+        data-date-multidate="1"
+        data-date-start-view="decade"
+        data-date-today-btn="false"></input>
+      </div>
     <p><b>Show Data for</b></p>
     <select  class="form-control"  name="hour_table" id="hour_table" style="width: 100%">
 

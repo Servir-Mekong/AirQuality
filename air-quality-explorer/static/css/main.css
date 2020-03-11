@@ -31,12 +31,12 @@ b, strong {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #CFCFCF;
+  background: #F0F7DF;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #888;
+  background: #E4EECB;
 }
 
 .map {

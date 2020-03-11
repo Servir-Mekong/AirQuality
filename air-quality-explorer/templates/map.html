@@ -23,6 +23,18 @@
     <input type="text" name="shp-lat-lon" id="shp-lat-lon" hidden>
 
     <div class="map" id="map" >
+      <div class="pm25-legend">
+        <b>PM 2.5 (µgm<<sup>-3</sup>)</b>
+        <table style="width:100%">
+          <tr>
+          <td><i class="fas fa-circle fa-2x" style="color:#6ef0ff"></i> 0-25</td>
+          <td><i class="fas fa-circle fa-2x" style="color:#24cf1b"></i> 26-37</td>
+          <td><i class="fas fa-circle fa-2x" style="color:#eff213"></i> 38-50</td>
+          <td><i class="fas fa-circle fa-2x" style="color:#eda702"></i> 51-90</td>
+          <td><i class="fas fa-circle fa-2x" style="color:#ed1e02"></i> 91 and up</td>
+          </tr>
+        </table>
+      </div>
         <div class="control-panel map-component">
 				<div class="scalebar-container"></div>
 				<ul>
@@ -64,14 +76,14 @@
 						<svg class="panel-icon">
 								<svg fill="#99B2C4" id="icon-controlstoggle__on" viewBox="-50 -50 390 390">
 									<title>Full Screen</title>
-                                    <g>
-                                		<g>
-                                			<polygon points="42.667,192 0,192 0,298.667 106.667,298.667 106.667,256 42.667,256 			"/>
-                                			<polygon points="0,106.667 42.667,106.667 42.667,42.667 106.667,42.667 106.667,0 0,0 			"/>
-                                			<polygon points="192,0 192,42.667 256,42.667 256,106.667 298.667,106.667 298.667,0 			"/>
-                                			<polygon points="256,256 192,256 192,298.667 298.667,298.667 298.667,192 256,192 			"/>
-                                		</g>
-                                	</g>
+                      <g>
+                  		<g>
+                  			<polygon points="42.667,192 0,192 0,298.667 106.667,298.667 106.667,256 42.667,256 			"/>
+                  			<polygon points="0,106.667 42.667,106.667 42.667,42.667 106.667,42.667 106.667,0 0,0 			"/>
+                  			<polygon points="192,0 192,42.667 256,42.667 256,106.667 298.667,106.667 298.667,0 			"/>
+                  			<polygon points="256,256 192,256 192,298.667 298.667,298.667 298.667,192 256,192 			"/>
+                  		</g>
+                  	</g>
 								</svg>
 						</svg>
 						<span class="tooltipmap tooltipmap3 left"> FULL SCREEN</span>
@@ -89,14 +101,14 @@
 						<svg class="panel-icon">
 								<svg fill="#99B2C4" id="icon-print" viewBox="0 0 512 512">
 									<title>Compare Layers</title>
-                                    <g>
-                                		<g>
-                                			<path d="M192,42.667H85.333c-23.573,0-42.667,19.093-42.667,42.667V384c0,23.573,19.093,42.667,42.667,42.667H192v42.667h42.667
-                                				V0H192V42.667z M192,362.667H85.333l106.667-128V362.667z"/>
-                                			<path d="M384,42.667H277.333v42.667H384v277.333l-106.667-128v192H384c23.573,0,42.667-19.093,42.667-42.667V85.333
-                                				C426.667,61.76,407.573,42.667,384,42.667z"/>
-                                		</g>
-                                	</g>
+                      <g>
+                    		<g>
+                    			<path d="M192,42.667H85.333c-23.573,0-42.667,19.093-42.667,42.667V384c0,23.573,19.093,42.667,42.667,42.667H192v42.667h42.667
+                    				V0H192V42.667z M192,362.667H85.333l106.667-128V362.667z"/>
+                    			<path d="M384,42.667H277.333v42.667H384v277.333l-106.667-128v192H384c23.573,0,42.667-19.093,42.667-42.667V85.333
+                    				C426.667,61.76,407.573,42.667,384,42.667z"/>
+                    		</g>
+                    	</g>
 								</svg>
 						</svg>
 						<span class="tooltipmap tooltipmap5 left">Compare Layers</span>
@@ -105,14 +117,25 @@
 						<svg class="panel-icon">
 							<use xlink:href="#icon-analysis-draw">
 								<svg fill="#99B2C4" id="icon-analysis-draw" viewBox="0 0 1240 1024">
-									<title>Drawing</title>
+									<title>Draw a rectangle</title>
 									<path d="M955.715 836.285c0 10.402 1.886 20.318 5.282 29.534 12.019 32.552 43.331 55.835 80.034 55.835 47.104 0 85.315-38.211 85.315-85.315 0-32.984-18.701-61.548-46.080-75.776l88.226-283.163c3.018 0.323 5.982 0.539 9.054 0.539 47.104 0 85.315-38.211 85.315-85.315s-38.211-85.315-85.315-85.315c-47.104 0-85.315 38.211-85.315 85.315 0 31.96 17.516 59.769 43.547 74.429l-88.387 284.187-6.306-0.162c-45.811 0-83.052 36.163-85.154 81.435l-0.162 3.934zM1036.827 785.246l4.258-0.162c10.725 0 20.642 3.234 28.834 8.893 13.528 9.216 22.366 24.684 22.366 42.307 0 28.295-22.905 51.2-51.2 51.2-19.564 0-36.595-10.995-45.218-27.109-3.827-7.168-5.982-15.36-5.982-24.037 0-3.288 0.269-6.413 0.862-9.539 4.204-22.366 23.013-39.559 46.080-41.499zM1178.947 443.715h-1.347c-11.749 0-22.582-3.934-31.205-10.563-12.18-9.378-19.941-24.091-19.941-40.637 0-28.295 22.905-51.2 51.2-51.2s51.2 22.905 51.2 51.2c0 27.81-22.205 50.445-49.853 51.2zM392.515 1024c45.757 0 83.052-35.948 85.154-81.219l0.162-4.096c0-10.402-1.886-20.318-5.282-29.534-12.019-32.552-43.331-55.781-80.034-55.781-18.863 0-36.379 6.036-50.499 16.384l-183.134-160.93c7.491-12.665 11.803-27.379 11.803-43.17 0-13.528-3.072-26.355-8.731-37.726l748.706-484.19c15.522 16.546 37.619 26.947 62.141 26.947 47.104 0 85.315-38.211 85.315-85.315s-38.211-85.315-85.315-85.315c-47.104 0-85.315 38.211-85.315 85.315 0 10.348 1.94 20.157 5.282 29.373l-751.778 486.238c-14.929-12.881-34.331-20.642-55.619-20.642-47.104 0-85.315 38.211-85.315 85.315s38.211 85.315 85.315 85.315c18.971 0 36.487-6.252 50.661-16.707l183.134 160.768c-7.599 12.773-11.965 27.756-11.965 43.709 0 47.104 38.211 85.315 85.315 85.315zM940.032 124.766c-8.839-7.33-15.091-17.677-17.408-29.373-0.647-3.288-1.024-6.629-1.024-10.078 0-28.295 22.905-51.2 51.2-51.2s51.2 22.905 51.2 51.2c0 28.295-22.905 51.2-51.2 51.2-12.45 0-23.875-4.365-32.768-11.803zM132.419 685.541c-4.581 10.833-12.719 19.779-23.013 25.277-7.168 3.827-15.36 5.982-24.091 5.982-28.295 0-51.2-22.905-51.2-51.2s22.905-51.2 51.2-51.2c9 0 17.57 2.425 24.899 6.467 10.294 5.713 18.324 14.767 22.69 25.762 2.371 5.875 3.611 12.234 3.611 18.917 0 7.114-1.509 13.797-4.096 19.941zM345.627 918.205c4.689-10.725 12.935-19.51 23.229-24.899 7.114-3.719 15.144-5.821 23.714-5.821 19.564 0 36.595 11.048 45.218 27.109 3.827 7.168 5.982 15.36 5.982 24.091 0 3.288-0.269 6.467-0.862 9.539-4.419 23.768-25.331 41.661-50.338 41.661-28.295 0-51.2-22.905-51.2-51.2 0-7.276 1.563-14.228 4.258-20.48zM477.723 942.781l483.328-76.962c-3.395-9.216-5.282-19.133-5.282-29.534l0.162-3.934-483.328 76.8c3.395 9.216 5.282 19.133 5.282 29.534l-0.162 4.096z" class="path1"></path>
 								</svg>
 							</use>
 						</svg>
-						<span class="tooltipmap tooltipmap6 left"> Drawing</span>
+						<span class="tooltipmap tooltipmap6 left"> Draw a rectangle</span>
 					</li>
-                    <li class="draw pointer" id="admin-tool">
+          <li class="draw pointer" id="draw-marker">
+						<svg class="panel-icon">
+								<svg fill="#99B2C4" id="" viewBox="0 0 560 560">
+									<title>Draw a marker</title>
+                  		<path d="M256,0C153.755,0,70.573,83.182,70.573,185.426c0,126.888,165.939,313.167,173.004,321.035
+                  			c6.636,7.391,18.222,7.378,24.846,0c7.065-7.868,173.004-194.147,173.004-321.035C441.425,83.182,358.244,0,256,0z M256,278.719
+                  			c-51.442,0-93.292-41.851-93.292-93.293S204.559,92.134,256,92.134s93.291,41.851,93.291,93.293S307.441,278.719,256,278.719z"/>
+								</svg>
+						</svg>
+						<span class="tooltipmap tooltipmap6 left"> Draw a marker</span>
+					</li>
+          <li class="draw pointer" id="admin-tool" style="display: none;">
 						<svg class="panel-icon">
                             <?xml version="1.0" encoding="iso-8859-1"?>
                             <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
@@ -455,6 +478,12 @@
           <div id="datePickerSlider" class="datePickerSlider" name="datePickerSlider" ></div>
             <button type="button" class="btn btn-default slide-forward" title="move the slider by 1 day forward" ng-click="slideForward()">
                 <span class="glyphicon glyphicon-forward" aria-hidden="true" style="left: 2px;"></span>
+            </button>
+            <button id="btn-play" type="button" class="btn btn-default slide-backward" title="Play" ng-show="showPlayButton">
+                <span class="glyphicon glyphicon-play" aria-hidden="true" ></span>
+            </button>
+            <button id="btn-stop" type="button" class="btn btn-default slide-backward" title="Stop" ng-show="showPauseButton">
+                <span class="glyphicon glyphicon-pause" aria-hidden="true" ></span>
             </button>
             <button type="button" class="btn btn-default slide-backward" title="move the slider by 1 day backward" ng-click="slideBackward()">
                 <span class="glyphicon glyphicon-backward" aria-hidden="true" style="right: 2px;"></span>
