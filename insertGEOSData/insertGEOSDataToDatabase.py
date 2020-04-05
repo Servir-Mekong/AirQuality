@@ -36,6 +36,7 @@ if len(sys.argv)==2:
 run_date = currentYear + currentMonth + currentDay + '.nc'
 print(run_date)
 
+
 def insert_pm25_forecast_data(conn,station_index,station):
     try:
         print(station_index)
@@ -66,13 +67,16 @@ def insert_pm25_forecast_data(conn,station_index,station):
             "v10m":"",
             "wind":""
         }
-        times_all=[map(lambda f: f[1], forecast) for forecast in forecast_data['plot']]
-        # for time in times_all:
-        #     if time not in times:
-        #         times.append(time)
-        times = [time for time in times_all if time not in times_all]
+        times_all = []
+        times=[]
+        for f in forecast_data['plot']:
+            times_all.append(f[1][1])
+        for time in times_all:
+            if time not in times:
+                times.append(time)
         for dt in times:
-            for fcast in [f[1] for f in forecast_data['plot'] if f[1][1]==dt]:
+            forecast_d=[f[1] for f in forecast_data['plot'] if f[1][1]==dt]
+            for fcast in forecast_d:
                 fcast_var=fcast[0]
                 fcast_val=fcast[2]
                 forecast_obj['datetime'] = dt
@@ -185,11 +189,12 @@ def insert_pm25_forecast_data(conn,station_index,station):
 
             cur.execute(sql)
             rid = cur.fetchone()[0]
-            print(str(rid))
+            print('inserted '+str(rid))
         conn.commit()
         cur.close()
         return "done"
     except Exception as e:
+        print(e)
         return ""
 
 @csrf_exempt
@@ -232,7 +237,6 @@ def get_forecast_values(lon,lat, run_date):
         abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
         abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
         coordinates = list(product(lats, lons))
-        dist = []
         # for val in coordinates:
         #      dist.append(great_circle(val, st_point).kilometers)
         dist = [great_circle(d, st_point).kilometers for d in coordinates]
@@ -244,7 +248,6 @@ def get_forecast_values(lon,lat, run_date):
         lonid = [l for l in range(len(lons)) if lon == lons[l]]
         lon_idx = lonid[0]
         for var in var_array:
-            ts_plot = []
             field = nc_fid.variables[var.upper()][:]
             ts_plot = [get_plot_val(timestep,field[lat_idx, lon_idx][timestep],lis_var,var) for timestep,v in enumerate(time) if np.isnan(field[lat_idx, lon_idx][timestep]) == False]
             ts_plot.sort()
