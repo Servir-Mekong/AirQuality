@@ -110,7 +110,7 @@ if path.exists('final_combined.nc'):
     logInfo('Reshaping....')
 
     # Put this data back into the xarray dataset since all the coordinates are already defined there.
-    forcing['PM25']=xr.DataArray(model_prediction,dims=("time","lat","lon"))
+    forcing['PM25']=xr.DataArray((np.where(model_prediction< 40, model_prediction-2.5+(0.11 * model_prediction), model_prediction-2.5+(0.20 * model_prediction))),dims=("time","lat","lon"))
     forcing['model_1']=xr.DataArray(model1_prediction,dims=("time","lat","lon"))
     forcing['model_2']=xr.DataArray(model2_prediction,dims=("time","lat","lon"))
     forcing['model_3']=xr.DataArray(model3_prediction,dims=("time","lat","lon"))
@@ -121,7 +121,8 @@ if path.exists('final_combined.nc'):
     forcing['model_8']=xr.DataArray(model8_prediction,dims=("time","lat","lon"))
     forcing['model_9']=xr.DataArray(model9_prediction,dims=("time","lat","lon"))
     forcing['model_10']=xr.DataArray(model10_prediction,dims=("time","lat","lon"))
-    forcing['BC_MLPM25']=forcing['PM25']-2.5+(0.11 * forcing['PM25'])
+    #forcing['BC_MLPM25']=forcing['PM25']-2.5+(0.11 * forcing['PM25'])
+    forcing['BC_MLPM25']=forcing['PM25']
     forcing['BCSMASS']=forcing['BCSMASS']*1000000000.0
     forcing['DUSMASS25']=forcing['DUSMASS25']*1000000000.0
     forcing['OCSMASS']=forcing['OCSMASS']*1000000000.0
