@@ -10,7 +10,6 @@ from datetime import datetime,timedelta
 import psycopg2
 import json
 import requests
-from PIL import Image,ImageFile,ImageFont,ImageDraw,ImageChops,ImageOps
 from django.views.decorators.csrf import csrf_exempt
 import config as cfg
 from geopy.distance import great_circle
