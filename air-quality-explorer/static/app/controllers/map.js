@@ -15,8 +15,9 @@
 		$scope.toggle_fire = false;
 		$scope.toggle_aod = false;
 		$scope.toggle_geos = true;
-		$scope.showPlayButton = true;
+		$scope.showPlayButton = false;
 		$scope.showPauseButton = false;
+		$scope.var_type = 'PM 2.5';
 
 
 		var map,
@@ -53,6 +54,9 @@
 		enableDates=[],
 		sum3 = 0;
 
+		var enableDatesArray=[];
+		var enableDatesArraySlide=[];
+
 		var playLoop;
 	  var intervaltime;
 	  var fiveMinutes = 10 * 1;
@@ -81,16 +85,14 @@
 		}).setView([15.8700, 100.9925], 6);
 		var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
 			maxZoom: 16,
-			attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+			attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
 		});
 		var basemap_gray = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
 			attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
 			maxZoom: 16
 		})
-		var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-		mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+		var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ';
+		var mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
 
 		var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
 			streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
@@ -252,6 +254,7 @@
 			$scope.showTimeSlider_fire = true;
 			$scope.showTimeSlider = false;
 			$scope.showTimeSlider_aod = false;
+			$scope.var_type = 'Fire';
 
 			$scope.toggle_geos = false;
 			$scope.toggle_fire = true;
@@ -267,6 +270,7 @@
 			$scope.showTimeSlider_aod = true;
 			$scope.showTimeSlider = false;
 			$scope.showTimeSlider_fire = false;
+			$scope.var_type = 'AOD';
 
 			$scope.toggle_geos = false;
 			$scope.toggle_fire = false;
@@ -281,6 +285,7 @@
 			$scope.showTimeSlider = true;
 			$scope.showTimeSlider_fire = false;
 			$scope.showTimeSlider_aod = false;
+			$scope.var_type = 'PM 2.5';
 
 			$scope.toggle_geos = true;
 			$scope.toggle_fire = false;
@@ -429,6 +434,42 @@
 		};
 		init_dropdown();
 
+
+
+		/**
+		* Alert
+		*/
+		$scope.closeAlert = function () {
+			$('.custom-alert').addClass('display-none');
+			$scope.alertContent = '';
+		};
+
+		var showErrorAlert = function (alertContent) {
+			$scope.alertContent = alertContent;
+			$('.custom-alert').removeClass('display-none').removeClass('alert-info').removeClass('alert-success').addClass('alert-danger');
+			$timeout(function () {
+					$scope.closeAlert();
+			}, 10000);
+		};
+
+		var showSuccessAlert = function (alertContent) {
+			$scope.alertContent = alertContent;
+			$('.custom-alert').removeClass('display-none').removeClass('alert-info').removeClass('alert-danger').addClass('alert-success');
+			$timeout(function () {
+					$scope.closeAlert();
+			}, 10000);
+		};
+
+		var showInfoAlert = function (alertContent) {
+			$scope.alertContent = alertContent;
+			$('.custom-alert').removeClass('display-none').removeClass('alert-success').removeClass('alert-danger').addClass('alert-info');
+			$timeout(function () {
+					$scope.closeAlert();
+			}, 10000);
+
+		};
+
+
 		/**
 		* set style options
 		*/
@@ -484,11 +525,12 @@
 		var startdate = new Date();
 		startdate.setTime(startdate.getTime());
 
+
 		noUiSlider.create(timeSlider, {
 			// Create two timestamps to define a range.
 			range: {
 				min: new Date('2020-01-01 08:00:00').getTime(),
-				max: new Date().setDate(new Date().getDate() + 2)
+				max: new Date().setDate(new Date().getDate() + 1)
 			},
 
 			// Handle starting positions.
@@ -536,9 +578,9 @@
 			input.addEventListener('change', function () {
 				if (this.value !== $scope.selectedDate) {
 					$scope.selectedDate = this.value;
-					//slider.noUiSlider.set(new Date(this.value).getTime());
+					slider.noUiSlider.set(new Date(this.value).getTime());
 					$timeout(function () {
-						//$scope.changeTimeSlider();
+						$scope.changeTimeSlider();
 					}, 500);
 				}
 
@@ -869,6 +911,8 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			//$("#fire_range-max").trigger('change');
 			//$("#aod_range-max").trigger('change');
 			$scope.getPCDStation();
+
+
 			var dd = document.getElementById('date_table');
 			var date_arr = [];
 			for (var i = 0; i < dd.options.length; i++) {
@@ -890,20 +934,27 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 							date.setDate(date.getDate() + 1);
 						}
 				}
-			date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
-			for (var i = 0; i < dd.options.length; i++) {
-			    if (dd.options[i].text === date) {
-			        dd.selectedIndex = i;
-			        break;
-			    }
-			}
 
-			 $("#date_selector").datepicker("setDate", date);
+				if(date_arr.includes($scope.selectedDate[0].split(" ")[0])){
+					date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+					for (var i = 0; i < dd.options.length; i++) {
+					    if (dd.options[i].text === date) {
+					        dd.selectedIndex = i;
+					        break;
+					    }
+					}
 
+					 $("#date_selector").datepicker("setDate", date);
+				}else{
+					showErrorAlert('No data is available for ' + $scope.selectedDate[0].split(" ")[0]);
+					 $("#date_selector").val("");
+					 $("hour_table").html('');
+					 if(map.hasLayer(tdWmsGEOSLayer)){
+	 					map.removeLayer(tdWmsGEOSLayer);
+	 				}
+				}
 
 			 //$('#date_selector').change();
-
-
 		};
 
 		$scope.changeTimeSlider_fire = function () {
@@ -966,6 +1017,9 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 	 				 playLoop++;
 	 				 if($scope.runDateonNoUIslider === $scope.lastDateonNoUIslider || timeSlider.noUiSlider.get()[0] === $scope.lastDateonNoUIslider){
 	 						 stopINT();
+							 $scope.showPlayButton = true;
+				 			 $scope.showPauseButton = false;
+							 $scope.$apply();
 	 				 }
 					 else{
 						 clearInterval(intervaltime);
@@ -2148,7 +2202,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		serieses = [{
 			data: result.data["plot"],
 			name: display_name,
-			color: "black",
+			color: "#2b5154",
 			marker: {
 				enabled: true,
 				radius: 3
@@ -2187,7 +2241,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 
 	} else {
 		arr = [];
-		title = $("#var_table option:selected").text() + " values at " + result.data["geom"];
+		title = $scope.var_type + " values at " + result.data["geom"];
 	}
 	$('.error').html('');
 	$('#plotter').highcharts({
@@ -2228,7 +2282,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		},
 		tooltip: {
 			backgroundColor: '#FCFFC5',
-			borderColor: 'black',
+			borderColor: '#2b5154',
 			borderRadius: 10,
 			borderWidth: 3
 		},
@@ -2264,7 +2318,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		},
 		plotOptions: {
 			series: {
-				color: "black"
+				color: "#2b5154"
 			}
 		},
 		exporting: {
@@ -2565,11 +2619,14 @@ $(function() {
 
 
 		var recent_date = enableDates[0];
-		var enableDatesArray=[];
+
 		$("#date_selector").datepicker("destroy");
 				 for (var i = 0; i < enableDates.length; i++) {
 							 var dt = enableDates[i];
 							 var dd, mm, yyy;
+							 if (parseInt(dt.split('-')[0]) >= 2020 ){
+								 enableDatesArraySlide.push(dt);
+							 }
 							 if (parseInt(dt.split('-')[2]) <= 9 || parseInt(dt.split('-')[1]) <= 9) {
 												 dd = parseInt(dt.split('-')[2]);
 												mm = parseInt(dt.split('-')[1]);
@@ -2582,11 +2639,10 @@ $(function() {
 		}
 		$('#date_selector').datepicker({
 			beforeShow: function (input, inst) {
-										$(".datepicker").css("top", "150px");
+										//$(".datepicker").css("top", "150px");
 						        setTimeout(function () {
-
 						            inst.dpDiv.css({
-						                top: $(".datepicker").offset().top +888,
+						                top: $(".datepicker").offset().top +1500,
 						                left: $(".datepicker").offset().left + 0,
 						            });
 						        }, 0);
@@ -2613,10 +2669,21 @@ $(function() {
 		 $("#date_selector").datepicker("setDate", setDate);
 		 //$("#date_selector").trigger("change");
 
-
-
-
 	$("#date_selector").change(function () {
+		var slide_datetime = $('.uitooltip-input').val();
+		var slide_time = slide_datetime.split(' ')[1];
+		var slide_date = $("#date_selector").val()
+		var set_slide_datetime = slide_date + ' ' + slide_time;
+		var test = $('.uitooltip-input').val();
+		if(slide_datetime !== set_slide_datetime){
+			timeSlider.noUiSlider.set(new Date(set_slide_datetime).getTime());
+		}
+			console.log(set_slide_datetime);
+			// $timeout(function () {
+			// 	$scope.changeTimeSlider();
+			// }, 500);
+
+
 		var run_type = ($("#geos_run_table option:selected").val());
 		if (run_type == "geos") {
 			var datestr = ($("#date_table option:selected").val().split('/').reverse()[0]);

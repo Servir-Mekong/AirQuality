@@ -22,6 +22,9 @@ from django.conf import settings
 import xarray as xr
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
+from geopy.distance import great_circle
+from geopy.distance import geodesic
+from itertools import *
 
 logger = logging.getLogger('controllers.py')
 logger.setLevel(logging.DEBUG)
@@ -186,116 +189,147 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
     coords = geom_data.split(',')
     stn_lat = float(coords[1])
     stn_lon = float(coords[0])
+    st_point=(stn_lat,stn_lon)
     """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
-    if "geos" in run_type:
-        infile = os.path.join(DATA_DIR, run_type, run_date)
-    else:
-        infile = os.path.join(DATA_DIR, run_type, freq, run_date)
-    nc_fid = netCDF4.Dataset(infile, 'r',)  # Reading the netCDF file
-    lis_var = nc_fid.variables
-    if "geos" == run_type:
-        field = nc_fid.variables[s_var][:]
-        lats = nc_fid.variables['lat'][:]
-        lons = nc_fid.variables['lon'][:]  # Defining the longitude array
-        time = nc_fid.variables['time'][:]
-        abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
-        abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
-        lat_idx = (abslat.argmin())
-        lon_idx = (abslon.argmin())
-        for timestep, v in enumerate(time):
-            val = field[lat_idx, lon_idx][timestep]
-            if np.isnan(val) == False:
-                dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-                                          calendar=lis_var['time'].calendar)
-                time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-                ts_plot.append([time_stamp, float(val)])
-        field1 = nc_fid.variables[s_var1][:]
-        lats = nc_fid.variables['lat'][:]
-        lons = nc_fid.variables['lon'][:]  # Defining the longitude array
-        time = nc_fid.variables['time'][:]
-        abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
-        abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
-        lat_idx = (abslat.argmin())
-        lon_idx = (abslon.argmin())
-        for timestep, v in enumerate(time):
+    try:
+        if "geos" in run_type:
+            infile = os.path.join(DATA_DIR, run_type, run_date)
+        else:
+            infile = os.path.join(DATA_DIR, run_type, freq, run_date)
+        nc_fid = netCDF4.Dataset(infile, 'r',)  # Reading the netCDF file
+        lis_var = nc_fid.variables
+        if "geos" == run_type:
+            field = nc_fid.variables[s_var][:]
+            lats = nc_fid.variables['lat'][:]
+            lons = nc_fid.variables['lon'][:]  # Defining the longitude array
+            time = nc_fid.variables['time'][:]
+            abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
+            abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
+            lat_idx = (abslat.argmin())
+            lon_idx = (abslon.argmin())
+            for timestep, v in enumerate(time):
+                val = field[lat_idx, lon_idx][timestep]
+                if np.isnan(val) == False:
+                    dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                              calendar=lis_var['time'].calendar)
+                    time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    ts_plot.append([time_stamp, float(val)])
+            field1 = nc_fid.variables[s_var1][:]
+            lats = nc_fid.variables['lat'][:]
+            lons = nc_fid.variables['lon'][:]  # Defining the longitude array
+            time = nc_fid.variables['time'][:]
+            abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
+            abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
+            lat_idx = (abslat.argmin())
+            lon_idx = (abslon.argmin())
+            for timestep, v in enumerate(time):
 
-            val = field1[lat_idx, lon_idx][timestep]
-            if np.isnan(val) == False:
-                dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-                                          calendar=lis_var['time'].calendar)
-                time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-                ts_plot_pm25.append([time_stamp, float(val)])
-        field2 = nc_fid.variables[s_var2][:]
-        lats = nc_fid.variables['lat'][:]
-        lons = nc_fid.variables['lon'][:]  # Defining the longitude array
-        time = nc_fid.variables['time'][:]
-        # Defining the variable array(throws error if variable is not in combined.nc)
-        abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
-        abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
-        lat_idx = (abslat.argmin())
-        lon_idx = (abslon.argmin())
-        for timestep, v in enumerate(time):
-            val = field2[lat_idx, lon_idx][timestep]
-            if np.isnan(val) == False:
-                dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-                                          calendar=lis_var['time'].calendar)
-                test=dt_str+timedelta(hours=7)
-                time_stamp = calendar.timegm(test.timetuple()) * 1000
-                ts_plot_bcpm25.append([time_stamp, float(val)])
-        field3 = nc_fid.variables[s_var3][:]
-        lats = nc_fid.variables['lat'][:]
-        lons = nc_fid.variables['lon'][:]  # Defining the longitude array
-        time = nc_fid.variables['time'][:]
-        # Defining the variable array(throws error if variable is not in combined.nc)
-        abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
-        abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
-        lat_idx = (abslat.argmin())
-        lon_idx = (abslon.argmin())
-        for timestep, v in enumerate(time):
+                val = field1[lat_idx, lon_idx][timestep]
+                if np.isnan(val) == False:
+                    dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                              calendar=lis_var['time'].calendar)
+                    time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    ts_plot_pm25.append([time_stamp, float(val)])
+            field2 = nc_fid.variables[s_var2][:]
+            lats = nc_fid.variables['lat'][:]
+            lons = nc_fid.variables['lon'][:]  # Defining the longitude array
+            time = nc_fid.variables['time'][:]
+            # Defining the variable array(throws error if variable is not in combined.nc)
+            #new way to cal dist
+            print("station lat and lon")
+            print(str(st_point))
+            coordinates=list(product(lats, lons))
+            # dist=[]
+            # for val in coordinates:
+            #     distance=great_circle(val, st_point).kilometers
+            #     dist.append(distance)
+            # index = np.argmin(np.array(dist))
+            # lat=coordinates[index][0]
+            # lon = coordinates[index][1]
+            # for l in range(len(lats)):
+            #     if lat==lats[l]:
+            #         lat_idx=l
+            # for l in range(len(lons)):
+            #     if lon == lons[l]:
+            #         lon_idx = l
+            #
+            # print("nearest index of lat and lon")
 
-            val = field3[lat_idx, lon_idx][timestep]
-            if np.isnan(val) == False:
-                dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-                                          calendar=lis_var['time'].calendar)
-                time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-                ts_plot_geospm25.append([time_stamp, float(val)])
-    else:
-        field = nc_fid.variables[s_var][:]
-        lats = nc_fid.variables['Latitude'][:]
-        lons = nc_fid.variables['Longitude'][:]  # Defining the longitude array
-        time = nc_fid.variables['time'][:]
-      # Defining the variable array(throws error if variable is not in combined.nc)
-        abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
-        abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
-        lat_idx = (abslat.argmin())
-        lon_idx = (abslon.argmin())
-        for timestep, v in enumerate(time):
 
-            val = field[timestep,lat_idx,lon_idx]
-            if np.isnan(val) == False:
-                dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-                                          calendar=lis_var['time'].calendar)
-                time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-                ts_plot.append([time_stamp, float(val)])
+            abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
+            abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
+            lat_idx = (abslat.argmin())
+            lon_idx = (abslon.argmin())
+        #new way end
+            print(str(lats[lat_idx])+" , "+str(lons[lon_idx]))
 
-    ts_plot.sort()
-    ts_plot_pm25.sort()
-    ts_plot_bcpm25.sort()
-    ts_plot_geospm25.sort()
-    point = [round(stn_lat, 2), round(stn_lon, 2)]
-    json_obj["plot"] = ts_plot
 
-    # json_obj["ml_pm25"] = ts_plot_pm25
-    if freq == "station":
-        json_obj["bc_mlpm25"] = ts_plot_bcpm25
-    # json_obj["geos_pm25"] = ts_plot_geospm25
-    json_obj["geom"] = point
-    if len(ts_plot) == 0:
-        logger.warn("The selected point has no data")
-    else:
-        pass
-        # logger.info("PLOT POINT OBJECT : " + json.dumps(json_obj["plot"]))
-    logger.info(json.dumps(json_obj["geom"]))
+
+
+            for timestep, v in enumerate(time):
+                val = field2[lat_idx, lon_idx][timestep]
+                if np.isnan(val) == False:
+                    dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                              calendar=lis_var['time'].calendar)
+                    test=dt_str+timedelta(hours=7)
+                    time_stamp = calendar.timegm(test.timetuple()) * 1000
+                    ts_plot_bcpm25.append([time_stamp, float(val)])
+            field3 = nc_fid.variables[s_var3][:]
+            lats = nc_fid.variables['lat'][:]
+            lons = nc_fid.variables['lon'][:]  # Defining the longitude array
+            time = nc_fid.variables['time'][:]
+            # Defining the variable array(throws error if variable is not in combined.nc)
+            abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
+            abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
+            lat_idx = (abslat.argmin())
+            lon_idx = (abslon.argmin())
+            for timestep, v in enumerate(time):
+
+                val = field3[lat_idx, lon_idx][timestep]
+                if np.isnan(val) == False:
+                    dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                              calendar=lis_var['time'].calendar)
+                    time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    ts_plot_geospm25.append([time_stamp, float(val)])
+        else:
+            field = nc_fid.variables[s_var][:]
+            lats = nc_fid.variables['Latitude'][:]
+            lons = nc_fid.variables['Longitude'][:]  # Defining the longitude array
+            time = nc_fid.variables['time'][:]
+          # Defining the variable array(throws error if variable is not in combined.nc)
+            abslat = np.abs(lats - stn_lat)  # Finding the absolute latitude
+            abslon = np.abs(lons - stn_lon)  # Finding the absolute longitude
+            lat_idx = (abslat.argmin())
+            lon_idx = (abslon.argmin())
+            for timestep, v in enumerate(time):
+
+                val = field[timestep,lat_idx,lon_idx]
+                if np.isnan(val) == False:
+                    dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                              calendar=lis_var['time'].calendar)
+                    time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    ts_plot.append([time_stamp, float(val)])
+
+        ts_plot.sort()
+        ts_plot_pm25.sort()
+        ts_plot_bcpm25.sort()
+        ts_plot_geospm25.sort()
+        point = [round(stn_lat, 2), round(stn_lon, 2)]
+        json_obj["plot"] = ts_plot
+
+        # json_obj["ml_pm25"] = ts_plot_pm25
+        if freq == "station":
+            json_obj["bc_mlpm25"] = ts_plot_bcpm25
+        # json_obj["geos_pm25"] = ts_plot_geospm25
+        json_obj["geom"] = point
+        if len(ts_plot) == 0:
+            logger.warn("The selected point has no data")
+        else:
+            pass
+            # logger.info("PLOT POINT OBJECT : " + json.dumps(json_obj["plot"]))
+        logger.info(json.dumps(json_obj["geom"]))
+    except Exception as e:
+        return json_obj
     return json_obj
 
 @csrf_exempt

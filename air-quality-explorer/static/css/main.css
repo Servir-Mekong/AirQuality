@@ -219,7 +219,7 @@ b, strong {
     margin-right: 30%;
     width: 40%;
     position: fixed;
-    z-index: 2;
+    z-index: 99999;
     font-size: 12px;
     margin-top: 10px;
 }
