@@ -1,6 +1,6 @@
 {% load cms_tags staticfiles %}
 <div id="toggle_layer_box" class="map-panel__toggle--panel" style="display: block;">
-    <p>Toggle layer visibility</p>
+    <p>[['Toggle layer visibility' | translate]]</p>
     <ul class="toggles-list">
         <li class="toggle" ng-show="toggle_fire">
             <label class="switch_layer">
@@ -31,9 +31,29 @@
             <label>PM 2.5 (PCD)</label>
         </li>
     </ul>
+
+    <p>Base Map</p>
+    <ul class="toggles-list">
+        <li class="toggle" >
+            <label class="switch_layer">
+              <input id="btn_toggle_light" type="checkbox" checked>
+              <span class="slider_toggle round"></span>
+            </label>
+            <label>Light</label>
+        </li>
+        <li class="toggle" >
+            <label class="switch_layer">
+              <input id="btn_toggle_dark" type="checkbox">
+              <span class="slider_toggle round"></span>
+            </label>
+            <label>Dark</label>
+        </li>
+
+    </ul>
+
 </div>
 <div id="download_box" class="map-panel__toggle--panel" style="display: none;">
-    <p>Download the netCDF file(s)</p>
+    <p>[['Download the netCDF file(s)' | translate]]</p>
     <ul class="toggles-list">
         <li>
             <button type="button" class="btn btn-download" id="btn-download-fire">
@@ -75,7 +95,7 @@
 
 </div>
 <div id="print_box" class="map-panel__toggle--panel" style="display: none;">
-    <p>Please check if any overlays are selected before you print..</p>
+    <p>[['Please check if any overlays are selected before you print..' | translate]]</p>
     <!-- <div id="btn-print">
 
     </div> -->

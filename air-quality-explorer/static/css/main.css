@@ -854,7 +854,7 @@ p {
     overflow: auto;
     background-color: #fff;
     padding: 10px;
-    width: 190px;
+    width: 160px;
 }
 
 .map-panel__toggle .map-panel__tabs {
@@ -1021,7 +1021,7 @@ input[type="checkbox"], input[type="radio"] {
     margin-left: 11px;
 }
 .map-panel__toggle label {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 200;
     color:#666 ;
 }
@@ -1046,8 +1046,8 @@ a.leaflet-control-timecontrol.timecontrol-play {
 .switch_layer {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 18px;
+  width: 25px;
+  height: 12px;
 }
 
 .switch_layer input {
@@ -1071,10 +1071,10 @@ a.leaflet-control-timecontrol.timecontrol-play {
 .slider_toggle:before {
   position: absolute;
   content: "";
-  height: 14px;
-  width: 14px;
+  height: 10px;
+  width: 10px;
   left: 2px;
-  bottom: 2px;
+  bottom: 1px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -1089,9 +1089,9 @@ input:focus + .slider_toggle {
 }
 
 input:checked + .slider_toggle:before {
-  -webkit-transform: translateX(22px);
-  -ms-transform: translateX(22px);
-  transform: translateX(22px);
+  -webkit-transform: translateX(11px);
+  -ms-transform: translateX(11px);
+  transform: translateX(11px);
 }
 
 /* Rounded sliders */

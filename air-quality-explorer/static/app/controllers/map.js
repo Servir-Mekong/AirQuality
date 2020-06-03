@@ -94,11 +94,11 @@
 		var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ';
 		var mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
 
-		var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
+		var basemap_layer   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
 			streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
 
 	  //Stadia_AlidadeSmoothDark.addTo(map);
-		grayscale.addTo(map);
+		basemap_layer.addTo(map);
 		L.esri.dynamicMapLayer({
 			url: 'https://wwf-sight-maps.org/arcgis/rest/services/Global/Administrative_Boundaries_GADM/MapServer',
 			layers:[0,1],
@@ -172,6 +172,32 @@
 				map.removeLayer(markersLayer);
 			}
 		});
+
+		/**
+		* Basemap control
+		*/
+		$("#btn_toggle_light").on('click', function() {
+
+			if ($(this).is(':checked')) {
+				basemap_layer.setUrl('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw');
+				$('#btn_toggle_dark').prop('checked', false); // Unchecks it
+			}
+			else {
+				basemap_layer.setUrl('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png');
+				$('#btn_toggle_dark').prop('checked', true); // checks it
+			}
+		});
+		$("#btn_toggle_dark").on('click', function() {
+			if ($(this).is(':checked')) {
+				basemap_layer.setUrl('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png');
+				$('#btn_toggle_light').prop('checked', false); // Unchecks it
+			}
+			else {
+				basemap_layer.setUrl('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw');
+				$('#btn_toggle_light').prop('checked', true); // checks it
+			}
+		});
+
 
 		$('#toggle_layers').click(function(){
 			$('#imagery_layer_box').css("display", "none");
@@ -530,7 +556,7 @@
 			// Create two timestamps to define a range.
 			range: {
 				min: new Date('2020-01-01 08:00:00').getTime(),
-				max: new Date().setDate(new Date().getDate() + 1)
+				max: new Date().setDate(new Date().getDate() + 0)
 			},
 
 			// Handle starting positions.
@@ -580,7 +606,7 @@
 					$scope.selectedDate = this.value;
 					slider.noUiSlider.set(new Date(this.value).getTime());
 					$timeout(function () {
-						$scope.changeTimeSlider();
+						//$scope.changeTimeSlider();
 					}, 500);
 				}
 
@@ -610,6 +636,7 @@
 		// When the slider changes, update the tooltip
 		timeSlider.noUiSlider.on('update', function (values, handle) {
 			tooltipInput.value = values[handle];
+
 		});
 
 		// Event Handler for slider
@@ -905,13 +932,10 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			};
 
 		};
-		$scope.getPCDStation();
 
 		$scope.changeTimeSlider = function () {
-			//$("#fire_range-max").trigger('change');
-			//$("#aod_range-max").trigger('change');
-			$scope.getPCDStation();
 
+			$scope.getPCDStation();
 
 			var dd = document.getElementById('date_table');
 			var date_arr = [];
@@ -919,43 +943,46 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			    date_arr.push(dd.options[i].text);
 			}
 
-			var date = new Date($scope.selectedDate[0].split(" ")[0]);
-			if(date_arr.includes($scope.selectedDate[0].split(" ")[0])){
-					date.setDate(date.getDate());
-					if(new Date().getTimezoneOffset() <= 0){
-							date.setDate(date.getDate());  //+ UTC
-					}else{
-							date.setDate(date.getDate() + 1); //- UTC
+			var checkDateTime = $scope.selectedDate[0].split(" ")[0];
+			for (var i = 0; i < 3; i++) {
+				var date = new Date(checkDateTime);
+				if(date_arr.includes(checkDateTime)){
+						date.setDate(date.getDate());
+						if(new Date().getTimezoneOffset() <= 0){
+								date.setDate(date.getDate());  //+ UTC
+						}else{
+								date.setDate(date.getDate() + 1); //- UTC
+							}
+						i = 3
+					}
+					else{
+							if(new Date().getTimezoneOffset() <= 0){
+									date.setDate(date.getDate() - 1);
+							}else{
+									date.setDate(date.getDate() + 1);
+								}
 						}
-			}else{
-					if(new Date().getTimezoneOffset() <= 0){
-							date.setDate(date.getDate() - 1);
-					}else{
-							date.setDate(date.getDate() + 1);
-						}
-				}
-
-				if(date_arr.includes($scope.selectedDate[0].split(" ")[0])){
-					date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+					checkDateTime = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+			}
+			$("#date_selector").datepicker("setDate", checkDateTime);
 					for (var i = 0; i < dd.options.length; i++) {
-					    if (dd.options[i].text === date) {
+					    if (dd.options[i].text === checkDateTime) {
 					        dd.selectedIndex = i;
 					        break;
 					    }
 					}
 
-					 $("#date_selector").datepicker("setDate", date);
-				}else{
-					showErrorAlert('No data is available for ' + $scope.selectedDate[0].split(" ")[0]);
-					 $("#date_selector").val("");
-					 $("hour_table").html('');
-					 if(map.hasLayer(tdWmsGEOSLayer)){
-	 					map.removeLayer(tdWmsGEOSLayer);
-	 				}
-				}
+					// showErrorAlert('No data is available for ' + $scope.selectedDate[0].split(" ")[0]);
+					//  // $("#date_selector").val("");
+					//  $("hour_table").html('');
+					//  if(map.hasLayer(tdWmsGEOSLayer)){
+	 				// 	map.removeLayer(tdWmsGEOSLayer);
+	 				// }
 
 			 //$('#date_selector').change();
 		};
+
+
 
 		$scope.changeTimeSlider_fire = function () {
 			$("#fire_range-max").trigger('change');
@@ -2007,7 +2034,6 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 
 			var interaction = int_type;
 			if (interaction == "Station") {
-				//console.log("station");
 			} else if ($("#poly-lat-lon").val() == "" && $("#point-lat-lon").val() == "" && $("#shp-lat-lon").val() == "") {
 				// $('.error').html('<b>No feature selected. Please create a feature using the map interaction dropdown. Plot cannot be generated without a feature.</b>');
 				return false;
@@ -2131,7 +2157,6 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 						forecast_day2_avg = sum2 / count2;
 						forecast_day3_avg = sum3 / count3;
 
-						//console.log("station");
 						gen_chart(field_day1_avg < 0 ? -1 : field_day1_avg, forecast_day1_avg < 0 ? -1 : forecast_day1_avg);
 						document.getElementById("datevalue").innerHTML = document.getElementById("day1_guage").innerHTML;
 						document.getElementById("fromd").innerHTML = document.getElementById("day1_guage").innerHTML+" 08:30";
@@ -2337,6 +2362,83 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 };
 
 };
+
+
+get_times = function (rd_type) {
+
+	$("#hour_table").html('');
+	var freq = ($("#geos_freq_table option:selected").val());
+	var run_type = ($("#geos_run_table option:selected").val());
+
+	var parameters = {
+		run_type: run_type,
+		freq: freq,
+		run_date: rd_type.split('/').reverse()[0]
+	};
+
+	MapService.get_time(parameters)
+	.then(function (result){
+				var times = result["times"];
+				time_global = times[0];
+					$("#hour_table").html('');
+				times.forEach(function (time, i) {
+						var date= new Date(time);
+						date.setHours(date.getHours() + 7);
+						var date_val = new Date(time);
+						date_val.setHours(date_val.getHours());
+						var date_value = date.setHours(date.getHours());
+						var date_text = date.toISOString().replace('T', ' ').replace('.000Z', '');
+						var opt = new Option(date_text, date_val.toISOString());
+
+						$scope.selectedDate;
+						var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
+						//var date = new Date($scope.selectedDate[0].split(" ")[0]);
+						date.setDate(date.getDate());
+						date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+						var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
+						var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+						var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+						_time1.setHours(_time1.getHours() - 1);
+						_time2.setHours(_time2.getHours() + 1);
+
+						_time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
+						_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
+						//console.log(_time1, "  ", hour, "   ", _time2)
+						if (date_text === _time1 || date_text === hour || date_text === _time2) {
+							opt.selected = true;
+
+							var run_type = ($("#geos_run_table option:selected").val());
+							var freq = ($("#geos_freq_table option:selected").val());
+							// var rd_type = ($("#geos_rd_table option:selected").val());
+							// var z = rd_type.split('/').reverse()[0];
+							// var y = ($("#date_table option:selected").val());
+							// rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+
+							var rd_type = ($("#geos_rd_table option:selected").val());
+							var z = rd_type.split('/').reverse()[0];
+							var y = $("#date_selector").val();
+							rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+
+
+							var var_type = ($("#geos_var_table option:selected").val());
+							var style = ($("#geos_style_table option:selected").val());
+							//update_style(style);
+							var rmin = $("#geos_range-min").val();
+							var rmax = $("#geos_range-max").val();
+
+							add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, date_val.toISOString());
+
+
+						}
+						$("#hour_table").append(opt);
+						//$("#hour_table").trigger('change');
+
+				});
+	}), function (error){
+		console.log(error);
+	};
+};
+
 $(function() {
 
 	/**
@@ -2419,11 +2521,11 @@ $(function() {
 		time_global = "";
 
 		if(run_type.toUpperCase() === 'AOD_AQUA'){
-			var parameter_url = "tethys/MK_AQX/"+ run_type;
+			var parameter_url = "mk_aqx/" + run_type;
 			var rd_type = parameter_url + "/MYD04_L2."+ datetime +".MEKONG.nc";
 		}
 		if(run_type.toUpperCase() === 'AOD_TERRA'){
-			var parameter_url = "tethys/MK_AQX/"+ run_type;
+			var parameter_url = "mk_aqx/"+ run_type;
 			var rd_type = parameter_url + "/MOD04_L2."+ datetime +".MEKONG.nc";
 		}
 
@@ -2506,78 +2608,7 @@ $(function() {
 
 	}).change();
 
-	get_times = function (rd_type) {
 
-		$("#hour_table").html('');
-		var freq = ($("#geos_freq_table option:selected").val());
-		var run_type = ($("#geos_run_table option:selected").val());
-		var parameters = {
-			run_type: run_type,
-			freq: freq,
-			run_date: rd_type.split('/').reverse()[0]
-		};
-
-		MapService.get_time(parameters)
-		.then(function (result){
-					var times = result["times"];
-					time_global = times[0];
-						$("#hour_table").html('');
-					times.forEach(function (time, i) {
-							var date= new Date(time);
-							date.setHours(date.getHours() + 7);
-							var date_val = new Date(time);
-							date_val.setHours(date_val.getHours());
-							var date_value = date.setHours(date.getHours());
-							var date_text = date.toISOString().replace('T', ' ').replace('.000Z', '');
-							var opt = new Option(date_text, date_val.toISOString());
-
-							$scope.selectedDate;
-							var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
-							//var date = new Date($scope.selectedDate[0].split(" ")[0]);
-							date.setDate(date.getDate());
-							date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
-							var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
-							var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
-							var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
-							_time1.setHours(_time1.getHours() - 1);
-							_time2.setHours(_time2.getHours() + 1);
-
-							_time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
-							_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
-							//console.log(_time1, "  ", hour, "   ", _time2)
-							if (date_text === _time1 || date_text === hour || date_text === _time2) {
-								opt.selected = true;
-
-								var run_type = ($("#geos_run_table option:selected").val());
-								var freq = ($("#geos_freq_table option:selected").val());
-								// var rd_type = ($("#geos_rd_table option:selected").val());
-								// var z = rd_type.split('/').reverse()[0];
-								// var y = ($("#date_table option:selected").val());
-								// rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
-
-								var rd_type = ($("#geos_rd_table option:selected").val());
-								var z = rd_type.split('/').reverse()[0];
-								var y = $("#date_selector").val();
-								rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
-
-
-								var var_type = ($("#geos_var_table option:selected").val());
-								var style = ($("#geos_style_table option:selected").val());
-								//update_style(style);
-								var rmin = $("#geos_range-min").val();
-								var rmax = $("#geos_range-max").val();
-
-								add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, date_val.toISOString());
-
-							}
-							$("#hour_table").append(opt);
-							//$("#hour_table").trigger('change');
-
-					});
-		}), function (error){
-			console.log(error);
-		};
-	};
 
 	$("#geos_rd_table").change(function(){
 		$("#date_table").empty();
@@ -2670,19 +2701,6 @@ $(function() {
 		 //$("#date_selector").trigger("change");
 
 	$("#date_selector").change(function () {
-		var slide_datetime = $('.uitooltip-input').val();
-		var slide_time = slide_datetime.split(' ')[1];
-		var slide_date = $("#date_selector").val()
-		var set_slide_datetime = slide_date + ' ' + slide_time;
-		var test = $('.uitooltip-input').val();
-		if(slide_datetime !== set_slide_datetime){
-			timeSlider.noUiSlider.set(new Date(set_slide_datetime).getTime());
-		}
-			console.log(set_slide_datetime);
-			// $timeout(function () {
-			// 	$scope.changeTimeSlider();
-			// }, 500);
-
 
 		var run_type = ($("#geos_run_table option:selected").val());
 		if (run_type == "geos") {
@@ -2705,7 +2723,7 @@ $(function() {
 		$("#hour_table").html('');
 		get_times(rd_type);
 		//$scope.changeTimeSlider();
-	}).change();
+	});
 
 	$("#hour_table").change(function () {
 		var run_type = ($("#geos_run_table option:selected").val());
@@ -2740,10 +2758,13 @@ $(function() {
 		var style = ($("#geos_style_table option:selected").val());
 		var rmin = $("#geos_range-min").val();
 		var rmax = $("#geos_range-max").val();
-		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+		$scope.changeTimeSlider();
+
+		//add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
 		//$("#date_table").trigger('change');
 
-	}).change();
+	});
+
 	$("#geos_style_table").change(function () {
 		var style = ($("#geos_style_table option:selected").val());
 		$("#geos_range-max").trigger('change');
@@ -2791,7 +2812,7 @@ $(function() {
 	$("#fire_range-max").on('change',function(){
 		var freq = ($("#fire_freq_table option:selected").val());
 		var rd_type = ($("#fire_rd_table option:selected").val());
-		var parameter_url = "tethys/MK_AQX/fire/";
+		var parameter_url = "mk_aqx/fire/";
 		var datetime = $scope.selectedDate_fire.replace("-","").substring(0, 6);
 		if(datetime === ''){
 			datetime = "201810";
@@ -2988,6 +3009,8 @@ $(function() {
 			$scope.$apply();
 
 	});
+
+
 	/**
 	* tab controller
 	*/
@@ -3020,6 +3043,7 @@ $(function() {
 	* tab defualt
 	*/
 	$("#tab-geos").click();
+	// $scope.changeTimeSlider();
 	//$('#toggle_layers').click();
 	//$(".datepicker .datepicker-dropdown .dropdown-menu .datepicker-orient-left .datepicker-orient-top").css("top", '30px');
 

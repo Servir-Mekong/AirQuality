@@ -86,7 +86,6 @@ def gen_thredds_options():
     if catalog_wms[-1] != "/":
         catalog_wms = catalog_wms + '/'
     catalog_xml_url = catalog_url + 'catalog.xml'
-
     cat_response = requests.get(catalog_xml_url, verify=False)
     cat_tree = ET.fromstring(cat_response.content)
     currentDay = datetime.now().strftime('%d')
@@ -95,9 +94,8 @@ def gen_thredds_options():
     d=currentYear+currentMonth+currentDay
     for elem in cat_tree.iter():
         for k, v in elem.attrib.items():
-            if 'title' in k:
+            if 'title' in k and ("geos" in v or "fire" in v or "aod" in v):
                 run_xml_url = catalog_url + str(v) +'/catalog.xml'
-
                 run_response = requests.get(run_xml_url, verify=False)
                 run_tree = ET.fromstring(run_response.content)
                 for ele in run_tree.iter():
@@ -110,7 +108,7 @@ def gen_thredds_options():
                                 tinf.setdefault(v, {}).setdefault('3dayrecent', []).append(va)
                             elif va.endswith('.nc') and "geos" not in va:
                                 tinf.setdefault(v, {}).setdefault('monthly', []).append(va)
-                        if 'title' in ke:
+                        if 'title' in ke and ("combined" in va):
                             mo_xml_url = catalog_url + str(v) + '/'+str(va)+'/catalog.xml'
                             mo_response = requests.get(mo_xml_url, verify=False)
                             mo_tree = ET.fromstring(mo_response.content)
@@ -119,7 +117,6 @@ def gen_thredds_options():
                                     if 'urlPath' in key:
                                         tinf.setdefault(v, {}).setdefault(va, []).append(val)
     json_obj['catalog'] = tinf
-
     return json_obj
 
 def get_styles():
