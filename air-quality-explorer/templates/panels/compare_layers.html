@@ -1,70 +1,66 @@
-{% load cms_tags staticfiles %}
-<div id="compare-modal" class="model map-modal map-modal--vertical-smaller map-modal--horizontal-smaller" tabindex="-1" role="dialog" aria-labelledby="comapre-modal-label" style="display: none;">
+
+<div id="compare-modal" class="model map-modal map-modal--vertical-smaller map-modal--horizontal-smaller" tabindex="-1" role="dialog"  style="display: none;">
     <div class="map-modal__header">
-        <h2 class="map-modal__title">Compare Layers</h2>
+        <h3 class="map-modal__title">[[ 'Compare Layers' | translate]]</h3>
     </div>
     <div class="map-modal__content">
-            <h4>Left Window Options</h4>
+            <h4>[[ 'Left Window Options' | translate]]</h4>
             <label>
-                Select Parameter
+                [[ 'Select Parameter' | translate]]
             </label>
-            <select  class="run_table" name="lrun_table" id="lrun_table" style="width: 100%">
-
-            </select>
+            <select  class="form-control" name="lrun_table" id="lrun_table" style="width: 100%"></select>
             <label>
-                Select Run Date
+                [[ 'Select Run Date' | translate]]
             </label>
-            <select  class="rd_table" name="lrd_table" id="lrd_table" style="width: 100%">
-
-            </select>
+            <select  class="form-control" name="lrd_table" id="lrd_table" style="width: 100%"></select>
             <br>
             <label>
-                Select Variable
+                [[ 'Select Variable' | translate]]
             </label>
-            <select  class="var_table" name="lvar_table" id="lvar_table" style="width: 100%">
+            <select  class="form-control" name="lvar_table" id="lvar_table" style="width: 100%">
 
             </select>
 
-            <label for="range-min" class="formText">Range Min</label>
+            <label for="range-min" class="formText">[[ 'Range Min' | translate]]</label>
             <input type="text" class="form-control" id="lrange-min" name="lrange-min" style="width: 100%">
 
-            <label for="range-max" class="formText">Range Max</label>
+            <label for="range-max" class="formText">[[ 'Range Max' | translate]]</label>
             <input type="text" class="form-control" id="lrange-max" name="lrange-max" style="width: 100%">
 
             <label>
-                Select a style
+                [[ 'Select a style' | translate]]
             </label>
-            <select  class="style_table" name="cstyle_table" id="rstyle_table" style="width: 100%"></select>
+            <select  class="form-control" name="cstyle_table" id="rstyle_table" style="width: 100%"></select>
             <hr>
-            <h4>Right Window Options</h4>
+            <h4>[[ 'Right Window Options' | translate]]</h4>
             <label>
-                Select Parameter
+                [[ 'Select Parameter' | translate]]
             </label>
-            <select  class="run_table" name="rrun_table" id="rrun_table" style="width: 100%">
+            <select   class="form-control" name="rrun_table" id="rrun_table" style="width: 100%">
 
             </select>
             <label>
-                Select Run Date
+                [[ 'Select Run Date' | translate]]
             </label>
-            <select  class="rd_table" name="rrd_table" id="rrd_table" style="width: 100%">
+            <select   class="form-control" name="rrd_table" id="rrd_table" style="width: 100%">
 
             </select>
             <br>
             <label>
-                Select Variable
+                [[ 'Select Variable' | translate]]
             </label>
-            <select  class="var_table" name="rvar_table" id="rvar_table" style="width: 100%"></select>
+            <select   class="form-control" name="rvar_table" id="rvar_table" style="width: 100%"></select>
 
-            <label for="range-min" class="formText">Range Min</label>
+            <label for="range-min" class="formText">[[ 'Range Min' | translate]]</label>
             <input type="text" class="form-control" id="rrange-min" name="rrange-min" style="width: 100%">
 
-            <label for="range-max" class="formText">Range Max</label>
+            <label for="range-max" class="formText">[[ 'Range Max' | translate]]</label>
             <input type="text" class="form-control" id="rrange-max" name="rrange-max" style="width: 100%">
 
             <label>
-                Select a style
+                [[ 'Select a style' | translate]]
             </label>
-            <select  class="style_table" name="cstyle_table" id="lstyle_table" style="width: 100%"></select>
+            <select   class="form-control" name="cstyle_table" id="lstyle_table" style="width: 100%"></select>
 
             <hr>
 
@@ -72,10 +68,10 @@
     </div>
     <div class="map-modal__buttons">
         <div>
-            <button type="button" class="btn" id="btn-close-compare">Close</button>
+            <button type="button" class="btn" id="btn-close-compare">[[ 'Close' | translate]]</button>
         </div>
         <div>
-            <button type="button" class="btn" id="btn-add-compare">Add Layers</button>
+            <button type="button" class="btn" id="btn-add-compare">[[ 'Add Layers' | translate]]</button>
         </div>
     </div>
 </div>

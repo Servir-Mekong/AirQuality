@@ -4,7 +4,7 @@
 *.pyc
 credentials/
 static/*
-# Setting and  config files
+# Setting and config files
 air-quality-explorer/settings.py
 mapclient/config.py
 # Unused templates

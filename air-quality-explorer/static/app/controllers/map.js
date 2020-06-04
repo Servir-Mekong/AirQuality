@@ -183,13 +183,14 @@
 				$('#btn_toggle_dark').prop('checked', false); // Unchecks it
 			}
 			else {
-				basemap_layer.setUrl('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png');
+				basemap_layer.setUrl('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png');
 				$('#btn_toggle_dark').prop('checked', true); // checks it
+
 			}
 		});
 		$("#btn_toggle_dark").on('click', function() {
 			if ($(this).is(':checked')) {
-				basemap_layer.setUrl('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png');
+				basemap_layer.setUrl('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png');
 				$('#btn_toggle_light').prop('checked', false); // Unchecks it
 			}
 			else {
@@ -320,17 +321,11 @@
 		});
 
 
-		$("#full-extent").click(function(){
-			$("nav").hide();
-			$("body").css("margin-top", "-15px");
-			$(".map").css("height", "100vh");
-			$(".map-panel__sidebar").css("top", "20px");
-		});
 		$("#show-branner").click(function(){
 			$("nav").show();
 			$("body").css("margin-top", "100px");
 			$(".map").css("height", "calc(100vh - 115px)");
-			$(".map-panel__sidebar").css("top", "125px");
+			$(".map-panel__sidebar").css("top", "160px");
 		});
 
 		$("#menu-burger").click(function() {
@@ -383,12 +378,12 @@
 				$("nav").show();
 				$("body").css("margin-top", "100px");
 				$(".map").css("height", "calc(100vh - 115px)");
-				$(".map-panel__sidebar").css("top", "125px");
+				$(".map-panel__sidebar").css("top", "160px");
 			}else{
 				$("nav").hide();
 				$("body").css("margin-top", "-15px");
 				$(".map").css("height", "100vh");
-				$(".map-panel__sidebar").css("top", "20px");
+				$(".map-panel__sidebar").css("top", "50px");
 			}
 		});
 
@@ -556,7 +551,7 @@
 			// Create two timestamps to define a range.
 			range: {
 				min: new Date('2020-01-01 08:00:00').getTime(),
-				max: new Date().setDate(new Date().getDate() + 0)
+				max: new Date().setDate(new Date().getDate() + 2)
 			},
 
 			// Handle starting positions.
@@ -2431,9 +2426,9 @@ get_times = function (rd_type) {
 
 						}
 						$("#hour_table").append(opt);
-						//$("#hour_table").trigger('change');
-
 				});
+
+				$("#hour_table").trigger('change');
 	}), function (error){
 		console.log(error);
 	};
@@ -2726,19 +2721,49 @@ $(function() {
 	});
 
 	$("#hour_table").change(function () {
-		var run_type = ($("#geos_run_table option:selected").val());
-		var freq = ($("#geos_freq_table option:selected").val());
-		var rd_type = ($("#geos_rd_table option:selected").val());
-		var z = rd_type.split('/').reverse()[0];
-		var y = ($("#date_selector").val());
-		rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
-		var var_type = ($("#geos_var_table option:selected").val());
-		var style = ($("#geos_style_table option:selected").val());
-		//update_style(style);
-		var rmin = $("#geos_range-min").val();
-		var rmax = $("#geos_range-max").val();
+		var dd = document.getElementById('hour_table');
+		var date_arr = [];
+		for (var i = 0; i < dd.options.length; i++) {
+				date_arr.push(dd.options[i].text);
+		}
 
-		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+		$scope.selectedDate;
+		var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
+		//var date = new Date($scope.selectedDate[0].split(" ")[0]);
+		date.setDate(date.getDate());
+		date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+		var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
+		var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+		var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+		_time1.setHours(_time1.getHours() - 1);
+		_time2.setHours(_time2.getHours() + 1);
+
+		_time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
+		_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
+
+		if(date_arr.includes(_time1) || date_arr.includes(hour) || date_arr.includes(_time2)){
+				var run_type = ($("#geos_run_table option:selected").val());
+				var freq = ($("#geos_freq_table option:selected").val());
+				var rd_type = ($("#geos_rd_table option:selected").val());
+				var z = rd_type.split('/').reverse()[0];
+				var y = ($("#date_selector").val());
+				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+				var var_type = ($("#geos_var_table option:selected").val());
+				var style = ($("#geos_style_table option:selected").val());
+				//update_style(style);
+				var rmin = $("#geos_range-min").val();
+				var rmax = $("#geos_range-max").val();
+
+				add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+			}else{
+
+				showErrorAlert('No data is available for ' + hour);
+				 // $("#date_selector").val("");
+				 $("hour_table").html('');
+				 if(map.hasLayer(tdWmsGEOSLayer)){
+					map.removeLayer(tdWmsGEOSLayer);
+				}
+			}
 
 	});
 
@@ -2917,6 +2942,9 @@ $(function() {
 	$("#btn-download-geos").click(function(){
 		var fileUrl = threddss_wms_url.replace('wms','fileServer');
 		var rd_type = ($("#geos_rd_table option:selected").val());
+		var z = rd_type.split('/').reverse()[0];
+		var y = ($("#date_selector").val());
+		rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
 		var downUrl = fileUrl+rd_type;
 		window.location = (downUrl);
 	});

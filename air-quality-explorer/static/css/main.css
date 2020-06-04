@@ -31,7 +31,8 @@ b, strong {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #F0F7DF;
+  background: #ccc;
+  border-radius: 50px;
 }
 
 /* Handle on hover */
@@ -750,8 +751,8 @@ p {
 
 .map-panel__sidebar {
     position: absolute;
-    left: 10px;
-    top: 125px;
+    left: 15px;
+    top: 160px;
     background-color: #fff;
     width: 380px;
     max-height: calc(100vh - 90px);
