@@ -49,7 +49,7 @@ def ensemble(dataframe, models_folder_path):
       prediction = m.predict(df_master[col])
       df_master[m_path[len(models_folder_path)+1:-4]] = prediction
   #Get eman ensemble prediction
-  df_master['Ensemble'] = prediction/10
+  df_master['Ensemble'] = (prediction/10)
   return df_master
 logInfo('Process.py triggered')
 date_str = sys.argv[1]
@@ -71,18 +71,17 @@ if path.exists('final_combined.nc'):
     jday = dt.dayofyear +  (dt.hour*60.0*60.0 + dt.minute*60.0 + dt.second)/86400.0
     # Scale and store variables in the data frame
     df['Date_Time']=jday
-    df['QV10M']=1000.*df['QV10M']
-    df['Q500']=1000.*df['Q500']
-    df['Q850']=1000.*df['Q850']
+    df['QV10M']=(1000.*df['QV10M'])
+    df['Q500']=(1000.*df['Q500'])
+    df['Q850']=(1000.*df['Q850'])
     df['Lon']=df['lonArray']
     df['Lat']=df['latArray']
-    df['BCSMASS']=df['BCSMASS']*1000000000.0
-    df['DUSMASS25']=df['DUSMASS25']*1000000000.0
-    df['OCSMASS']=df['OCSMASS']*1000000000.0
-    df['SO2SMASS']=df['SO2SMASS']*1000000000.0
-    df['SO4SMASS']=df['SO4SMASS']*1000000000.0
-    df['SSSMASS25']=df['SSSMASS25']*1000000000.0
-
+    df['BCSMASS']=(df['BCSMASS']*1000000000.0)
+    df['DUSMASS25']=(df['DUSMASS25']*1000000000.0)
+    df['OCSMASS']=(df['OCSMASS']*1000000000.0)
+    df['SO2SMASS']=(df['SO2SMASS']*1000000000.0)
+    df['SO4SMASS']=(df['SO4SMASS']*1000000000.0)
+    df['SSSMASS25']=(df['SSSMASS25']*1000000000.0)
     # Get index where values are missing.
     
     index=np.where(np.isnan(df['T850'].values))
@@ -93,10 +92,11 @@ if path.exists('final_combined.nc'):
     #prediction[index]=np.nan
     df_master.iloc[index[0],:]=np.nan
     prediction=df_master['Ensemble']
-
+   
     # Now we need to write the data to the netcdf file.
     # "prediciton" should be an array (or data frame with values that are an array) with NX*NY*24 elements
-    model_prediction = prediction.values.reshape(141,164,24).transpose((2,0,1))
+    model_prediction = (prediction.values.reshape(141,164,24).transpose((2,0,1)))
+    print(model_prediction)
     model1_prediction = df_master['model_1'].values.reshape(141,164,24).transpose((2,0,1))
     model2_prediction = df_master['model_2'].values.reshape(141,164,24).transpose((2,0,1))
     model3_prediction = df_master['model_3'].values.reshape(141,164,24).transpose((2,0,1))
@@ -110,7 +110,7 @@ if path.exists('final_combined.nc'):
     logInfo('Reshaping....')
 
     # Put this data back into the xarray dataset since all the coordinates are already defined there.
-    forcing['PM25']=xr.DataArray((np.where(model_prediction< 40, model_prediction-2.5+(0.11 * model_prediction), model_prediction-2.5+(0.20 * model_prediction))),dims=("time","lat","lon"))
+    forcing['PM25']=xr.DataArray((np.where(model_prediction< 40, (model_prediction-2.5+(0.11 * model_prediction)), (model_prediction-2.5+(0.20 * model_prediction)))),dims=("time","lat","lon"))
     forcing['model_1']=xr.DataArray(model1_prediction,dims=("time","lat","lon"))
     forcing['model_2']=xr.DataArray(model2_prediction,dims=("time","lat","lon"))
     forcing['model_3']=xr.DataArray(model3_prediction,dims=("time","lat","lon"))
@@ -121,15 +121,15 @@ if path.exists('final_combined.nc'):
     forcing['model_8']=xr.DataArray(model8_prediction,dims=("time","lat","lon"))
     forcing['model_9']=xr.DataArray(model9_prediction,dims=("time","lat","lon"))
     forcing['model_10']=xr.DataArray(model10_prediction,dims=("time","lat","lon"))
-    #forcing['BC_MLPM25']=forcing['PM25']-2.5+(0.11 * forcing['PM25'])
-    forcing['BC_MLPM25']=forcing['PM25']
-    forcing['BCSMASS']=forcing['BCSMASS']*1000000000.0
-    forcing['DUSMASS25']=forcing['DUSMASS25']*1000000000.0
-    forcing['OCSMASS']=forcing['OCSMASS']*1000000000.0
-    forcing['SO2SMASS']=forcing['SO2SMASS']*1000000000.0
-    forcing['SO4SMASS']=forcing['SO4SMASS']*1000000000.0
-    forcing['SSSMASS25']=forcing['SSSMASS25']*1000000000.0
-    forcing['GEOSPM25']=1.375*forcing['SO4SMASS']+1.8*forcing['OCSMASS']+forcing['BCSMASS']+forcing['DUSMASS25']+forcing['SSSMASS25']
+    #forcing['BC_MLPM25']=(forcing['PM25']-2.5+(0.11 * forcing['PM25']))
+    forcing['BC_MLPM25']=(forcing['PM25'])
+    forcing['BCSMASS']=(forcing['BCSMASS']*1000000000.0)
+    forcing['DUSMASS25']=(forcing['DUSMASS25']*1000000000.0)
+    forcing['OCSMASS']=(forcing['OCSMASS']*1000000000.0)
+    forcing['SO2SMASS']=(forcing['SO2SMASS']*1000000000.0)
+    forcing['SO4SMASS']=(forcing['SO4SMASS']*1000000000.0)
+    forcing['SSSMASS25']=(forcing['SSSMASS25']*1000000000.0)
+    forcing['GEOSPM25']=(1.375*forcing['SO4SMASS']+1.8*forcing['OCSMASS']+forcing['BCSMASS']+forcing['DUSMASS25']+forcing['SSSMASS25'])
     logInfo('Added data to final netcdf....')
 
     # Add metadata to variable, you may do it here.    

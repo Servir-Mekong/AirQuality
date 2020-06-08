@@ -1,6 +1,7 @@
 # Author: Githika Tondapu
 
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
+import re
 import requests
 import os.path
 import os
@@ -59,6 +60,7 @@ logInfo('Downloading data for '+currentYear+'_'+currentMonth+'_'+currentDay)
 
 #all the directories that are required
 url = config["url"]+"/Y"+currentYear+"/M"+currentMonth+"/D"+currentDay+"/H00/"
+
 direc3 =config["threeHourDataPath"]+currentYear+'//'+currentMonth+'//'+currentDay
 direc1 = config["oneHourDataPath"]+currentYear+'//'+currentMonth+'//'+currentDay
 combined1= config["combinedDataPath1hour"]
@@ -109,13 +111,14 @@ def download_files(links):
 def find_files():
     #link should contain GEOS.fp.fcst
     hrefs = []
+    HTML_TAG_REGEX = re.compile(r'<a[^<>]+?href=([\'\"])(.*?)\1', re.IGNORECASE)
     print(url)
-    soup = BeautifulSoup(requests.get(url).text,'html.parser')
-    atags=soup.find_all('a')
+    #soup = BeautifulSoup(requests.get(url).text,'html.parser')
+    atags=[match[1] for match in HTML_TAG_REGEX.findall(requests.get(url).text)]
     for a in atags:
         try:
-            if 'GEOS.fp.fcst' in str(a["href"]):
-            	hrefs.append(a["href"])
+            if 'GEOS.fp.fcst' in str(a):
+            	hrefs.append(a)
         except Exception as e:
             logError(str(e))
     return hrefs

@@ -1,12 +1,10 @@
 #!/bin/bash
 #Download all the forecast files by running the following python script
-export PATH="/home/Socrates/spulla/tethys/miniconda/bin/:$PATH"
-. /home/Socrates/spulla/tethys/miniconda/etc/profile.d/conda.sh
+. /home/tethys/miniconda/etc/profile.d/conda.sh
 conda activate geosdatadownload
-export PATH="/home/Socrates/spulla/tethys/miniconda/bin:$PATH"
-datapath=/home/Socrates/spulla/AirQuality/downloadGEOSData
+datapath=/home/tethys/scripts/AirQuality/downloadGEOSData
 cd $datapath
-logfile=/home/Socrates/spulla/AirQuality/downloadGEOSData/GEOSDataDownload.log
+logfile=/mnt/mk_aqx/GEOSDataDownload.log
 timestamp=$(date +%Y%m%d%H%M%S)
 today=$(date +"%Y%m%d")
 echo "\nStarting script combine.sh for $today" >> $logfile
@@ -22,9 +20,9 @@ else
 fi
 echo "Working on $today" >> $logfile
 #paths to today's 1hour and 3hour .nc files
-slv_path=/home/Socrates/spulla/THREDDS_data/MK_AQX/geos_tavg1_2d_slv_Nx/$today.nc
-aer_path=/home/Socrates/spulla/THREDDS_data/MK_AQX/geos_tavg3_2d_aer_Nx/$today.nc
-home_path=/home/Socrates/spulla
+slv_path=/mnt/mk_aqx/geos_tavg1_2d_slv_Nx/$today.nc
+aer_path=/mnt/mk_aqx/geos_tavg3_2d_aer_Nx/$today.nc
+home_path=/home/tethys
 #path to temporarily store intermediate .nc files while processing
 cd $datapath
 if [ -f final_combined.nc ]
@@ -47,6 +45,7 @@ then
 fi
 echo "if aer .nc file exists, get the variables that are required" >> $logfile
 #if aer .nc file exists, get the variables that are required
+echo $aer_path
 if [ -f $aer_path ]
 then
     ncks -O -v BCSMASS,DUSMASS25,OCSMASS,SO2SMASS,SO4SMASS,SSSMASS25,TOTEXTTAU $aer_path aer_subset_file.nc
@@ -61,7 +60,6 @@ then
     echo "get longitude array to the final .nc" >> $logfile
     ncap2 -O -s 'lonArray[$time,$lat,$lon]=lon' final_combined.nc final_combined.nc
 fi
-
 echo "Processing $today file..." >> $logfile 
 #if the final combined .nc file exists, it means the processing and combining was successful, so run the machine learning script using process.py
 if [ -f final_combined.nc ]
