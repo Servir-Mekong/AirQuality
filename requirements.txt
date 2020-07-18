@@ -64,7 +64,7 @@ public==1.0.3
 pyasn1==0.3.4
 pyasn1-modules==0.1.4
 pycparser==2.18
-pyOpenSSL==17.2.0
+pyOpenSSL==17.5.0
 pyparsing==2.2.0
 pyproj==1.9.5.1
 python-dateutil==2.7.3
