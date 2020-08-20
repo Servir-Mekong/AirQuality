@@ -203,7 +203,8 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
             infile = os.path.join(DATA_DIR, run_type, freq, run_date)
         nc_fid = netCDF4.Dataset(infile, 'r',)  # Reading the netCDF file
         lis_var = nc_fid.variables
-        if "geos" == run_type:
+
+        if "geos" in run_type:
             field = nc_fid.variables[s_var][:]
             lats = nc_fid.variables['lat'][:]
             lons = nc_fid.variables['lon'][:]  # Defining the longitude array
@@ -215,10 +216,16 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
             for timestep, v in enumerate(time):
                 val = field[lat_idx, lon_idx][timestep]
                 if np.isnan(val) == False:
+                    # dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                    #                           calendar=lis_var['time'].calendar)
+                    # time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    # ts_plot.append([time_stamp, float(val)])
                     dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
                                               calendar=lis_var['time'].calendar)
-                    time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    test = dt_str + timedelta(hours=7)
+                    time_stamp = calendar.timegm(test.timetuple()) * 1000
                     ts_plot.append([time_stamp, float(val)])
+
             field1 = nc_fid.variables[s_var1][:]
             lats = nc_fid.variables['lat'][:]
             lons = nc_fid.variables['lon'][:]  # Defining the longitude array
@@ -231,18 +238,21 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
 
                 val = field1[lat_idx, lon_idx][timestep]
                 if np.isnan(val) == False:
+                    # dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                    #                           calendar=lis_var['time'].calendar)
+                    # time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    # ts_plot_pm25.append([time_stamp, float(val)])
                     dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
                                               calendar=lis_var['time'].calendar)
-                    time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-                    ts_plot_pm25.append([time_stamp, float(val)])
+                    test = dt_str + timedelta(hours=7)
+                    time_stamp = calendar.timegm(test.timetuple()) * 1000
+                    ts_plot.append([time_stamp, float(val)])
             field2 = nc_fid.variables[s_var2][:]
             lats = nc_fid.variables['lat'][:]
             lons = nc_fid.variables['lon'][:]  # Defining the longitude array
             time = nc_fid.variables['time'][:]
             # Defining the variable array(throws error if variable is not in combined.nc)
             #new way to cal dist
-            print("station lat and lon")
-            print(str(st_point))
             coordinates=list(product(lats, lons))
             # dist=[]
             # for val in coordinates:
@@ -266,7 +276,6 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
             lat_idx = (abslat.argmin())
             lon_idx = (abslon.argmin())
         #new way end
-            print(str(lats[lat_idx])+" , "+str(lons[lon_idx]))
 
 
 
@@ -279,6 +288,9 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
                     test=dt_str+timedelta(hours=7)
                     time_stamp = calendar.timegm(test.timetuple()) * 1000
                     ts_plot_bcpm25.append([time_stamp, float(val)])
+                    
+
+
             field3 = nc_fid.variables[s_var3][:]
             lats = nc_fid.variables['lat'][:]
             lons = nc_fid.variables['lon'][:]  # Defining the longitude array
@@ -292,10 +304,15 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
 
                 val = field3[lat_idx, lon_idx][timestep]
                 if np.isnan(val) == False:
+                    # dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                    #                           calendar=lis_var['time'].calendar)
+                    # time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    # ts_plot_geospm25.append([time_stamp, float(val)])
                     dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
                                               calendar=lis_var['time'].calendar)
-                    time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-                    ts_plot_geospm25.append([time_stamp, float(val)])
+                    test = dt_str + timedelta(hours=7)
+                    time_stamp = calendar.timegm(test.timetuple()) * 1000
+                    ts_plot.append([time_stamp, float(val)])
         else:
             field = nc_fid.variables[s_var][:]
             lats = nc_fid.variables['Latitude'][:]
@@ -310,9 +327,15 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
 
                 val = field[timestep,lat_idx,lon_idx]
                 if np.isnan(val) == False:
+                    # dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                    #                           calendar=lis_var['time'].calendar)
+                    # time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    # ts_plot.append([time_stamp, float(val)])
+
                     dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
                                               calendar=lis_var['time'].calendar)
-                    time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                    test = dt_str + timedelta(hours=7)
+                    time_stamp = calendar.timegm(test.timetuple()) * 1000
                     ts_plot.append([time_stamp, float(val)])
 
         ts_plot.sort()

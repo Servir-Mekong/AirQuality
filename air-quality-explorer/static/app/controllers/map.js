@@ -2072,7 +2072,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 			} else if (interaction == "Station") {
 				var geom_data = $("#station").val();
 			}
-
+			$('.forpm25').css("display", 'none');
 			$modalChart.modal('show');
 			$("#cube").removeClass('hidden');
 			$("#plotter").addClass('hidden');
