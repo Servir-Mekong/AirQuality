@@ -65,6 +65,20 @@ angular.module('baseApp').constant('appSettings', {
 			'className': 'adpc'
 		},
 		{
+			'alt': 'Pollution Control Department',
+			'url': 'http://www.pcd.go.th/',
+			//'src': 'https://servir.adpc.net/themes/svmk/images/optimized/partner-adbc.png',
+			'src': 'images/pcd.png',
+			'className': 'pcd'
+		},
+		{
+			'alt': 'Geo-Informatics and Space Technology Development Agency',
+			'url': 'https://www.gistda.or.th/main/',
+			//'src': 'https://servir.adpc.net/themes/svmk/images/optimized/partner-adbc.png',
+			'src': 'images/gistda.png',
+			'className': 'gistda'
+		},
+		{
 			'alt': 'SERVIR',
 			'url': 'https://servir.adpc.net/',
 			//'src': 'https://servir.adpc.net/themes/svmk/images/optimized/Servir_Logo_Color.png',

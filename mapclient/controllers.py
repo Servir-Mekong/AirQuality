@@ -12,7 +12,7 @@ import shapely.geometry
 import shapely
 import netCDF4
 import time
-from mapclient.config import THREDDS_CATALOG, THREDDS_wms, DATA_DIR, LOG_DIR
+from mapclient.config import THREDDS_CATALOG, THREDDS_wms, DATA_DIR, LOG_DIR, THREDDS_OPANDAP
 from shapely.geometry import Polygon
 import logging
 from datetime import datetime, timedelta
@@ -155,12 +155,17 @@ def get_time(freq, run_type, run_date):
 
     """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
     infile = os.path.join(DATA_DIR, run_type, run_date)
+
+    infile = THREDDS_OPANDAP+"/"+run_type+"/"+run_date
     nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
     lis_var = nc_fid.variables
     time = nc_fid.variables['time'][:]
     for timestep, v in enumerate(time):
         dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
                                   calendar=lis_var['time'].calendar)
+
+        dt_str = datetime.strptime(dt_str.isoformat(),"%Y-%m-%dT%H:%M:%S")
+
         time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
         ts.append(datetime.strftime(dt_str,'%Y-%m-%dT%H:%M:%SZ'))
     ts.sort()
@@ -187,11 +192,14 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
     stn_lat = float(coords[1])
     stn_lon = float(coords[0])
     st_point=(stn_lat,stn_lon)
-    """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
+
     try:
         if "geos" in run_type:
-            infile = os.path.join(DATA_DIR, run_type, run_date)
+            """access netcdf file via Thredds server OPANDAP"""
+            infile = os.path.join(THREDDS_OPANDAP, run_type, run_date)
+            infile = THREDDS_OPANDAP+"/"+ run_type+"/"+ run_date
         else:
+            """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
             infile = os.path.join(DATA_DIR, run_type, freq, run_date)
         nc_fid = netCDF4.Dataset(infile, 'r',)  # Reading the netCDF file
         lis_var = nc_fid.variables
@@ -346,10 +354,13 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
     maxy = float(bounds[2])
     maxx = float(bounds[3])
 
-    """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
+
     if "geos" in run_type:
-        infile = os.path.join(DATA_DIR, run_type, run_date)
+        """access a netcdf file from Thredds server via OPANDAP service"""
+        infile = os.path.join(THREDDS_OPANDAP, run_type, run_date)
+        infile = THREDDS_OPANDAP+"/"+ run_type+"/"+ run_date
     else:
+        """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
         infile = os.path.join(DATA_DIR, run_type, freq, run_date)
     nc_fid = netCDF4.Dataset(infile, 'r')
     lis_var = nc_fid.variables

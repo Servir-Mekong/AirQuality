@@ -17,6 +17,7 @@ from mapclient import views
 from mapclient import api as mapclient_api
 admin.autodiscover()
 
+
 urlpatterns = [
     url(r'^sitemap\.xml$', sitemap,
         {'sitemaps': {'cmspages': CMSSitemap}}),
@@ -24,10 +25,10 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    url(r'^admin/', include(admin.site.urls)),  # NOQA
+    url(r'^admin/', admin.site.urls),  # NOQA
     #url(r'^$', TemplateView.as_view(template_name="map.html")),
     url(r'^$', views.index),
     url(r'^home/', views.index),
-    url(r'^mapviewer/', views.index),
+    url(r'^mapviewer/', views.map),
     url(r'^api/mapclient/$', mapclient_api.api),
 )

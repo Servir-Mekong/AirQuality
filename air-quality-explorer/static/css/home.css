@@ -1,0 +1,81 @@
+.cover-photo{
+    background-image: url("/static/images/cover-photo.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 550px;
+}
+
+p {
+    font-size: 16px;
+    color: #666;
+    font-weight: 400;
+    letter-spacing: .5px;
+}
+ ul, ol {
+   list-style-type: decimal;
+    padding-left: 40px;
+    color: #666;
+ }
+
+ .home h2{
+   margin: 10px 0;
+    color: #ae0f0a;
+    font-weight: 600;
+    letter-spacing: 1px;
+ }
+
+ .contact-list p{
+   font-size: 14px;
+ }
+ .overlay-layer{
+   height: 100%;
+    background: rgb(0 0 0 / 22%);
+    padding: 50px;
+ }
+ .overlay-text{
+   color: #FFF;
+   font-size: 40px;
+   margin-left: 350px;
+   margin-top: 50px;
+ }
+
+ .home-nasa {
+     background-size: auto 50px;
+     width: 60px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-adpc {
+     background-size: auto 50px;
+     width: 100px !important;
+     float: left;
+     margin-right: 10px;
+     margin-bottom: 20px;
+ }
+
+ .home-pcd {
+     background-size: auto 50px;
+     width: 60px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-gistda {
+     background-size: auto 50px;
+     width: 100px !important;
+     float: left;
+     padding-top: 5px;
+     margin-bottom: 20px;
+ }
+ .home-servir {
+     float: left;
+     background-size: auto 35px;
+     width: 220px !important;
+     padding-top: 10px;
+     margin-bottom: 20px;
+ }

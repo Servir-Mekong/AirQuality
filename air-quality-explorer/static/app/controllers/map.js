@@ -2195,7 +2195,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 					},*/ {
 					data: result.data["field_data"],
 					name: "PM2.5 Measurement",
-					color: "blue"
+					color: "black"
 				},
 				{
 					data: result.data["bc_mlpm25"],

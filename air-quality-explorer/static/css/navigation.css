@@ -68,7 +68,7 @@
 
 .usaid {
     background-size: auto 50px;
-    width: 170px !important;
+    width: 120px !important;
     float: left;
     margin-right: 5px;
     margin-bottom: 3px;
@@ -82,7 +82,7 @@
 
 .nasa {
     background-size: auto 50px;
-    width: 60px !important;
+    width: 40px !important;
     float: left;
     margin-right: 5px;
 }
@@ -95,8 +95,9 @@
 
 .adpc {
     background-size: auto 50px;
-    width: 110px !important;
+    width: 80px !important;
     float: left;
+    margin-right: 10px;
 }
 
 @media (max-width: 1024px) {
@@ -105,10 +106,37 @@
 	}
 }
 
+.pcd {
+    background-size: auto 50px;
+    width: 40px !important;
+    float: left;
+    margin-right: 5px;
+}
+
+@media (max-width: 1024px) {
+	.pcd {
+    	margin: auto;
+	}
+}
+
+.gistda {
+    background-size: auto 50px;
+    width: 80px !important;
+    float: left;
+    padding-top: 5px;
+}
+
+@media (max-width: 1024px) {
+	.gistda {
+    	margin: auto;
+	}
+}
+
+
 .servir {
     float: right;
     background-size: auto 35px;
-    width: 250px !important;
+    width: 200px !important;
     padding-top: 10px;
 }
 

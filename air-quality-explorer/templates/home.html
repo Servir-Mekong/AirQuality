@@ -5,7 +5,157 @@
 {% endblock %}
 {% block main_container %}
 <!-- Main Container -->
-<div class="row" >
 
+<div class="home">
+  <div class="col-lg-12" style="margin-bottom: 300px;">
+    <div class="row justify-content-md-center">
+      <div class="col-lg-1 col-md-6"></div>
+      <div class="col-lg-10">
+        <div class="cover-photo">
+          <div class="overlay-layer">
+            <div class="overlay-text">
+              Satellite-based fire hotspot monitoring system that enables sustainable landscape-scale agricultural management
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-1 col-md-6"></div>
+    </div>
+    <br>
+    <br>
+
+    <div class="row justify-content-md-center" >
+      <div class="col-lg-1 col-md-6"></div>
+      <div class="col-lg-6 col-md-6">
+        <h2>Regional Air Quality Explorer (In Production)</h2>
+        <p>Air quality is fast becoming a critical challenge across SERVIR regions. Each year, the World Health Organization estimates 7 million deaths occur globally as a result of air pollution exposure, with 2 million of these occurring across South and Southeast Asia.  Apart from enhanced emissions, the lack of rainfall during the Asian Monsoon dry season, accompanied by winter low-temperatures and calm winds, allows pollutants to accumulate in the air leading to a degradation in air quality across Asia.</p>
+        <p>In 2019, Thailand suffered from unseasonably poor air quality, particularly in Northern provinces where there was substantial agricultural burning and forest fires.  The harmful air quality levels observed during the winter of 2019 catalyzed a need in the region to support air quality efforts to improve both monitoring and public awareness. Over the past year, SERVIR-Mekong has partnered with national departments in Thailand to meet these needs. This effort will be expanded to cover the ASEAN countries in the near future.</p>
+
+        <h2>Application Purpose</h2>
+        <p>This regional web-based information system application is aimed to</p>
+
+        <ol style="list-style-type: decimal;">
+          <li>Visualize historical and near real-time satellite observations of air quality and fires from the  MODIS and VIIRS satellite sensors</li>
+          <li>Access and visualize 3-day air quality forecast parameters derived from NASA's GEOS global forecast model</li>
+          <li>Support national/regional decision-makers in air quality monitoring, analysis, and forecasting; and</li>
+          <li>Provide policymakers and local governors with current and forecast air quality situation to facilitate decision-making within the current forest fire season</li>
+        </ol>
+
+        <h2>Application Uses</h2>
+        <p>The application allows users to intercompare historic, near real-time satellite observations, ground-based air quality observations, and forecasted conditions to assess how well they intercompare and perform. This ability enables partners such as the Pollution Control Department (PCD), Geo-Informatics & Space Technology Development Agency (GISTDA) as well as decision-makers to leverage satellite observations to more effectively monitor air quality in Thailand and Lower Mekong Region.</p>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <b>Geographic Region</b>
+        <br>
+        <p>Lower Mekong and ASEAN countries</p>
+        <br>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-6">
+            <b>Developer(s)</b>
+            <br>
+            <br>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <img src="{% static 'images/adpc.png' %}" alt="" class="grow img-responsive home-adpc">
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <p>Asian Disaster Preparedness Center</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <img src="{% static 'images/servir-mekong.png' %}" alt="" class="grow img-responsive home-servir">
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <p>SERVIR-Mekong</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <img src="{% static 'images/nasa.png' %}" alt="" class="grow img-responsive home-nasa">
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <p>The National Aeronautics and Space Administration</p>
+          </div>
+        </div>
+        <br>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-6">
+            <b>Contributors/Partners/Production Collaboration</b>
+            <br>
+            <br>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <img src="{% static 'images/pcd.png' %}" alt="" class="grow img-responsive home-pcd">
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <p>Pollution Control Department</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <img src="{% static 'images/gistda.png' %}" alt="" class="grow img-responsive home-gistda">
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <p>Geo-Informatics and Space Technology Development Agency</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-lg-12 col-md-6">
+            <b>Users</b>
+            <ul style="list-style-type: circle;">
+              <li>Pollution Control Department (PCD)</li>
+              <li>Geo-Informatics & Space Technology Development Agency (GISTDA)</li>
+              <li>Royal Forest Department/Department of National Parks, Wildlife and Plant Conservation</li>
+              <li>Forest Fire Response Team</li>
+              <li>Farmers</li>
+              <li>Government agencies responsible for agricultural burning policy, prescribed burning programs</li>
+              <li>Private companies dependent on seasonal prescribed burning such as sugar can farming, etc.</li>
+            </ul>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-lg-12 col-md-6">
+            <b>Earth Observations and NASA Products Used</b>
+            <ul style="list-style-type: decimal;">
+              <li>AQUA and TERRA/ MODIS Aerosol Optical Depth, and true color imagery</li>
+              <li>GEOS-5 Air Quality Forecasts  bias-corrected using ML-MOS</li>
+              <li>Fire product from MODIS and VIIRS: radiative fires, number of fires</li>
+            </ul>
+          </div>
+        </div>
+        <hr>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-6">
+            <p>Version 1.0</p>
+            <p>© 2020, SERVIR Mekong</p><br>
+            <div class="contact-list">
+              <p><b>For Technical Inquiries:</b></p><br>
+              <p><b>Data and Information Related:</b> Aekkapol Aekakkararungroj (aekkapol.a@adpc.net)</p>
+              <p><b>Portal Related:</b> Thannarot Kunlamai (thannarot.kunlamai@adpc.net )</p>
+            </div>
+
+
+
+          </div>
+        </div>
+
+        </div>
+      </div>
+      <div class="col-lg-1 col-md-6"></div>
+
+    </div>
 </div>
+
     {% endblock main_container %}
