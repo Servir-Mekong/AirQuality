@@ -9,13 +9,14 @@ for file in $downloadedFiles
 do
     for singledate in "${lastWeek[@]}" ; do
 
-        if [ "$file" -ne "$singledate.nc" ]
+        if [ "$file" != "$singledate.nc" ]
+           then
             missedDownloads[$missedCount]=$singledate
             missedCount=$(( $missedCount + 1 ))
         fi
     done
 done
-if [ $missedCount -ge 0 ]
+if [ $missedCount -gt 0 ]
     then
       for day in "${missedDownloads[@]}" ;
        do
@@ -23,4 +24,6 @@ if [ $missedCount -ge 0 ]
         cd /home/tethys/scripts/AirQuality/downloadGEOSData/
         sh combine.sh "$(date -d $day +'%Y-%m-%d')"
       done
+    else
+	    echo "No missed files this week" >> /home/tethys/scripts/AirQuality/`date +\%Y\%m\%d\%H\%M\%S`aqbash.log 2>&1
 fi
