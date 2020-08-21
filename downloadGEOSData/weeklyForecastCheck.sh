@@ -5,17 +5,16 @@ set -a missedDownloads
 cd /mnt/mk_aqx/geos/
 downloadedFiles=`ls *.nc`
 missedCount=0
-for file in $downloadedFiles
-do
-    for singledate in "${lastWeek[@]}" ; do
 
-        if [ "$file" != "$singledate.nc" ]
-           then
-            missedDownloads[$missedCount]=$singledate
-            missedCount=$(( $missedCount + 1 ))
-        fi
-    done
+for singledate in "${lastWeek[@]}" ; do
+
+	if [[ ! "${downloadedFiles[@]}" =~ "$singledate.nc" ]]
+	   then
+		missedDownloads[$missedCount]=$singledate
+		missedCount=$(( $missedCount + 1 ))
+	fi
 done
+
 if [ $missedCount -gt 0 ]
     then
       for day in "${missedDownloads[@]}" ;
