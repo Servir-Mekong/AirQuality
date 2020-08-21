@@ -10,7 +10,7 @@ do
     for singledate in "${lastWeek[@]}" ; do
 
         if [ "$file" -ne "$singledate.nc" ]
-            missedDownloads[$j]=$singledate
+            missedDownloads[$missedCount]=$singledate
             missedCount=$(( $missedCount + 1 ))
         fi
     done
