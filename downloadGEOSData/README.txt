@@ -9,6 +9,5 @@
 
 Avoiding missing files problem:
 -------------------------------
--------------------------------
 
 The weeklyForecastCheck.sh script checks the /geos data path for last week's files. If any files are missing, it runs the combine.sh script for those dates. This script can be scheduled to run same day every week(For example: Saturday night)
