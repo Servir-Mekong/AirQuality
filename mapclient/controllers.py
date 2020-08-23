@@ -154,7 +154,7 @@ def get_time(freq, run_type, run_date):
     json_obj = {}
 
     """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
-    infile = os.path.join(DATA_DIR, run_type, run_date)
+    infile = os.path.join(DATA_DIR, run_type+"/"+ run_date)
     nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
     lis_var = nc_fid.variables
     time = nc_fid.variables['time'][:]
@@ -190,7 +190,7 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
     """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
     try:
         if "geos" in run_type:
-            infile = os.path.join(DATA_DIR, run_type, run_date)
+            infile = os.path.join(DATA_DIR, run_type+"/"+ run_date)
         else:
             infile = os.path.join(DATA_DIR, run_type, freq, run_date)
         nc_fid = netCDF4.Dataset(infile, 'r',)  # Reading the netCDF file
@@ -416,7 +416,7 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
 def get_station_data():
     with connection.cursor() as cursor:
         sql = """SELECT s.rid,s.station_id,s.name_en, s.lat, s."long" as longitude,m.pm25,max(datetime) latest_date
-                from stations s,measurements m where s.station_id = m.station_id and pm25 is not null
+                from stations s,nrt_measurements m where s.station_id = m.station_id and pm25 is not null
                 group by s.rid, s.station_id, s.name_en, m.pm25,s.lat,longitude limit 20"""
         cursor.execute(sql)
         data = cursor.fetchall()
