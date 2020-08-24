@@ -58,8 +58,8 @@
 		var enableDatesArraySlide=[];
 
 		var playLoop;
-	  var intervaltime;
-	  var fiveMinutes = 10 * 1;
+		var intervaltime;
+		var fiveMinutes = 10 * 1;
 
 		$modalCompare = $("#compare-modal");
 		$modalChart = $("#chart-modal");
@@ -95,9 +95,9 @@
 		var mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
 
 		var basemap_layer   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
-			streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+		streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
 
-	  //Stadia_AlidadeSmoothDark.addTo(map);
+		//Stadia_AlidadeSmoothDark.addTo(map);
 		basemap_layer.addTo(map);
 		L.esri.dynamicMapLayer({
 			url: 'https://wwf-sight-maps.org/arcgis/rest/services/Global/Administrative_Boundaries_GADM/MapServer',
@@ -106,12 +106,12 @@
 			zIndex:9999
 		}).addTo(map);
 
-    L.esri.tiledMapLayer({
-        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
-        layers:[0],
-        opacity: 0.7,
-        zIndex:99999
-      }).addTo(map);
+		L.esri.tiledMapLayer({
+			url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
+			layers:[0],
+			opacity: 0.7,
+			zIndex:99999
+		}).addTo(map);
 
 		/**
 		* tabs controller
@@ -469,7 +469,7 @@
 			$scope.alertContent = alertContent;
 			$('.custom-alert').removeClass('display-none').removeClass('alert-info').removeClass('alert-success').addClass('alert-danger');
 			$timeout(function () {
-					$scope.closeAlert();
+				$scope.closeAlert();
 			}, 10000);
 		};
 
@@ -477,7 +477,7 @@
 			$scope.alertContent = alertContent;
 			$('.custom-alert').removeClass('display-none').removeClass('alert-info').removeClass('alert-danger').addClass('alert-success');
 			$timeout(function () {
-					$scope.closeAlert();
+				$scope.closeAlert();
 			}, 10000);
 		};
 
@@ -485,7 +485,7 @@
 			$scope.alertContent = alertContent;
 			$('.custom-alert').removeClass('display-none').removeClass('alert-success').removeClass('alert-danger').addClass('alert-info');
 			$timeout(function () {
-					$scope.closeAlert();
+				$scope.closeAlert();
 			}, 10000);
 
 		};
@@ -641,9 +641,9 @@
 				tooltipInput.value = values[handle];
 				// trigger ajax only if it is coming from the default handle, not from input tooltip
 
-					$timeout(function () {
-						$scope.changeTimeSlider();
-					}, 0);
+				$timeout(function () {
+					$scope.changeTimeSlider();
+				}, 0);
 
 			}
 		});
@@ -652,8 +652,8 @@
 		$scope.runDateonNoUIslider;
 
 		/**
-		 * Time Slider for fire location
-		 **/
+		* Time Slider for fire location
+		**/
 		var timeSlider_fire = document.getElementById('datePickerSlider_fire');
 
 		// Create a string representation of the date.
@@ -670,7 +670,7 @@
 				var dd = date.getDate();
 
 				return [date.getFullYear(),
-						(mm > 9 ? '' : '0') + mm
+					(mm > 9 ? '' : '0') + mm
 				].join('-');
 			}
 		};
@@ -716,7 +716,7 @@
 
 		var makeSliderToolTip_fire = function (i, slider) {
 			var tooltip = document.createElement('div'),
-				input = document.createElement('input');
+			input = document.createElement('input');
 
 			// Add the input to the tooltip
 			input.className = 'uitooltip-input';
@@ -773,141 +773,142 @@
 			}
 		});
 
-// --------------------------------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------------------------------------------------
 
-/**
- * Time Slider for fire location
- **/
-var timeSlider_aod = document.getElementById('datePickerSlider_aod');
+		/**
+		* Time Slider for fire location
+		**/
+		var timeSlider_aod = document.getElementById('datePickerSlider_aod');
 
-// Create a string representation of the date.
-$scope.toFormat_aod = function (v, handle) {
-	// where is this string representation
-	// values = "uipipes" ; default is "default"
-	var date = new Date(v);
-	handle = handle || $scope.defaultHandle;
-	if (handle === 'uipipes') {
-		return appSettings.months[date.getMonth()] + ' ' + date.getFullYear();
-	} else if (handle === $scope.defaultHandle) {
+		// Create a string representation of the date.
+		$scope.toFormat_aod = function (v, handle) {
+			// where is this string representation
+			// values = "uipipes" ; default is "default"
+			var date = new Date(v);
+			handle = handle || $scope.defaultHandle;
+			if (handle === 'uipipes') {
+				return appSettings.months[date.getMonth()] + ' ' + date.getFullYear();
+			} else if (handle === $scope.defaultHandle) {
 
-		var mm = date.getMonth() + 1; // getMonth() is zero-based
-		var dd = date.getDate();
+				var mm = date.getMonth() + 1; // getMonth() is zero-based
+				var dd = date.getDate();
 
-		return [date.getFullYear(),
-				(mm > 9 ? '' : '0') + mm
-		].join('-');
-	}
-};
-
-noUiSlider.create(timeSlider_aod, {
-	// Create two timestamps to define a range.
-	range: {
-		min: new Date('2000').getTime(),
-		max: new Date(2019,1,14).getTime()
-	},
-
-	// Steps of one month
-	// step: 14 * 24 * 60 * 60 * 1000,
-
-	// Handle starting positions.
-	start: new Date(2019,1,30).getTime(),
-
-	//tooltips: true,
-
-	format: { to: $scope.toFormat_aod, from: Number },
-
-	connect: 'lower',
-
-	// Show a scale with the slider
-	pips: {
-		mode: 'count',
-		density: 2,
-		values: 10,
-		stepped: true,
-		format: {
-			to: function (value) {
-				return $scope.toFormat_aod(value, 'uipipes');
-			},
-			from: function (value) {
-				return $scope.toFormat_aod(value, 'uipipes');
+				return [date.getFullYear(),
+					(mm > 9 ? '' : '0') + mm
+				].join('-');
 			}
-		}
-	}
-});
-var stopPropagation = function (event) {
-	event.stopPropagation();
-};
+		};
 
-var makeSliderToolTip_aod = function (i, slider) {
-	var tooltip = document.createElement('div'),
-		input = document.createElement('input');
+		noUiSlider.create(timeSlider_aod, {
+			// Create two timestamps to define a range.
+			range: {
+				min: new Date('2000').getTime(),
+				max: new Date(2019,1,14).getTime()
+			},
 
-	// Add the input to the tooltip
-	input.className = 'uitooltip-input';
-	tooltip.className = 'noUi-tooltip';
-	tooltip.appendChild(input);
+			// Steps of one month
+			// step: 14 * 24 * 60 * 60 * 1000,
 
-	// On change, set the slider
-	input.addEventListener('change', function () {
-		if (this.value !== $scope.selectedDate_aod) {
-			$scope.selectedDate_aod = this.value;
-			slider.noUiSlider.set(new Date(this.value).getTime());
-			$timeout(function () {
-				$scope.changeTimeSlider_aod();
-			}, 500);
-		}
+			// Handle starting positions.
+			start: new Date(2019,1,30).getTime(),
 
-	});
+			//tooltips: true,
 
-	// Catch all selections and make sure they don't reach the handle
-	input.addEventListener('mousedown', stopPropagation);
-	input.addEventListener('touchstart', stopPropagation);
-	input.addEventListener('pointerdown', stopPropagation);
-	input.addEventListener('MSPointerDown', stopPropagation);
+			format: { to: $scope.toFormat_aod, from: Number },
 
-	// Find the lower slider handle and insert the tooltip
-	document.getElementById('datePickerSlider_aod').querySelector('.noUi-handle-lower').appendChild(tooltip);
+			connect: 'lower',
 
-	return input;
-};
+			// Show a scale with the slider
+			pips: {
+				mode: 'count',
+				density: 2,
+				values: 10,
+				stepped: true,
+				format: {
+					to: function (value) {
+						return $scope.toFormat_aod(value, 'uipipes');
+					},
+					from: function (value) {
+						return $scope.toFormat_aod(value, 'uipipes');
+					}
+				}
+			}
+		});
+		var stopPropagation = function (event) {
+			event.stopPropagation();
+		};
 
-// An 0 indexed array of input elements
-var tooltipInput_aod = makeSliderToolTip_aod(0, timeSlider_aod);
-$scope.selectedDate_aod = [
-	'2019', '01' ,'01'
-].join('-');
-tooltipInput_aod.value = $scope.selectedDate_aod;
+		var makeSliderToolTip_aod = function (i, slider) {
+			var tooltip = document.createElement('div'),
+			input = document.createElement('input');
 
-// When the slider changes, update the tooltip
-timeSlider_aod.noUiSlider.on('update', function (values, handle) {
-	tooltipInput_aod.value = values[handle];
-});
+			// Add the input to the tooltip
+			input.className = 'uitooltip-input';
+			tooltip.className = 'noUi-tooltip';
+			tooltip.appendChild(input);
 
-// Event Handler for slider
-timeSlider_aod.noUiSlider.on('set', function (values, handle) {
-	if (values[handle] !== $scope.selectedDate_aod) {
-		$scope.selectedDate_aod = values[handle];
-		tooltipInput_aod.value = values[handle];
-		// trigger ajax only if it is coming from the default handle, not from input tooltip
-		if (event.target.className.startsWith('noUi')) {
-			$timeout(function () {
-				$scope.changeTimeSlider_aod();
-			}, 500);
-		}
-	}
-});
+			// On change, set the slider
+			input.addEventListener('change', function () {
+				if (this.value !== $scope.selectedDate_aod) {
+					$scope.selectedDate_aod = this.value;
+					slider.noUiSlider.set(new Date(this.value).getTime());
+					$timeout(function () {
+						$scope.changeTimeSlider_aod();
+					}, 500);
+				}
+
+			});
+
+			// Catch all selections and make sure they don't reach the handle
+			input.addEventListener('mousedown', stopPropagation);
+			input.addEventListener('touchstart', stopPropagation);
+			input.addEventListener('pointerdown', stopPropagation);
+			input.addEventListener('MSPointerDown', stopPropagation);
+
+			// Find the lower slider handle and insert the tooltip
+			document.getElementById('datePickerSlider_aod').querySelector('.noUi-handle-lower').appendChild(tooltip);
+
+			return input;
+		};
+
+		// An 0 indexed array of input elements
+		var tooltipInput_aod = makeSliderToolTip_aod(0, timeSlider_aod);
+		$scope.selectedDate_aod = [
+			'2019', '01' ,'01'
+		].join('-');
+		tooltipInput_aod.value = $scope.selectedDate_aod;
+
+		// When the slider changes, update the tooltip
+		timeSlider_aod.noUiSlider.on('update', function (values, handle) {
+			tooltipInput_aod.value = values[handle];
+		});
+
+		// Event Handler for slider
+		timeSlider_aod.noUiSlider.on('set', function (values, handle) {
+			if (values[handle] !== $scope.selectedDate_aod) {
+				$scope.selectedDate_aod = values[handle];
+				tooltipInput_aod.value = values[handle];
+				// trigger ajax only if it is coming from the default handle, not from input tooltip
+				if (event.target.className.startsWith('noUi')) {
+					$timeout(function () {
+						$scope.changeTimeSlider_aod();
+					}, 500);
+				}
+			}
+		});
 
 
-// --------------------------------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------------------------------------------------
 
 		// get PCD station
 		$scope.getPCDStation = function () {
 
 			var date = new Date($scope.selectedDate);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
-
+			var selected_date = $("#hour_table option:selected").text();
+			selected_date = selected_date.replace(":30:00", ":00:00");
 			var parameters = {
-				obs_date: $scope.selectedDate
+				obs_date: selected_date
 			};
 			MapService.getAirStations(parameters)
 			.then(function (result){
@@ -929,52 +930,46 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 		};
 
 		$scope.changeTimeSlider = function () {
-
-			$scope.getPCDStation();
-
+			//$scope.getPCDStation();
 			var dd = document.getElementById('date_table');
 			var date_arr = [];
 			for (var i = 0; i < dd.options.length; i++) {
-			    date_arr.push(dd.options[i].text);
+				date_arr.push(dd.options[i].text);
 			}
 
 			var checkDateTime = $scope.selectedDate[0].split(" ")[0];
-			for (var i = 0; i < 3; i++) {
-				var date = new Date(checkDateTime);
-				if(date_arr.includes(checkDateTime)){
-						date.setDate(date.getDate());
-						if(new Date().getTimezoneOffset() <= 0){
-								date.setDate(date.getDate());  //+ UTC
-						}else{
-								date.setDate(date.getDate() + 1); //- UTC
-							}
-						i = 3
-					}
-					else{
-							if(new Date().getTimezoneOffset() <= 0){
-									date.setDate(date.getDate() - 1);
-							}else{
-									date.setDate(date.getDate() + 1);
-								}
-						}
-					checkDateTime = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+
+			var date = new Date(checkDateTime);
+
+			if(date_arr.includes(checkDateTime)){
+				$("#date_selector").datepicker("setDate", checkDateTime);
 			}
-			$("#date_selector").datepicker("setDate", checkDateTime);
-					for (var i = 0; i < dd.options.length; i++) {
-					    if (dd.options[i].text === checkDateTime) {
-					        dd.selectedIndex = i;
-					        break;
-					    }
-					}
+			else{
+				if(new Date().getTimezoneOffset() <= 0){
+					date.setDate(date.getDate() - 1);  //+ UTC
+				}else{
+					date.setDate(date.getDate()); //- UTC
+				}
+				checkDateTime = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+				$("#date_selector").datepicker("setDate", checkDateTime);
+			}
 
-					// showErrorAlert('No data is available for ' + $scope.selectedDate[0].split(" ")[0]);
-					//  // $("#date_selector").val("");
-					//  $("hour_table").html('');
-					//  if(map.hasLayer(tdWmsGEOSLayer)){
-	 				// 	map.removeLayer(tdWmsGEOSLayer);
-	 				// }
 
-			 //$('#date_selector').change();
+			for (var i = 0; i < dd.options.length; i++) {
+				if (dd.options[i].text === checkDateTime) {
+					dd.selectedIndex = i;
+					break;
+				}
+			}
+
+			// showErrorAlert('No data is available for ' + $scope.selectedDate[0].split(" ")[0]);
+			//  // $("#date_selector").val("");
+			//  $("hour_table").html('');
+			//  if(map.hasLayer(tdWmsGEOSLayer)){
+			// 	map.removeLayer(tdWmsGEOSLayer);
+			// }
+
+			//$('#date_selector').change();
 		};
 
 
@@ -1015,41 +1010,41 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 
 		};
 
-	  function startTimer(duration) {
-	 		 var timer = duration, minutes, seconds;
-	 		 intervaltime = setInterval(function () {
-	 				 minutes = parseInt(timer / 60, 10)
-	 				 seconds = parseInt(timer % 60, 10);
+		function startTimer(duration) {
+			var timer = duration, minutes, seconds;
+			intervaltime = setInterval(function () {
+				minutes = parseInt(timer / 60, 10)
+				seconds = parseInt(timer % 60, 10);
 
-	 				 minutes = minutes < 10 ? "0" + minutes : minutes;
-	 				 seconds = seconds < 10 ? "0" + seconds : seconds;
+				minutes = minutes < 10 ? "0" + minutes : minutes;
+				seconds = seconds < 10 ? "0" + seconds : seconds;
 
-	 				 if (--timer < 0) {
-	 						 timer = duration;
-	 				 }
-	 		 }, 1000);
-	  }
-	  function stopINT(){
-	 		 clearInterval(intervaltime);
-	  }
-	  function playAnimation () {
-	 		 if(playLoop > 0){var time = 2500;}else{var time=0;} //every 10 s.
-	 		 setTimeout(function () {
-	 				 $scope.slideForward();
-	 				 playLoop++;
-	 				 if($scope.runDateonNoUIslider === $scope.lastDateonNoUIslider || timeSlider.noUiSlider.get()[0] === $scope.lastDateonNoUIslider){
-	 						 stopINT();
-							 $scope.showPlayButton = true;
-				 			 $scope.showPauseButton = false;
-							 $scope.$apply();
-	 				 }
-					 else{
-						 clearInterval(intervaltime);
-						 startTimer(fiveMinutes);
-						 playAnimation();
-					 }
-	 		 }, time)
-	  }
+				if (--timer < 0) {
+					timer = duration;
+				}
+			}, 1000);
+		}
+		function stopINT(){
+			clearInterval(intervaltime);
+		}
+		function playAnimation () {
+			if(playLoop > 0){var time = 2500;}else{var time=0;} //every 10 s.
+			setTimeout(function () {
+				$scope.slideForward();
+				playLoop++;
+				if($scope.runDateonNoUIslider === $scope.lastDateonNoUIslider || timeSlider.noUiSlider.get()[0] === $scope.lastDateonNoUIslider){
+					stopINT();
+					$scope.showPlayButton = true;
+					$scope.showPauseButton = false;
+					$scope.$apply();
+				}
+				else{
+					clearInterval(intervaltime);
+					startTimer(fiveMinutes);
+					playAnimation();
+				}
+			}, time)
+		}
 
 
 		// Backward Slider
@@ -2089,266 +2084,266 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 
 			MapService.getChartData(parameters)
 			.then(function (result){
-					result = JSON.parse(result);
-					if (interaction == "Station") {
-						var values = result.data["field_data"];
-						var forecast_values = result.data["bc_mlpm25"];
-						var firstday = rd_type.substring(0, 4) + '-' + rd_type.substring(4, 6) + '-' + rd_type.substring(6, 8);
-						var d1 = new Date(firstday);
-						var date1 = d1.toISOString().split('T')[0];
-						d1.setDate(d1.getDate() + 1);
-						var d2 = new Date(firstday)
-						d2.setDate(d2.getDate() + 2);
-						var secondday = d1.toISOString().split('T')[0];
-						var thirdday = d2.toISOString().split('T')[0];
-						// document.getElementById("firstday").innerHTML = date1;
-						// document.getElementById("secondday").innerHTML = secondday;
-						// document.getElementById("thirdday").innerHTML = thirdday;
-						document.getElementById("day1_guage").innerHTML = date1;
-						document.getElementById("day2_guage").innerHTML = secondday;
-						document.getElementById("day3_guage").innerHTML = thirdday;
+				result = JSON.parse(result);
+				if (interaction == "Station") {
+					var values = result.data["field_data"];
+					var forecast_values = result.data["bc_mlpm25"];
+					var firstday = rd_type.substring(0, 4) + '-' + rd_type.substring(4, 6) + '-' + rd_type.substring(6, 8);
+					var d1 = new Date(firstday);
+					var date1 = d1.toISOString().split('T')[0];
+					d1.setDate(d1.getDate() + 1);
+					var d2 = new Date(firstday)
+					d2.setDate(d2.getDate() + 2);
+					var secondday = d1.toISOString().split('T')[0];
+					var thirdday = d2.toISOString().split('T')[0];
+					// document.getElementById("firstday").innerHTML = date1;
+					// document.getElementById("secondday").innerHTML = secondday;
+					// document.getElementById("thirdday").innerHTML = thirdday;
+					document.getElementById("day1_guage").innerHTML = date1;
+					document.getElementById("day2_guage").innerHTML = secondday;
+					document.getElementById("day3_guage").innerHTML = thirdday;
 
-						//     populateValues(values);
-						field_day1_avg = 0
-						field_day2_avg = 0;
-						field_day3_avg = 0;
+					//     populateValues(values);
+					field_day1_avg = 0
+					field_day2_avg = 0;
+					field_day3_avg = 0;
 
-						forecast_day1_avg = 0
-						forecast_day2_avg = 0;
-						forecast_day3_avg = 0;
-						sum1 = 0, sum2 = 0, sum3 = 0;
-						var count1 = 0, count2 = 0, count3 = 0
-						for (var i = 0; i < 8; i++) {
-							if (values[i] != -1) count1 = count1 + 1;
-							if (values[i + 8] != -1) count2 = count2 + 1;
-							if (values[i + 16] != -1) count3 = count3 + 1;
+					forecast_day1_avg = 0
+					forecast_day2_avg = 0;
+					forecast_day3_avg = 0;
+					sum1 = 0, sum2 = 0, sum3 = 0;
+					var count1 = 0, count2 = 0, count3 = 0
+					for (var i = 0; i < 8; i++) {
+						if (values[i] != -1) count1 = count1 + 1;
+						if (values[i + 8] != -1) count2 = count2 + 1;
+						if (values[i + 16] != -1) count3 = count3 + 1;
 
-							sum1 = sum1 + (values[i] ? values[i][1] : 0);
-							sum2 = sum2 + (values[i + 8] ? values[i + 8][1] : 0);
-							sum3 = sum3 + (values[i + 16] ? values[i + 16][1] : 0);
+						sum1 = sum1 + (values[i] ? values[i][1] : 0);
+						sum2 = sum2 + (values[i + 8] ? values[i + 8][1] : 0);
+						sum3 = sum3 + (values[i + 16] ? values[i + 16][1] : 0);
 
-						}
-						field_day1_avg = sum1 / count1;
-						field_day2_avg = sum2 / count2;
-						field_day3_avg = sum3 / count3;
-						sum1 = 0, sum2 = 0, sum3 = 0;
-						count1 = 0, count2 = 0, count3 = 0
-						for (var i = 0; i < 8; i++) {
-
-							if (i >= 2 && forecast_values[i] != -1) {
-								count1 = count1 + 1;
-								sum1 = sum1 + (forecast_values[i] ? forecast_values[i][1] : 0);
-							}
-							if (forecast_values[i + 8] != -1) count2 = count2 + 1;
-							sum2 = sum2 + (forecast_values[i + 8] ? forecast_values[i + 8][1] : 0);
-							if ((i + 16) < 22 && forecast_values[i + 16] != -1) {
-								count3 = count3 + 1;
-								sum3 = sum3 + (forecast_values[i + 16] ? forecast_values[i + 16][1] : 0);
-							}
-
-
-						}
-						forecast_day1_avg = sum1 / count1;
-						forecast_day2_avg = sum2 / count2;
-						forecast_day3_avg = sum3 / count3;
-
-						gen_chart(field_day1_avg < 0 ? -1 : field_day1_avg, forecast_day1_avg < 0 ? -1 : forecast_day1_avg);
-						document.getElementById("datevalue").innerHTML = document.getElementById("day1_guage").innerHTML;
-						document.getElementById("fromd").innerHTML = document.getElementById("day1_guage").innerHTML+" 08:30";
-						document.getElementById("tod").innerHTML = document.getElementById("day1_guage").innerHTML+" 23:30";
-						$("#day1_guage").css("background-color", "#43a8c5");
-						$("#day1_guage").css("color", "white");
-						$("#day2_guage").css("background-color", "gray");
-						$("#day2_guage").css("color", "white");
-						$("#day3_guage").css("background-color", "gray");
-						$("#day3_guage").css("color", "white");
 					}
+					field_day1_avg = sum1 / count1;
+					field_day2_avg = sum2 / count2;
+					field_day3_avg = sum3 / count3;
+					sum1 = 0, sum2 = 0, sum3 = 0;
+					count1 = 0, count2 = 0, count3 = 0
+					for (var i = 0; i < 8; i++) {
 
-					var arr = [];
-					var title = "";
-					var index = find_var_index(var_type, var_options);
-					var display_name = var_options[index]["display_name"] == "BC_MLPM25" ? "PM 2.5" : var_options[index]["display_name"];
-					var units = var_options[index]["units"];
-					if (units == 'mcgm-3') {
-						units = '&micro;gm<sup>-3</sup>';
-					}
-
-					if (interaction == "Station") {
-						document.getElementsByClassName("forpm25")[0].style.display = 'table';
-						document.getElementsByClassName("forpm25")[1].style.display = 'table';
-						// document.getElementsByClassName("forpm25")[2].style.display = 'table';
-						// document.getElementsByClassName("forpm25")[2].style.width = 'inherit';
-						document.getElementById("chartonly").style.width = '50%';
-						document.getElementById("modalchart").style.width = "60%";
-						document.getElementById("modalchart").style.display = "flex";
-						document.getElementById("modalchart").style.alignItems = "center";
-						document.getElementById("modalchart").style.justifyContent = "center";
-						serieses = [
-							/*{
-							data: result.data["ml_pm25"],
-							name: "ML PM25",
-							color: "blue",
-							marker: {
-							enabled: true,
-							radius: 3
+						if (i >= 2 && forecast_values[i] != -1) {
+							count1 = count1 + 1;
+							sum1 = sum1 + (forecast_values[i] ? forecast_values[i][1] : 0);
 						}
-					},*/ {
-					data: result.data["field_data"],
-					name: "PM2.5 Measurement",
-					color: "black"
-				},
-				{
-					data: result.data["bc_mlpm25"],
-					name: "PM2.5 Forecast",//
-					color: "green"
-				},
-				/*   {
-				data: result.data["geos_pm25"],
-				name: "GEOS PM25 data",
-				color: "red"
-			}*/
-		];
-		document.getElementById('pmlabel').style.display="block";
-	} else {
+						if (forecast_values[i + 8] != -1) count2 = count2 + 1;
+						sum2 = sum2 + (forecast_values[i + 8] ? forecast_values[i + 8][1] : 0);
+						if ((i + 16) < 22 && forecast_values[i + 16] != -1) {
+							count3 = count3 + 1;
+							sum3 = sum3 + (forecast_values[i + 16] ? forecast_values[i + 16][1] : 0);
+						}
 
-		document.getElementsByClassName("forpm25")[0].style.display = 'none';
-		document.getElementsByClassName("forpm25")[1].style.display = 'none';
-		//          document.getElementsByClassName("forpm25")[2].style.display = 'none';
-		document.getElementById("chartonly").style.width = '100%';
-		document.getElementById("modalchart").style.width = "";
-		document.getElementById("modalchart").style.display = "";
-		document.getElementById("modalchart").style.alignItems = "";
-		document.getElementById("modalchart").style.justifyContent = "";
-		serieses = [{
-			data: result.data["plot"],
-			name: display_name,
-			color: "#2b5154",
-			marker: {
-				enabled: true,
-				radius: 3
-			}
-		}];
-		document.getElementById('pmlabel').style.display="none";
-	}
-	if (interaction == "Station") {
 
-		arr = [{
-			color: "#6ef0ff",
-			from: 0,
-			to: 25
-		},
-		{
-			color: "#24cf1b",
-			from: 25,
-			to: 37
-		},
-		{
-			color: "#eff213",
-			from: 37,
-			to: 50
-		},
-		{
-			color: "#eda702",
-			from: 50,
-			to: 90
-		},
-		{
-			color: "#ed1e02",
-			from: 90,
-			to: 200
-		}];
-		title = "PM2.5 values at " + titleforst;
+					}
+					forecast_day1_avg = sum1 / count1;
+					forecast_day2_avg = sum2 / count2;
+					forecast_day3_avg = sum3 / count3;
 
-	} else {
-		arr = [];
-		title = $scope.var_type + " values at " + result.data["geom"];
-	}
-	$('.error').html('');
-	$('#plotter').highcharts({
-		chart: {
-			style: {
-				fontFamily: 'Poppins'
-			},
-			type: 'spline',
-			zoomType: 'x',
-			events: {
-				load: function () {
-					var label = this.renderer.label("Graph dates and times are in Bangkok time")
-					.css({
-						width: '400px',
-						fontSize: '12px'
-					})
-					.attr({
-						'stroke': 'silver',
-						'stroke-width': 1,
-						'r': 2,
-						'padding': 5
-					})
-					.add();
-
-					label.align(Highcharts.extend(label.getBBox(), {
-						align: 'center',
-						x: 20, // offset
-						verticalAlign: 'bottom',
-						y: 0 // offset
-					}), null, 'spacingBox');
-
+					gen_chart(field_day1_avg < 0 ? -1 : field_day1_avg, forecast_day1_avg < 0 ? -1 : forecast_day1_avg);
+					document.getElementById("datevalue").innerHTML = document.getElementById("day1_guage").innerHTML;
+					document.getElementById("fromd").innerHTML = document.getElementById("day1_guage").innerHTML+" 08:30";
+					document.getElementById("tod").innerHTML = document.getElementById("day1_guage").innerHTML+" 23:30";
+					$("#day1_guage").css("background-color", "#43a8c5");
+					$("#day1_guage").css("color", "white");
+					$("#day2_guage").css("background-color", "gray");
+					$("#day2_guage").css("color", "white");
+					$("#day3_guage").css("background-color", "gray");
+					$("#day3_guage").css("color", "white");
 				}
+
+				var arr = [];
+				var title = "";
+				var index = find_var_index(var_type, var_options);
+				var display_name = var_options[index]["display_name"] == "BC_MLPM25" ? "PM 2.5" : var_options[index]["display_name"];
+				var units = var_options[index]["units"];
+				if (units == 'mcgm-3') {
+					units = '&micro;gm<sup>-3</sup>';
+				}
+
+				if (interaction == "Station") {
+					document.getElementsByClassName("forpm25")[0].style.display = 'table';
+					document.getElementsByClassName("forpm25")[1].style.display = 'table';
+					// document.getElementsByClassName("forpm25")[2].style.display = 'table';
+					// document.getElementsByClassName("forpm25")[2].style.width = 'inherit';
+					document.getElementById("chartonly").style.width = '50%';
+					document.getElementById("modalchart").style.width = "60%";
+					document.getElementById("modalchart").style.display = "flex";
+					document.getElementById("modalchart").style.alignItems = "center";
+					document.getElementById("modalchart").style.justifyContent = "center";
+					serieses = [
+						/*{
+						data: result.data["ml_pm25"],
+						name: "ML PM25",
+						color: "blue",
+						marker: {
+						enabled: true,
+						radius: 3
+					}
+				},*/ {
+				data: result.data["field_data"],
+				name: "PM2.5 Measurement",
+				color: "black"
 			},
-			paddingBottom: 50
+			{
+				data: result.data["bc_mlpm25"],
+				name: "PM2.5 Forecast",//
+				color: "green"
+			},
+			/*   {
+			data: result.data["geos_pm25"],
+			name: "GEOS PM25 data",
+			color: "red"
+		}*/
+	];
+	document.getElementById('pmlabel').style.display="block";
+} else {
+
+	document.getElementsByClassName("forpm25")[0].style.display = 'none';
+	document.getElementsByClassName("forpm25")[1].style.display = 'none';
+	//          document.getElementsByClassName("forpm25")[2].style.display = 'none';
+	document.getElementById("chartonly").style.width = '100%';
+	document.getElementById("modalchart").style.width = "";
+	document.getElementById("modalchart").style.display = "";
+	document.getElementById("modalchart").style.alignItems = "";
+	document.getElementById("modalchart").style.justifyContent = "";
+	serieses = [{
+		data: result.data["plot"],
+		name: display_name,
+		color: "#2b5154",
+		marker: {
+			enabled: true,
+			radius: 3
+		}
+	}];
+	document.getElementById('pmlabel').style.display="none";
+}
+if (interaction == "Station") {
+
+	arr = [{
+		color: "#6ef0ff",
+		from: 0,
+		to: 25
+	},
+	{
+		color: "#24cf1b",
+		from: 25,
+		to: 37
+	},
+	{
+		color: "#eff213",
+		from: 37,
+		to: 50
+	},
+	{
+		color: "#eda702",
+		from: 50,
+		to: 90
+	},
+	{
+		color: "#ed1e02",
+		from: 90,
+		to: 200
+	}];
+	title = "PM2.5 values at " + titleforst;
+
+} else {
+	arr = [];
+	title = $scope.var_type + " values at " + result.data["geom"];
+}
+$('.error').html('');
+$('#plotter').highcharts({
+	chart: {
+		style: {
+			fontFamily: 'Poppins'
 		},
-		credits: {
-			enabled: false
+		type: 'spline',
+		zoomType: 'x',
+		events: {
+			load: function () {
+				var label = this.renderer.label("Graph dates and times are in Bangkok time")
+				.css({
+					width: '400px',
+					fontSize: '12px'
+				})
+				.attr({
+					'stroke': 'silver',
+					'stroke-width': 1,
+					'r': 2,
+					'padding': 5
+				})
+				.add();
+
+				label.align(Highcharts.extend(label.getBBox(), {
+					align: 'center',
+					x: 20, // offset
+					verticalAlign: 'bottom',
+					y: 0 // offset
+				}), null, 'spacingBox');
+
+			}
 		},
-		tooltip: {
-			backgroundColor: '#FCFFC5',
-			borderColor: '#2b5154',
-			borderRadius: 10,
-			borderWidth: 3
+		paddingBottom: 50
+	},
+	credits: {
+		enabled: false
+	},
+	tooltip: {
+		backgroundColor: '#FCFFC5',
+		borderColor: '#2b5154',
+		borderRadius: 10,
+		borderWidth: 3
+	},
+	title: {
+		text: title,
+		style: {
+			fontSize: '14px'
+		}
+	},
+	xAxis: {
+		type: 'datetime',
+		labels: {
+			format: '{value: %Y-%m-%d}'
+			// rotation: 45,
+			// align: 'left'
 		},
 		title: {
-			text: title,
-			style: {
-				fontSize: '14px'
-			}
+			text: 'Date'
+		}
+	},
+	legend: {
+		align: 'center',
+		verticalAlign: 'bottom',
+		y: -25
+	},
+	yAxis: {
+		title: {
+			useHTML: true,
+			text: units
 		},
-		xAxis: {
-			type: 'datetime',
-			labels: {
-				format: '{value: %Y-%m-%d}'
-				// rotation: 45,
-				// align: 'left'
-			},
-			title: {
-				text: 'Date'
-			}
-		},
-		legend: {
-			align: 'center',
-			verticalAlign: 'bottom',
-			y: -25
-		},
-		yAxis: {
-			title: {
-				useHTML: true,
-				text: units
-			},
-			plotBands: arr,
+		plotBands: arr,
 
-		},
-		plotOptions: {
-			series: {
-				color: "#2b5154"
-			}
-		},
-		exporting: {
-			enabled: true
-		},
-		series: serieses
+	},
+	plotOptions: {
+		series: {
+			color: "#2b5154"
+		}
+	},
+	exporting: {
+		enabled: true
+	},
+	series: serieses
 
-	});
-	$("#cube").addClass('hidden');
-	$("#plotter").removeClass('hidden');
+});
+$("#cube").addClass('hidden');
+$("#plotter").removeClass('hidden');
 
 
 
@@ -2373,62 +2368,62 @@ get_times = function (rd_type) {
 
 	MapService.get_time(parameters)
 	.then(function (result){
-				var times = result["times"];
-				time_global = times[0];
-					$("#hour_table").html('');
-				times.forEach(function (time, i) {
-						var date= new Date(time);
-						date.setHours(date.getHours() + 7);
-						var date_val = new Date(time);
-						date_val.setHours(date_val.getHours());
-						var date_value = date.setHours(date.getHours());
-						var date_text = date.toISOString().replace('T', ' ').replace('.000Z', '');
-						var opt = new Option(date_text, date_val.toISOString());
+		var times = result["times"];
+		time_global = times[0];
+		$("#hour_table").html('');
+		times.forEach(function (time, i) {
+			var date= new Date(time);
+			date.setHours(date.getHours() + 7);
+			var date_val = new Date(time);
+			date_val.setHours(date_val.getHours());
+			var date_value = date.setHours(date.getHours());
+			var date_text = date.toISOString().replace('T', ' ').replace('.000Z', '');
+			var opt = new Option(date_text, date_val.toISOString());
 
-						$scope.selectedDate;
-						var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
-						//var date = new Date($scope.selectedDate[0].split(" ")[0]);
-						date.setDate(date.getDate());
-						date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
-						var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
-						var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
-						var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
-						_time1.setHours(_time1.getHours() - 1);
-						_time2.setHours(_time2.getHours() + 1);
+			$scope.selectedDate;
+			var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
+			//var date = new Date($scope.selectedDate[0].split(" ")[0]);
+			date.setDate(date.getDate());
+			date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+			var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
+			var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+			var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+			_time1.setHours(_time1.getHours() - 1);
+			_time2.setHours(_time2.getHours() + 1);
 
-						_time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
-						_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
-						//console.log(_time1, "  ", hour, "   ", _time2)
-						if (date_text === _time1 || date_text === hour || date_text === _time2) {
-							opt.selected = true;
+			_time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
+			_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
+			//console.log(_time1, "  ", hour, "   ", _time2)
+			if (date_text === _time1 || date_text === hour || date_text === _time2) {
+				opt.selected = true;
 
-							var run_type = ($("#geos_run_table option:selected").val());
-							var freq = ($("#geos_freq_table option:selected").val());
-							// var rd_type = ($("#geos_rd_table option:selected").val());
-							// var z = rd_type.split('/').reverse()[0];
-							// var y = ($("#date_table option:selected").val());
-							// rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
+				var run_type = ($("#geos_run_table option:selected").val());
+				var freq = ($("#geos_freq_table option:selected").val());
+				// var rd_type = ($("#geos_rd_table option:selected").val());
+				// var z = rd_type.split('/').reverse()[0];
+				// var y = ($("#date_table option:selected").val());
+				// rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
 
-							var rd_type = ($("#geos_rd_table option:selected").val());
-							var z = rd_type.split('/').reverse()[0];
-							var y = $("#date_selector").val();
-							rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
-
-
-							var var_type = ($("#geos_var_table option:selected").val());
-							var style = ($("#geos_style_table option:selected").val());
-							//update_style(style);
-							var rmin = $("#geos_range-min").val();
-							var rmax = $("#geos_range-max").val();
-
-							add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, date_val.toISOString());
+				var rd_type = ($("#geos_rd_table option:selected").val());
+				var z = rd_type.split('/').reverse()[0];
+				var y = $("#date_selector").val();
+				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
 
 
-						}
-						$("#hour_table").append(opt);
-				});
+				var var_type = ($("#geos_var_table option:selected").val());
+				var style = ($("#geos_style_table option:selected").val());
+				//update_style(style);
+				var rmin = $("#geos_range-min").val();
+				var rmax = $("#geos_range-max").val();
 
-				$("#hour_table").trigger('change');
+				add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, date_val.toISOString());
+
+
+			}
+			$("#hour_table").append(opt);
+		});
+
+		$("#hour_table").trigger('change');
 	}), function (error){
 		console.log(error);
 	};
@@ -2524,7 +2519,7 @@ $(function() {
 			var rd_type = parameter_url + "/MOD04_L2."+ datetime +".MEKONG.nc";
 		}
 
-	  add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
+		add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
 
 	$("#aod_style_table").change(function () {
@@ -2552,19 +2547,19 @@ $(function() {
 		$("#lvar_table").html('');
 		$("#rvar_table").html('');
 		$.each(thredds_options['catalog'][run_type], function (item, i) {
-			if ((item == '3daytoday' || item == '3dayrecent') && (run_type == "geos")) {
+			if ((item == '3dayrecent') && (run_type == "geos")) {
 
 				var new_option = new Option(item, item);
 				$("#geos_freq_table").append(new_option);
 			} else if (item == 'combined') {
-
 				var new_option = new Option(item, item);
 				$("#geos_freq_table").append(new_option);
 			}
 		});
 		$("#geos_freq_table").trigger('change');
-		if (thredds_options['catalog'][run_type]['monthly']) {
-			thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
+		var runDateOption = thredds_options['catalog'][run_type]['3dayrecent'];
+		if (runDateOption) {
+			runDateOption.forEach(function (item, i) {
 				var opt = item.split('/').reverse()[0];
 				var new_option = new Option(opt, item);
 				var noption = new Option(opt, item);
@@ -2643,57 +2638,55 @@ $(function() {
 
 	}).change();
 
-
-		var recent_date = enableDates[0];
-
-		$("#date_selector").datepicker("destroy");
-				 for (var i = 0; i < enableDates.length; i++) {
-							 var dt = enableDates[i];
-							 var dd, mm, yyy;
-							 if (parseInt(dt.split('-')[0]) >= 2020 ){
-								 enableDatesArraySlide.push(dt);
-							 }
-							 if (parseInt(dt.split('-')[2]) <= 9 || parseInt(dt.split('-')[1]) <= 9) {
-												 dd = parseInt(dt.split('-')[2]);
-												mm = parseInt(dt.split('-')[1]);
-												yyy = dt.split('-')[0];
-											 enableDatesArray.push(yyy + '-' + mm + '-' + dd);
-									}
-									else {
-									 enableDatesArray.push(dt);
-						 }
+	var recent_date = enableDates[0];
+	$("#date_selector").datepicker("destroy");
+	for (var i = 0; i < enableDates.length; i++) {
+		var dt = enableDates[i];
+		var dd, mm, yyy;
+		if (parseInt(dt.split('-')[0]) >= 2020 ){
+			enableDatesArraySlide.push(dt);
 		}
-		$('#date_selector').datepicker({
-			beforeShow: function (input, inst) {
-										//$(".datepicker").css("top", "150px");
-						        setTimeout(function () {
-						            inst.dpDiv.css({
-						                top: $(".datepicker").offset().top +1500,
-						                left: $(".datepicker").offset().left + 0,
-						            });
-						        }, 0);
-						    },
-			beforeShowDay: function (date) {
-						var dt_ddmmyyyy = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() ;
-						if (enableDatesArray.indexOf(dt_ddmmyyyy) !== -1) {
-								return {
-										tooltip: 'There is data available',
-										classes: 'active'
-								};
-						} else {
-								return false;
-						}
-				}
-		});
-		var ddate, mmonth, yyear, setDate;
-		if (parseInt(recent_date.split('-')[2]) <= 9 || parseInt(recent_date.split('-')[1]) <= 9) {
-				 ddate = parseInt(recent_date.split('-')[2]);
-				 mmonth = parseInt(recent_date.split('-')[1]);
-				 yyear = recent_date.split('-')[0];
-				 setDate = yyear + '-' + mmonth + '-' + ddate;
-			 }
-		 $("#date_selector").datepicker("setDate", setDate);
-		 //$("#date_selector").trigger("change");
+		if (parseInt(dt.split('-')[2]) <= 9 || parseInt(dt.split('-')[1]) <= 9) {
+			dd = parseInt(dt.split('-')[2]);
+			mm = parseInt(dt.split('-')[1]);
+			yyy = dt.split('-')[0];
+			enableDatesArray.push(yyy + '-' + mm + '-' + dd);
+		}
+		else {
+			enableDatesArray.push(dt);
+		}
+	}
+	$('#date_selector').datepicker({
+		beforeShow: function (input, inst) {
+			//$(".datepicker").css("top", "150px");
+			setTimeout(function () {
+				inst.dpDiv.css({
+					top: $(".datepicker").offset().top +500,
+					left: $(".datepicker").offset().left + 0,
+				});
+			}, 0);
+		},
+		beforeShowDay: function (date) {
+			var dt_ddmmyyyy = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() ;
+			if (enableDatesArray.indexOf(dt_ddmmyyyy) !== -1) {
+				return {
+					tooltip: 'There is data available',
+					classes: 'active'
+				};
+			} else {
+				return false;
+			}
+		}
+	});
+	var ddate, mmonth, yyear, setDate;
+	if (parseInt(recent_date.split('-')[2]) <= 9 || parseInt(recent_date.split('-')[1]) <= 9) {
+		ddate = parseInt(recent_date.split('-')[2]);
+		mmonth = parseInt(recent_date.split('-')[1]);
+		yyear = recent_date.split('-')[0];
+		setDate = yyear + '-' + mmonth + '-' + ddate;
+	}
+	$("#date_selector").datepicker("setDate", setDate);
+	//$("#date_selector").trigger("change");
 
 	$("#date_selector").change(function () {
 
@@ -2721,10 +2714,11 @@ $(function() {
 	});
 
 	$("#hour_table").change(function () {
+		$scope.getPCDStation();
 		var dd = document.getElementById('hour_table');
 		var date_arr = [];
 		for (var i = 0; i < dd.options.length; i++) {
-				date_arr.push(dd.options[i].text);
+			date_arr.push(dd.options[i].text);
 		}
 
 		$scope.selectedDate;
@@ -2742,28 +2736,28 @@ $(function() {
 		_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
 
 		if(date_arr.includes(_time1) || date_arr.includes(hour) || date_arr.includes(_time2)){
-				var run_type = ($("#geos_run_table option:selected").val());
-				var freq = ($("#geos_freq_table option:selected").val());
-				var rd_type = ($("#geos_rd_table option:selected").val());
-				var z = rd_type.split('/').reverse()[0];
-				var y = ($("#date_selector").val());
-				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
-				var var_type = ($("#geos_var_table option:selected").val());
-				var style = ($("#geos_style_table option:selected").val());
-				//update_style(style);
-				var rmin = $("#geos_range-min").val();
-				var rmax = $("#geos_range-max").val();
+			var run_type = ($("#geos_run_table option:selected").val());
+			var freq = ($("#geos_freq_table option:selected").val());
+			var rd_type = ($("#geos_rd_table option:selected").val());
+			var z = rd_type.split('/').reverse()[0];
+			var y = ($("#date_selector").val());
+			rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+			var var_type = ($("#geos_var_table option:selected").val());
+			var style = ($("#geos_style_table option:selected").val());
+			//update_style(style);
+			var rmin = $("#geos_range-min").val();
+			var rmax = $("#geos_range-max").val();
 
-				add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
-			}else{
+			add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+		}else{
 
-				showErrorAlert('No data is available for ' + hour);
-				 // $("#date_selector").val("");
-				 $("hour_table").html('');
-				 if(map.hasLayer(tdWmsGEOSLayer)){
-					map.removeLayer(tdWmsGEOSLayer);
-				}
+			showErrorAlert('No data is available for ' + hour);
+			// $("#date_selector").val("");
+			$("hour_table").html('');
+			if(map.hasLayer(tdWmsGEOSLayer)){
+				map.removeLayer(tdWmsGEOSLayer);
 			}
+		}
 
 	});
 
@@ -2871,13 +2865,24 @@ $(function() {
 		var run_type = ($("#lrun_table option:selected").val());
 		$("#lrd_table").html('');
 		$("#lvar_table").html('');
-		if (thredds_options['catalog'][run_type]['monthly']) {
-			thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
-				var opt = item.split('/').reverse()[0];
-				var new_option = new Option(opt, item);
-				$("#lrd_table").append(new_option);
-			});
+		if(run_type==="geos"){
+			if (thredds_options['catalog'][run_type]['3dayrecent']) {
+				thredds_options['catalog'][run_type]['3dayrecent'].forEach(function (item, i) {
+					var opt = item.split('/').reverse()[0];
+					var new_option = new Option(opt, item);
+					$("#lrd_table").append(new_option);
+				});
+			}
+		}else{
+			if (thredds_options['catalog'][run_type]['monthly']) {
+				thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
+					var opt = item.split('/').reverse()[0];
+					var new_option = new Option(opt, item);
+					$("#lrd_table").append(new_option);
+				});
+			}
 		}
+
 		var_options.forEach(function (item, i) {
 			if (item["category"] == run_type) {
 				var new_option = new Option(item["display_name"], item["id"]);
@@ -2892,12 +2897,22 @@ $(function() {
 		var run_type = ($("#rrun_table option:selected").val());
 		$("#rrd_table").html('');
 		$("#rvar_table").html('');
-		if (thredds_options['catalog'][run_type]['monthly']) {
-			thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
-				var opt = item.split('/').reverse()[0];
-				var new_option = new Option(opt, item);
-				$("#rrd_table").append(new_option);
-			});
+		if(run_type==="geos"){
+			if (thredds_options['catalog'][run_type]['3dayrecent']) {
+				thredds_options['catalog'][run_type]['3dayrecent'].forEach(function (item, i) {
+					var opt = item.split('/').reverse()[0];
+					var new_option = new Option(opt, item);
+					$("#rrd_table").append(new_option);
+				});
+			}
+		}else{
+			if (thredds_options['catalog'][run_type]['monthly']) {
+				thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
+					var opt = item.split('/').reverse()[0];
+					var new_option = new Option(opt, item);
+					$("#rrd_table").append(new_option);
+				});
+			}
 		}
 		var_options.forEach(function (item, i) {
 			if (item["category"] == run_type) {
@@ -3023,18 +3038,18 @@ $(function() {
 	$("a[title='Air quality Print']").css("display", "none");
 
 	$("#btn-play").click(function(){
-			$scope.showPlayButton = false;
-			$scope.showPauseButton = true;
-			$scope.runDateonNoUIslider = '';
-			$scope.$apply();
-			playLoop = 0;
-			playAnimation();
+		$scope.showPlayButton = false;
+		$scope.showPauseButton = true;
+		$scope.runDateonNoUIslider = '';
+		$scope.$apply();
+		playLoop = 0;
+		playAnimation();
 	});
 	$("#btn-stop").click(function(){
-			$scope.showPlayButton = true;
-			$scope.showPauseButton = false;
-			$scope.runDateonNoUIslider = $scope.lastDateonNoUIslider;
-			$scope.$apply();
+		$scope.showPlayButton = true;
+		$scope.showPauseButton = false;
+		$scope.runDateonNoUIslider = $scope.lastDateonNoUIslider;
+		$scope.$apply();
 
 	});
 
