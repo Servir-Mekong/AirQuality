@@ -2722,42 +2722,49 @@ $(function() {
 		}
 
 		$scope.selectedDate;
-		var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
-		//var date = new Date($scope.selectedDate[0].split(" ")[0]);
-		date.setDate(date.getDate());
-		date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
-		var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
-		var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
-		var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
-		_time1.setHours(_time1.getHours() - 1);
-		_time2.setHours(_time2.getHours() + 1);
+		// var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
+		// //var date = new Date($scope.selectedDate[0].split(" ")[0]);
+		// date.setDate(date.getDate());
+		// date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+		// var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
+		// var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+		// var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
+		// _time1.setHours(_time1.getHours() - 1);
+		// _time2.setHours(_time2.getHours() + 1);
+		//
+		// _time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
+		// _time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
 
-		_time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
-		_time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
+		// if(date_arr.includes(_time1) || date_arr.includes(hour) || date_arr.includes(_time2)){
+		// 	var run_type = ($("#geos_run_table option:selected").val());
+		// 	var freq = ($("#geos_freq_table option:selected").val());
+		// 	var rd_type = ($("#geos_rd_table option:selected").val());
+		// 	var z = rd_type.split('/').reverse()[0];
+		// 	var y = ($("#date_selector").val());
+		// 	rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+		// 	var var_type = ($("#geos_var_table option:selected").val());
+		// 	var style = ($("#geos_style_table option:selected").val());
+		// 	//update_style(style);
+		// 	var rmin = $("#geos_range-min").val();
+		// 	var rmax = $("#geos_range-max").val();
+		//
+		// 	add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+		// }else{
+		//
+		//
+		// }
+		var run_type = ($("#geos_run_table option:selected").val());
+		var freq = ($("#geos_freq_table option:selected").val());
+		var rd_type = ($("#geos_rd_table option:selected").val());
+		var z = rd_type.split('/').reverse()[0];
+		var y = ($("#date_selector").val());
+		rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+		var var_type = ($("#geos_var_table option:selected").val());
+		var style = ($("#geos_style_table option:selected").val());
+		var rmin = $("#geos_range-min").val();
+		var rmax = $("#geos_range-max").val();
 
-		if(date_arr.includes(_time1) || date_arr.includes(hour) || date_arr.includes(_time2)){
-			var run_type = ($("#geos_run_table option:selected").val());
-			var freq = ($("#geos_freq_table option:selected").val());
-			var rd_type = ($("#geos_rd_table option:selected").val());
-			var z = rd_type.split('/').reverse()[0];
-			var y = ($("#date_selector").val());
-			rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
-			var var_type = ($("#geos_var_table option:selected").val());
-			var style = ($("#geos_style_table option:selected").val());
-			//update_style(style);
-			var rmin = $("#geos_range-min").val();
-			var rmax = $("#geos_range-max").val();
-
-			add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
-		}else{
-
-			showErrorAlert('No data is available for ' + hour);
-			// $("#date_selector").val("");
-			$("hour_table").html('');
-			if(map.hasLayer(tdWmsGEOSLayer)){
-				map.removeLayer(tdWmsGEOSLayer);
-			}
-		}
+		add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
 
 	});
 
