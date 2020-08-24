@@ -1232,15 +1232,15 @@
 				var pm2_val = stations[i].pm25;
 				var aqi_level = stations[i].aqi_level;
 				if(aqi_level === 1){
-					icon_src = 'static/images/B1_Excellent.png';
+					icon_src = '/static/images/B1_Excellent.png';
 				}else if(aqi_level === 2){
-					icon_src = 'static/images/B2_Satisfactory.png';
+					icon_src = '/static/images/B2_Satisfactory.png';
 				}else if(aqi_level === 3){
-					icon_src = 'static/images/B3_Moderate.png';
+					icon_src = '/static/images/B3_Moderate.png';
 				}else if(aqi_level === 4){
-					icon_src = 'static/images/B4_Unhealthy.png';
+					icon_src = '/static/images/B4_Unhealthy.png';
 				}else if(aqi_level === 5){
-					icon_src = 'static/images/B5_V-Unhealthy.png';
+					icon_src = '/static/images/B5_V-Unhealthy.png';
 				}
 
 				if(pm2_val>90){
