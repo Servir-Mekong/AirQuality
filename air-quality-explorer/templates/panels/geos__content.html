@@ -26,39 +26,52 @@
     <select class="form-control" name="geos_var_table" id="geos_var_table">
 
     </select>
-    <p><b>[[ 'Range Min' | translate]]</b></p>
-    <input  type="text" class="form-control" id="geos_range-min" name="geos_range-min">
-
-    <p><b>[[ 'Range Max' | translate]]</b></p>
-    <input  type="text" class="form-control" id="geos_range-max" name="geos_range-max">
-
-    <p><b>[[ 'Select Style' | translate]]</b></p>
-    <select class="form-control" name="geos_style_table" id="geos_style_table" style="width: 100%"></select>
-
-    <div id="opacity_geos" class="slider-width">
-        <p> [[ 'Opacity' | translate]]: <span id="OpacityVal3"></span></p>
-        <input id="opacity-slider-geos" type="text" style="width: 90%;left: 60px;"/>
+   <div style="display:flex;flex-direction:row;justify-content: space-around;">
+       <div style="display:flex;flex-direction:column;">
+           <p><b>[[ 'Range Min' | translate]]</b></p>
+            <input  type="text" class="form-control" id="geos_range-min" name="geos_range-min">
+       </div>
+       <div style="display:flex;flex-direction:column;">
+           <p><b>[[ 'Range Max' | translate]]</b></p>
+           <input  type="text" class="form-control" id="geos_range-max" name="geos_range-max">
+       </div>
+   </div>
+   <div style="display:flex;flex-direction:row;justify-content: space-around;">
+       <div style="display:flex;flex-direction:column;width:100%; ">
+            <p><b>[[ 'Select Style' | translate]]</b></p>
+            <select class="form-control" name="geos_style_table" id="geos_style_table" style="width: 100%"></select>
+       </div>
+       <div id="opacity_geos" class="slider-width" style="display:flex;flex-direction:column;">
+            <p> [[ 'Opacity' | translate]]: <span id="OpacityVal3"></span></p>
+            <input id="opacity-slider-geos" type="text" style="width: 90%;left: 60px;"/>
+       </div>
+   </div>
+<div  style="display:flex;flex-direction:row;justify-content: space-around;">
+    <div style="display:flex;flex-direction:column;width: 100%">
+        <p><b>[[ 'Forecast Initialization Date' | translate]]</b></p>
+        <select class="form-control hidden" name="date_table" id="date_table" style="width: 100%"></select>
+          <div class="form-group">
+            <input class = "form-control" id="date_selector"
+            name="date_selector"
+            type="text"
+            orientation="bottom"
+            data-date-autoclose="true"
+            data-date-format="yyyy-mm-dd"
+            data-date-min-view-mode="days"
+            data-date-multidate="1"
+            data-date-start-view="decade"
+            data-date-today-btn="false"></input>
+          </div>
     </div>
-    <p id="info"></p>
-    <br>
-    <p> [[ 'Note: Date and hour are enabled for GEOS datasets in Bangkok time' | translate]]</p>
-    <p><b>[[ 'Forecast Initialization Date' | translate]]</b></p>
-    <select class="form-control hidden" name="date_table" id="date_table" style="width: 100%"></select>
-      <div class="form-group">
-        <input class = "form-control" id="date_selector"
-        name="date_selector"
-        type="text"
-        orientation="bottom"
-        data-date-autoclose="true"
-        data-date-format="yyyy-mm-dd"
-        data-date-min-view-mode="days"
-        data-date-multidate="1"
-        data-date-start-view="decade"
-        data-date-today-btn="false"></input>
-      </div>
-    <p><b>[[ 'Show Data for' | translate]]</b></p>
-    <select  class="form-control"  name="hour_table" id="hour_table" style="width: 100%">
+    <div style="display:flex;flex-direction:column;width: 100%;padding-left: 5px">
+        <p><b>[[ ' Show Data for' | translate]]</b></p>
+        <select  class="form-control"  name="hour_table" id="hour_table" style="width: 100%">
 
-    </select>
+        </select>
+    </div>
+</div>
+   <p id="info"></p>
+       <p> [[ 'Note: Date and hour are enabled for GEOS datasets in Indochina Time(ICT)' | translate]]</p>
 
+   <br>
 </div>

@@ -374,15 +374,15 @@
 
 
 		$("#full-screen").click(function() {
-			if($("body").css("margin-top") === "-15px"){
+			if($("body").css("margin-top") === "-8px"){
 				$("nav").show();
 				$("body").css("margin-top", "100px");
-				$(".map").css("height", "calc(100vh - 115px)");
+				$(".map").css("height", "calc(100vh - 95px)");
 				$(".map-panel__sidebar").css("top", "160px");
 			}else{
 				$("nav").hide();
-				$("body").css("margin-top", "-15px");
-				$(".map").css("height", "100vh");
+				$("body").css("margin-top", "-8px");
+				$(".map").css("height", "101vh");
 				$(".map-panel__sidebar").css("top", "50px");
 			}
 		});
@@ -912,15 +912,15 @@
 			};
 			MapService.getAirStations(parameters)
 			.then(function (result){
-				var day = $scope.selectedDate;
-				day = day[0].split(' ');
-				day = day[0];
-				for (var l in overlays) {
-					if(!(l.includes('FIRES_VIIRS'))){
-						overlays[l].options.time = day;
-						overlays[l].redraw();
-					}
-				}
+				// var day = $scope.selectedDate;
+				// day = day[0].split(' ');
+				// day = day[0];
+				// for (var l in overlays) {
+				// 	if(!(l.includes('FIRES_VIIRS'))){
+				// 		overlays[l].options.time = day;
+				// 		overlays[l].redraw();
+				// 	}
+				// }
 				stations = result;
 				addStations();
 			}), function (error){
@@ -1299,7 +1299,7 @@
 				});
 				oneMarker.bindTooltip("<b>Station:</b> "+stations[i].name+
 				"<br><b>PM 2.5:</b> "+pm2_val+ " (µg<sup>-3</sup>)"+
-				"<br><b>Data for:</b> "+stations[i].latest_date+ "<br> <i>All dates and times are in Bangkok time</i>");
+				"<br><b>Data for:</b> "+stations[i].latest_date+ "<br> <i>All dates and times are in Indochina Time(ICT)</i>");
 				oneMarker.station_id = stations[i].station_id;
 				oneMarker.name = stations[i].name;
 				oneMarker.lat = stations[i].lat;
@@ -1405,6 +1405,8 @@
 					version:'1.3.0',
 					zIndex:100,
 					bounds: [[0, 90], [22, 120]],
+					abovemaxcolor:'extend',
+          belowmincolor:'extend'
 				});
 				tdWmsGEOSLayer.addTo(map);
 				$('#img-legend-geos').attr('src',imgsrc);
@@ -1419,6 +1421,8 @@
 					version:'1.3.0',
 					zIndex:100,
 					bounds: [[0, 90], [22, 120]],
+					abovemaxcolor:'extend',
+          belowmincolor:'extend'
 				});
 				tdWmsAODLayer.addTo(map);
 				$('#img-legend-aod').attr('src',imgsrc);
@@ -1628,6 +1632,48 @@
 			content: '<div><canvas id="canvas" style="width:20vw;height:4vh;"></canvas><canvas class="tippy hidden" id="tip" width=35 height=25></canvas></div>'
 		});
 		//map.addControl(leg);
+
+		var nrt_date = new L.Control.InfoControl({
+            position: "topright",
+            content: '<div id="controls"><button id="prev">Previous Day</button><input id="date"><button id="next">Next Day</button></div>'
+        });
+        map.addControl(nrt_date);
+                var DATE_FORMAT = 'dd.mm.yy';
+        var strToDateUTC = function (str) {
+            var date = $.datepicker.parseDate(DATE_FORMAT, str);
+            return new Date(date - date.getTimezoneOffset() * 60 * 1000);
+        };
+        var $date = $('#date');
+        var now = new Date();
+        var oneDay = 1000 * 60 * 60 * 24, // milliseconds in one day
+            startTimestamp = now.getTime() - oneDay + now.getTimezoneOffset() * 60 * 1000,
+            startDate = new Date(startTimestamp); //previous day
+
+        $date.val($.datepicker.formatDate(DATE_FORMAT, startDate));
+        var alterDate = function (delta) {
+            var date = $.datepicker.parseDate(DATE_FORMAT, $date.val());
+
+            $date
+                .val($.datepicker.formatDate(DATE_FORMAT, new Date(date.valueOf() + delta * oneDay)))
+                .change();
+        }
+
+
+        // Control date navigation for GIBS WMS layers, adjust the options.time and redraw. Exclude FIRE VIIRS layers (not time-enabled)
+        $date.datepicker({
+            dateFormat: DATE_FORMAT
+        }).change(function () {
+            var date = strToDateUTC(this.value);
+            for (var l in overlays) {
+                if (!(l.includes('FIRES_VIIRS'))) {
+                    overlays[l].options.time = date.toISOString().split('T')[0];
+                    overlays[l].redraw();
+                }
+
+            }
+        });
+            document.getElementById("prev").onclick = alterDate.bind(null, -1);
+            document.getElementById("next").onclick = alterDate.bind(null, 1);
 
 		var baselayers = {};
 		var today = new Date();
@@ -2066,6 +2112,16 @@
 				var geom_data = $("#poly-lat-lon").val();
 			} else if (interaction == "Station") {
 				var geom_data = $("#station").val();
+				var run_type = ($("#geos_run_table option:selected").val());
+				var freq = ($("#geos_freq_table option:selected").val());
+				var rd_type = ($("#geos_rd_table option:selected").text());
+				var var_type = ($("#geos_var_table option:selected").val());
+				var z = rd_type.split('/').reverse()[0];
+				var rd_type = ($("#geos_rd_table option:selected").val());
+				var z = rd_type.split('/').reverse()[0];
+				var y = ($("#date_selector").val());
+				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+				rd_type = rd_type.split('/').reverse()[0];
 			}
 			$('.forpm25').css("display", 'none');
 			$modalChart.modal('show');
@@ -2255,9 +2311,15 @@ if (interaction == "Station") {
 	title = "PM2.5 values at " + titleforst;
 
 } else {
-	arr = [];
-	title = $scope.var_type + " values at " + result.data["geom"];
-}
+		arr = [];
+		console.log(result.data["geom"][2]);
+		if(result.data["geom"][2]!=undefined)
+			title = $scope.var_type + " values at Lat (min, max) - (" + result.data["geom"][0]+", "+result.data["geom"][2]+") and Lon (min, max) - ("+result.data["geom"][1]+", "+result.data["geom"][3] +")";
+		else
+			title = $scope.var_type + " values at Lat: " + result.data["geom"][0]+", Lon: "+result.data["geom"][1];
+
+	}
+
 $('.error').html('');
 $('#plotter').highcharts({
 	chart: {
@@ -2268,7 +2330,7 @@ $('#plotter').highcharts({
 		zoomType: 'x',
 		events: {
 			load: function () {
-				var label = this.renderer.label("Graph dates and times are in Bangkok time")
+				var label = this.renderer.label("Graph dates and times are in Indochina Time(ICT)")
 				.css({
 					width: '400px',
 					fontSize: '12px'
