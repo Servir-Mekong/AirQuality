@@ -24,7 +24,7 @@
     "Select Style": "Select Style",
     "Select Parameter": "Select Parameter",
     "Opacity": "Opacity",
-    "Note: Date and hour are enabled for GEOS datasets in Bangkok time": "หมายเหตุ: วันและเวลาสำหรับการแสดงข้อมูลใช้เวลาตามประเทศไทย",
+    "Note: Date and hour are enabled for GEOS datasets in Indochina Time(ICT)": "หมายเหตุ: วันและเวลาสำหรับการแสดงข้อมูลใช้เวลาตามประเทศไทย",
     "Forecast Initialization Date": "Forecast Initialization Date",
     "Show Data for": "แสดงข้อมูลของวันที่",
     "Toggle layer visibility": "แสดง/ซ่อน ชั้นข้อมูล",

@@ -1304,7 +1304,7 @@ timeSlider_aod.noUiSlider.on('set', function (values, handle) {
 				});
 				oneMarker.bindTooltip("<b>Station:</b> "+stations[i].name+
 				"<br><b>PM 2.5:</b> "+pm2_val+ " (µg<sup>-3</sup>)"+
-				"<br><b>Data for:</b> "+stations[i].latest_date+ "<br> <i>All dates and times are in Bangkok time</i>");
+				"<br><b>Data for:</b> "+stations[i].latest_date+ "<br> <i>All dates and times are in Indochina Time(ICT)</i>");
 				oneMarker.station_id = stations[i].station_id;
 				oneMarker.name = stations[i].name;
 				oneMarker.lat = stations[i].lat;
@@ -2324,7 +2324,7 @@ abovemaxcolor:'extend',
 			zoomType: 'x',
 			events: {
 				load: function () {
-					var label = this.renderer.label("Graph dates and times are in Bangkok time")
+					var label = this.renderer.label("Graph dates and times are in Indochina Time(ICT)")
 					.css({
 						width: '400px',
 						fontSize: '12px'
