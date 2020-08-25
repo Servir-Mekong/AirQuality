@@ -105,11 +105,11 @@ p {
 }
 
 .tooltip-inner {
-    background-color: #a8c45d;
+    background-color: #2b5154;
 }
 
 .tooltip.top .tooltip-arrow {
-    border-top-color: #a8c45d;
+    border-top-color: #2b5154;
 }
 
 .map-modal {
@@ -507,9 +507,9 @@ ul {
   top: 100px;
 }
 
-.pm25-legend{
-  top: 5px;
-  right: 60px;
+.pm25-legend {
+  top: 0px;
+  right: 270px;
   height: auto;
   position: absolute;
   width: 350px;
@@ -517,8 +517,8 @@ ul {
   background-color: rgba(0, 0, 0, 0.65);
   border-radius: 5px;
   color: #FFF;
-  padding: 10px;
-  margin-top:40px;
+  padding: 5px;
+  margin-top: 3px;
 }
 
 

@@ -15,22 +15,32 @@
 
         </select>
     </div>
-    <p><b>[[ 'Select Variable' | translate]]</b></p>
-    <select class="form-control" name="fire_var_table" id="fire_var_table">
+    <div class="row">
+      <div class="col-lg-12 col-md-6">
+        <p><b>[[ 'Select Variable' | translate]]</b></p>
+        <select class="form-control" name="fire_var_table" id="fire_var_table"></select>
+      </div>
+      <div class="col-lg-6 col-md-6">
+        <p><b>[[ 'Range Min' | translate]]</b></p>
+        <input  type="text" class="form-control" id="fire_range-min" name="fire_range-min">
+      </div>
 
-    </select>
-    <p><b>[[ 'Range Min' | translate]]</b></p>
-    <input  type="text" class="form-control" id="fire_range-min" name="fire_range-min">
+      <div class="col-lg-6 col-md-6">
+        <p><b>[[ 'Range Max' | translate]]</b></p>
+        <input  type="text" class="form-control" id="fire_range-max" name="fire_range-max">
+      </div>
 
-    <p><b>[[ 'Range Max' | translate]]</b></p>
-    <input  type="text" class="form-control" id="fire_range-max" name="fire_range-max">
+      <div class="col-lg-6 col-md-6">
+        <p><b>[[ 'Select Style' | translate]]</b></p>
+        <select class="form-control" name="fire_style_table" id="fire_style_table" style="width: 100%"></select>
+      </div>
+      <div class="col-lg-6 col-md-6">
+        <div id="opacity_fire" class="slider-width">
+            <p> [[ 'Opacity' | translate]]: <span id="OpacityVal"></span></p>
+            <input id="opacity-slider" type="text" style="width: 90%;left: 60px;"/>
+        </div>
+      </div>
 
-    <p><b>[[ 'Select Style' | translate]]</b></p>
-    <select class="form-control" name="fire_style_table" id="fire_style_table" style="width: 100%"></select>
-
-    <div id="opacity_fire" class="slider-width">
-        <p> [[ 'Opacity' | translate]]: <span id="OpacityVal"></span></p>
-        <input id="opacity-slider" type="text" style="width: 90%;left: 60px;"/>
     </div>
 
 </div>

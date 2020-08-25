@@ -272,7 +272,6 @@
 			}
 
 		});
-
 		$('#fire_tab').click(function(){
 			$("#opacity-slider").bootstrapSlider('setValue', 0.7)
 			var opacity = $("#opacity-slider").val();
@@ -1470,7 +1469,7 @@
 				colorscalerange: lrange,
 				opacity:1,
 				version:'1.3.0',
-				bounds: [[0, 100], [25, 110]],
+				bounds: [[0, 90], [22, 120]],
 			});
 
 			rwmsLayer = L.tileLayer.wms(rwmsUrl, {
@@ -1481,7 +1480,7 @@
 				colorscalerange: rrange,
 				opacity:1,
 				version:'1.3.0',
-				bounds: [[0, 100], [25, 110]],
+				bounds: [[0, 90], [22, 120]],
 			});
 
 			lwmsLayer.addTo(map);
@@ -2633,9 +2632,15 @@ $(function() {
 
 		var_options.forEach(function (item, i) {
 			if (item["category"] == run_type) {
-				var new_option = new Option(item["display_name"]);
-				// +' ('+item["units"]+')'
-				var noption = new Option(item["display_name"], item["id"]);
+
+				if(item["display_name"] === "BC_MLPM25"){
+					var noption = new Option("PM 2.5", item["id"]);
+					var new_option = new Option(item["display_name"]);
+				}else{
+					var noption = new Option(item["display_name"], item["id"]);
+					var new_option = new Option(item["display_name"]);
+				}
+
 				$("#lvar_table").append(new_option);
 				$("#rvar_table").append(noption);
 			}
@@ -2955,7 +2960,12 @@ $(function() {
 
 		var_options.forEach(function (item, i) {
 			if (item["category"] == run_type) {
-				var new_option = new Option(item["display_name"], item["id"]);
+				if(item["display_name"] === "BC_MLPM25"){
+					var new_option = new Option("PM 2.5", item["id"]);
+				}else{
+					var new_option = new Option(item["display_name"], item["id"]);
+				}
+
 				$("#lvar_table").append(new_option);
 			}
 		});
@@ -2986,7 +2996,12 @@ $(function() {
 		}
 		var_options.forEach(function (item, i) {
 			if (item["category"] == run_type) {
-				var new_option = new Option(item["display_name"], item["id"]);
+				if(item["display_name"] === "BC_MLPM25"){
+					var new_option = new Option("PM 2.5", item["id"]);
+				}else{
+					var new_option = new Option(item["display_name"], item["id"]);
+				}
+
 				$("#rvar_table").append(new_option);
 			}
 		});
