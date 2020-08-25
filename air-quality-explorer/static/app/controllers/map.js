@@ -272,6 +272,7 @@
 			}
 
 		});
+
 		$('#fire_tab').click(function(){
 			$("#opacity-slider").bootstrapSlider('setValue', 0.7)
 			var opacity = $("#opacity-slider").val();
