@@ -7,8 +7,6 @@
 		$scope.initdate = '';
 		$scope.stylesSelectors = appSettings.stylesSelectors;
 		$scope.showTimeSlider = true;
-		$scope.showTimeSlider_fire = false;
-		$scope.showTimeSlider_aod = false;
 		$scope.selectedDate_fire = '';
 		$scope.selectedDate_aod = '';
 		$scope.toggle_pcd = true;
@@ -52,9 +50,15 @@
 		time_global, titleforst, coordinates, selectforGIF, guage_val, field_day1_avg, field_day2_avg, field_day3_avg,
 		forecast_day1_avg, forecast_day2_avg, forecast_day3_avg, sum1 = 0, sum2 = 0,
 		enableDates=[],
+		enableDates_fire=[],
+		enableDates_aod=[],
 		sum3 = 0;
 
 		var enableDatesArray=[];
+		var enableMonthsFireArray=[];
+		var enableYearsFireArray=[];
+		var enableMonthsAODArray=[];
+		var enableYearsAODArray=[];
 		var enableDatesArraySlide=[];
 
 		var playLoop;
@@ -83,21 +87,17 @@
 			maxZoom: 16,
 			maxBounds: [ [-10, 160],[50, 20]],
 		}).setView([15.8700, 100.9925], 6);
-		var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-			maxZoom: 16,
-			attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
-		});
-		var basemap_gray = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-			attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+
+		var basemap_gray = L.tileLayer('https://api.mapbox.com/styles/v1/servirmekong/ckecoool62f6n19r9jrf3ldtd/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g', {
+			attribution: 'Map data &copy; <a href="https://www.mapbox.com/">MapBox</a> contributors',
 			maxZoom: 16
 		})
-		var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ';
-		var mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+		var mbAttr = 'Map data &copy; <a href="https://www.mapbox.com/">MapBox</a> contributors';
+		var mbUrl = 'https://api.mapbox.com/styles/v1/servirmekong/ckebgnyea0s8219ki3dfp8von/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g';
 
 		var basemap_layer   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
 		streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
 
-		//Stadia_AlidadeSmoothDark.addTo(map);
 		basemap_layer.addTo(map);
 		L.esri.dynamicMapLayer({
 			url: 'https://wwf-sight-maps.org/arcgis/rest/services/Global/Administrative_Boundaries_GADM/MapServer',
@@ -112,6 +112,36 @@
 			opacity: 0.7,
 			zIndex:99999
 		}).addTo(map);
+
+
+		thredds_options['catalog']['fire']['monthly'].forEach(function (item, i) {
+			var opt = item.split('/').reverse()[0];;
+			opt = opt.split('.')[1];
+			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6);
+			enableDates_fire.push(newdate);
+		});
+		for (var i = 0; i < enableDates_fire.length; i++) {
+
+
+			var dt = enableDates_fire[i];
+
+			if(enableYearsFireArray.indexOf(parseInt(dt.split('-')[0])) < 0) {
+					enableYearsFireArray.push(parseInt(dt.split('-')[0]));
+			}
+			var dd, mm, yyy;
+			if (parseInt(dt.split('-')[1]) <= 9) {
+				mm = parseInt(dt.split('-')[1]);
+				yyy = dt.split('-')[0];
+				enableMonthsFireArray.push(yyy + '-' + mm);
+
+			}
+			else {
+				enableMonthsFireArray.push(dt);
+			}
+		}
+
+
+
 
 		/**
 		* tabs controller
@@ -179,23 +209,33 @@
 		$("#btn_toggle_light").on('click', function() {
 
 			if ($(this).is(':checked')) {
-				basemap_layer.setUrl('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw');
+				basemap_layer.setUrl('https://api.mapbox.com/styles/v1/servirmekong/ckebgnyea0s8219ki3dfp8von/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g');
 				$('#btn_toggle_dark').prop('checked', false); // Unchecks it
+				$('#btn_toggle_satellite').prop('checked', false); // Unchecks it
 			}
 			else {
-				basemap_layer.setUrl('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png');
-				$('#btn_toggle_dark').prop('checked', true); // checks it
-
+				$('#btn_toggle_satellite').trigger("click");
 			}
 		});
 		$("#btn_toggle_dark").on('click', function() {
 			if ($(this).is(':checked')) {
-				basemap_layer.setUrl('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png');
+				basemap_layer.setUrl('https://api.mapbox.com/styles/v1/servirmekong/ckecoool62f6n19r9jrf3ldtd/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g');
 				$('#btn_toggle_light').prop('checked', false); // Unchecks it
+				$('#btn_toggle_satellite').prop('checked', false); // Unchecks it
 			}
 			else {
-				basemap_layer.setUrl('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw');
-				$('#btn_toggle_light').prop('checked', true); // checks it
+				$('#btn_toggle_light').trigger("click");
+			}
+		});
+
+		$("#btn_toggle_satellite").on('click', function() {
+			if ($(this).is(':checked')) {
+				basemap_layer.setUrl('https://api.mapbox.com/styles/v1/servirmekong/ckecozln92fkk19mjhuoqxhuw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g');
+				$('#btn_toggle_light').prop('checked', false); // Unchecks it
+				$('#btn_toggle_dark').prop('checked', false); // Unchecks it
+			}
+			else {
+				$('#btn_toggle_light').trigger("click");
 			}
 		});
 
@@ -278,9 +318,7 @@
 			tdWmsAODLayer.setOpacity(0);
 			tdWmsFireLayer.setOpacity(opacity);
 			tdWmsGEOSLayer.setOpacity(0);
-			$scope.showTimeSlider_fire = true;
 			$scope.showTimeSlider = false;
-			$scope.showTimeSlider_aod = false;
 			$scope.var_type = 'Fire';
 
 			$scope.toggle_geos = false;
@@ -294,9 +332,7 @@
 			tdWmsAODLayer.setOpacity(opacity);
 			tdWmsFireLayer.setOpacity(0);
 			tdWmsGEOSLayer.setOpacity(0);
-			$scope.showTimeSlider_aod = true;
 			$scope.showTimeSlider = false;
-			$scope.showTimeSlider_fire = false;
 			$scope.var_type = 'AOD';
 
 			$scope.toggle_geos = false;
@@ -310,8 +346,6 @@
 			tdWmsFireLayer.setOpacity(0);
 			tdWmsGEOSLayer.setOpacity(opacity);
 			$scope.showTimeSlider = true;
-			$scope.showTimeSlider_fire = false;
-			$scope.showTimeSlider_aod = false;
 			$scope.var_type = 'PM 2.5';
 
 			$scope.toggle_geos = true;
@@ -321,12 +355,12 @@
 		});
 
 
-		$("#show-branner").click(function(){
-			$("nav").show();
-			$("body").css("margin-top", "100px");
-			$(".map").css("height", "calc(100vh - 115px)");
-			$(".map-panel__sidebar").css("top", "160px");
-		});
+		// $("#show-branner").click(function(){
+		// 	$("nav").show();
+		// 	$("#main-container").css("top", "100px");
+		// 	$(".map").css("height", "calc(100vh - 115px)");
+		// 	$(".map-panel__sidebar").css("top", "160px");
+		// });
 
 		$("#menu-burger").click(function() {
 			if($('.map-panel__sidebar').css("display") === "none"){
@@ -342,18 +376,10 @@
 			map.zoomOut();
 		});
 		$("#time-toggle").click(function() {
-			if($scope.showTimeSlider || $scope.showTimeSlider_fire || $scope.showTimeSlider_aod){
+			if($scope.showTimeSlider){
 				$scope.showTimeSlider = false;
-				$scope.showTimeSlider_fire = false;
-				$scope.showTimeSlider_aod = false;
 				$scope.$apply();
 			}else{
-				if($scope.toggle_fire){
-					$scope.showTimeSlider_fire = true;
-				}
-				if($scope.toggle_aod){
-					$scope.showTimeSlider_aod = true;
-				}
 				if($scope.toggle_geos){
 					$scope.showTimeSlider = true;
 				}
@@ -374,14 +400,14 @@
 
 
 		$("#full-screen").click(function() {
-			if($("body").css("margin-top") === "-8px"){
+			if($(".container-fluid .container-wrapper").css("top") === "-8px"){
 				$("nav").show();
-				$("body").css("margin-top", "100px");
+				$(".container-fluid .container-wrapper").css("top", "100px");
 				$(".map").css("height", "calc(100vh - 95px)");
-				$(".map-panel__sidebar").css("top", "160px");
+				$(".map-panel__sidebar").css("top", "50px");
 			}else{
 				$("nav").hide();
-				$("body").css("margin-top", "-8px");
+				$(".container-fluid .container-wrapper").css("top", "-8px");
 				$(".map").css("height", "101vh");
 				$(".map-panel__sidebar").css("top", "50px");
 			}
@@ -650,253 +676,6 @@
 
 		$scope.lastDateonNoUIslider = timeSlider.noUiSlider.get()[0];
 		$scope.runDateonNoUIslider;
-
-		/**
-		* Time Slider for fire location
-		**/
-		var timeSlider_fire = document.getElementById('datePickerSlider_fire');
-
-		// Create a string representation of the date.
-		$scope.toFormat = function (v, handle) {
-			// where is this string representation
-			// values = "uipipes" ; default is "default"
-			var date = new Date(v);
-			handle = handle || $scope.defaultHandle;
-			if (handle === 'uipipes') {
-				return appSettings.months[date.getMonth()] + ' ' + date.getFullYear();
-			} else if (handle === $scope.defaultHandle) {
-
-				var mm = date.getMonth() + 1; // getMonth() is zero-based
-				var dd = date.getDate();
-
-				return [date.getFullYear(),
-					(mm > 9 ? '' : '0') + mm
-				].join('-');
-			}
-		};
-
-		noUiSlider.create(timeSlider_fire, {
-			// Create two timestamps to define a range.
-			range: {
-				min: new Date('2001').getTime(),
-				max: new Date(2018,9,14).getTime()
-			},
-
-			// Steps of one month
-			// step: 14 * 24 * 60 * 60 * 1000,
-
-			// Handle starting positions.
-			start: new Date(2018,9,14).getTime(),
-
-			//tooltips: true,
-
-			format: { to: $scope.toFormat, from: Number },
-
-			connect: 'lower',
-
-			// Show a scale with the slider
-			pips: {
-				mode: 'count',
-				density: 2,
-				values: 10,
-				stepped: true,
-				format: {
-					to: function (value) {
-						return $scope.toFormat(value, 'uipipes');
-					},
-					from: function (value) {
-						return $scope.toFormat(value, 'uipipes');
-					}
-				}
-			}
-		});
-		var stopPropagation = function (event) {
-			event.stopPropagation();
-		};
-
-		var makeSliderToolTip_fire = function (i, slider) {
-			var tooltip = document.createElement('div'),
-			input = document.createElement('input');
-
-			// Add the input to the tooltip
-			input.className = 'uitooltip-input';
-			tooltip.className = 'noUi-tooltip';
-			tooltip.appendChild(input);
-
-			// On change, set the slider
-			input.addEventListener('change', function () {
-				if (this.value !== $scope.selectedDate_fire) {
-					$scope.selectedDate_fire = this.value;
-					slider.noUiSlider.set(new Date(this.value).getTime())
-					$timeout(function () {
-						//$scope.changeTimeSlider_fire();
-					}, 500);
-				}
-
-			});
-
-			// Catch all selections and make sure they don't reach the handle
-			input.addEventListener('mousedown', stopPropagation);
-			input.addEventListener('touchstart', stopPropagation);
-			input.addEventListener('pointerdown', stopPropagation);
-			input.addEventListener('MSPointerDown', stopPropagation);
-
-			// Find the lower slider handle and insert the tooltip
-			document.getElementById('datePickerSlider_fire').querySelector('.noUi-handle-lower').appendChild(tooltip);
-
-			return input;
-		};
-
-		// An 0 indexed array of input elements
-		var tooltipInput_fire = makeSliderToolTip_fire(0, timeSlider_fire);
-		$scope.selectedDate_fire = [
-			'2018', '10' ,'01'
-		].join('-');
-		tooltipInput_fire.value = $scope.selectedDate_fire;
-
-		// When the slider changes, update the tooltip
-		timeSlider_fire.noUiSlider.on('update', function (values, handle) {
-			tooltipInput_fire.value = values[handle];
-		});
-
-		// Event Handler for slider
-		timeSlider_fire.noUiSlider.on('set', function (values, handle) {
-			if (values[handle] !== $scope.selectedDate_fire) {
-				$scope.selectedDate_fire = values[handle];
-				tooltipInput_fire.value = values[handle];
-				// trigger ajax only if it is coming from the default handle, not from input tooltip
-				if (event.target.className.startsWith('noUi')) {
-					$timeout(function () {
-						$scope.changeTimeSlider_fire();
-					}, 500);
-				}
-			}
-		});
-
-		// --------------------------------------------------------------------------------------------------------------------------------------
-
-		/**
-		* Time Slider for fire location
-		**/
-		var timeSlider_aod = document.getElementById('datePickerSlider_aod');
-
-		// Create a string representation of the date.
-		$scope.toFormat_aod = function (v, handle) {
-			// where is this string representation
-			// values = "uipipes" ; default is "default"
-			var date = new Date(v);
-			handle = handle || $scope.defaultHandle;
-			if (handle === 'uipipes') {
-				return appSettings.months[date.getMonth()] + ' ' + date.getFullYear();
-			} else if (handle === $scope.defaultHandle) {
-
-				var mm = date.getMonth() + 1; // getMonth() is zero-based
-				var dd = date.getDate();
-
-				return [date.getFullYear(),
-					(mm > 9 ? '' : '0') + mm
-				].join('-');
-			}
-		};
-
-		noUiSlider.create(timeSlider_aod, {
-			// Create two timestamps to define a range.
-			range: {
-				min: new Date('2000').getTime(),
-				max: new Date(2019,1,14).getTime()
-			},
-
-			// Steps of one month
-			// step: 14 * 24 * 60 * 60 * 1000,
-
-			// Handle starting positions.
-			start: new Date(2019,1,30).getTime(),
-
-			//tooltips: true,
-
-			format: { to: $scope.toFormat_aod, from: Number },
-
-			connect: 'lower',
-
-			// Show a scale with the slider
-			pips: {
-				mode: 'count',
-				density: 2,
-				values: 10,
-				stepped: true,
-				format: {
-					to: function (value) {
-						return $scope.toFormat_aod(value, 'uipipes');
-					},
-					from: function (value) {
-						return $scope.toFormat_aod(value, 'uipipes');
-					}
-				}
-			}
-		});
-		var stopPropagation = function (event) {
-			event.stopPropagation();
-		};
-
-		var makeSliderToolTip_aod = function (i, slider) {
-			var tooltip = document.createElement('div'),
-			input = document.createElement('input');
-
-			// Add the input to the tooltip
-			input.className = 'uitooltip-input';
-			tooltip.className = 'noUi-tooltip';
-			tooltip.appendChild(input);
-
-			// On change, set the slider
-			input.addEventListener('change', function () {
-				if (this.value !== $scope.selectedDate_aod) {
-					$scope.selectedDate_aod = this.value;
-					slider.noUiSlider.set(new Date(this.value).getTime());
-					$timeout(function () {
-						$scope.changeTimeSlider_aod();
-					}, 500);
-				}
-
-			});
-
-			// Catch all selections and make sure they don't reach the handle
-			input.addEventListener('mousedown', stopPropagation);
-			input.addEventListener('touchstart', stopPropagation);
-			input.addEventListener('pointerdown', stopPropagation);
-			input.addEventListener('MSPointerDown', stopPropagation);
-
-			// Find the lower slider handle and insert the tooltip
-			document.getElementById('datePickerSlider_aod').querySelector('.noUi-handle-lower').appendChild(tooltip);
-
-			return input;
-		};
-
-		// An 0 indexed array of input elements
-		var tooltipInput_aod = makeSliderToolTip_aod(0, timeSlider_aod);
-		$scope.selectedDate_aod = [
-			'2019', '01' ,'01'
-		].join('-');
-		tooltipInput_aod.value = $scope.selectedDate_aod;
-
-		// When the slider changes, update the tooltip
-		timeSlider_aod.noUiSlider.on('update', function (values, handle) {
-			tooltipInput_aod.value = values[handle];
-		});
-
-		// Event Handler for slider
-		timeSlider_aod.noUiSlider.on('set', function (values, handle) {
-			if (values[handle] !== $scope.selectedDate_aod) {
-				$scope.selectedDate_aod = values[handle];
-				tooltipInput_aod.value = values[handle];
-				// trigger ajax only if it is coming from the default handle, not from input tooltip
-				if (event.target.className.startsWith('noUi')) {
-					$timeout(function () {
-						$scope.changeTimeSlider_aod();
-					}, 500);
-				}
-			}
-		});
-
 
 		// --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2504,6 +2283,7 @@ $(function() {
 	});
 
 	$("#aod_run_table").change(function(){
+
 		var run_type = ($("#aod_run_table option:selected").val());
 		$("#aod_freq_table").html('');
 		$("#aod_var_table").html('');
@@ -2520,6 +2300,59 @@ $(function() {
 			}
 		});
 		$("#aod_freq_table").trigger('change');
+
+
+		thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
+			var opt = item.split('/').reverse()[0];;
+			opt = opt.split('.')[1];
+			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6);
+			enableDates_aod.push(newdate);
+		});
+
+		for (var i = 0; i < enableDates_aod.length; i++) {
+			var dt = enableDates_aod[i];
+			if(enableYearsAODArray.indexOf(parseInt(dt.split('-')[0])) < 0) {
+					enableYearsAODArray.push(parseInt(dt.split('-')[0]));
+			}
+			var dd, mm, yyy;
+			if (parseInt(dt.split('-')[1]) <= 9) {
+				mm = parseInt(dt.split('-')[1]);
+				yyy = dt.split('-')[0];
+				enableMonthsAODArray.push(yyy + '-' + mm);
+			}
+			else {
+				enableMonthsAODArray.push(dt);
+			}
+		}
+
+		$("#date_selector_aod").datepicker("destroy");
+		$('#date_selector_aod').datepicker({
+			beforeShowYear: function (date) {
+				var yyyy = date.getFullYear();
+				if (enableYearsAODArray.indexOf(yyyy) !== -1) {
+					return {
+						tooltip: 'There is data available',
+						classes: 'active'
+					};
+				} else {
+					return false;
+				}
+			},
+			beforeShowMonth: function (date) {
+				var mmyyyy = date.getFullYear() + '-' + (date.getMonth() + 1);
+				if (enableMonthsAODArray.indexOf(mmyyyy) !== -1) {
+					return {
+						tooltip: 'There is data available',
+						classes: 'active'
+					};
+				} else {
+					return false;
+				}
+			}
+		});
+		$("#date_selector_aod").datepicker("setDate", enableMonthsAODArray[0]);
+
+
 	}).change();
 
 	$("#aod_freq_table").change(function(){
@@ -2562,16 +2395,12 @@ $(function() {
 	$("#aod_range-max").on('change',function(){
 		var run_type = ($("#aod_run_table option:selected").val());
 		var freq = ($("#aod_freq_table option:selected").val());
-		var datetime = $scope.selectedDate_aod.replace("-","").substring(0, 6);
-		if(datetime === ''){
-			datetime = "201902";
-		}
+		var datetime = $("#date_selector_aod").val().replace('-','');
 		var var_type = ($("#aod_var_table option:selected").val());
 		var style =  ($("#aod_style_table option:selected").val());
 		var rmin = $("#aod_range-min").val();
 		var rmax = $("#aod_range-max").val();
 		time_global = "";
-
 		if(run_type.toUpperCase() === 'AOD_AQUA'){
 			var parameter_url = "mk_aqx/" + run_type;
 			var rd_type = parameter_url + "/MYD04_L2."+ datetime +".MEKONG.nc";
@@ -2580,9 +2409,13 @@ $(function() {
 			var parameter_url = "mk_aqx/"+ run_type;
 			var rd_type = parameter_url + "/MOD04_L2."+ datetime +".MEKONG.nc";
 		}
-
 		add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
+
+	//update the AOD wms layer when user change the date selector
+	$("#date_selector_aod").change(function(){
+		$("#aod_range-max").trigger('change');
+	});
 
 	$("#aod_style_table").change(function () {
 		var style = ($("#aod_style_table option:selected").val());
@@ -2706,6 +2539,38 @@ $(function() {
 
 	}).change();
 
+
+	var recent_date = enableDates[0];
+	$("#date_selector_fire").datepicker("destroy");
+
+	$('#date_selector_fire').datepicker({
+		beforeShowYear: function (date) {
+			var yyyy = date.getFullYear();
+			if (enableYearsFireArray.indexOf(yyyy) !== -1) {
+				return {
+					tooltip: 'There is data available',
+					classes: 'active'
+				};
+			} else {
+				return false;
+			}
+		},
+		beforeShowMonth: function (date) {
+			var mmyyyy = date.getFullYear() + '-' + (date.getMonth() + 1);
+			if (enableMonthsFireArray.indexOf(mmyyyy) !== -1) {
+				return {
+					tooltip: 'There is data available',
+					classes: 'active'
+				};
+			} else {
+				return false;
+			}
+		}
+	});
+
+	$("#date_selector_fire").datepicker("setDate", enableMonthsFireArray[0]);
+
+
 	var recent_date = enableDates[0];
 	$("#date_selector").datepicker("destroy");
 	for (var i = 0; i < enableDates.length; i++) {
@@ -2724,16 +2589,8 @@ $(function() {
 			enableDatesArray.push(dt);
 		}
 	}
+
 	$('#date_selector').datepicker({
-		beforeShow: function (input, inst) {
-			//$(".datepicker").css("top", "150px");
-			setTimeout(function () {
-				inst.dpDiv.css({
-					top: $(".datepicker").offset().top +500,
-					left: $(".datepicker").offset().left + 0,
-				});
-			}, 0);
-		},
 		beforeShowDay: function (date) {
 			var dt_ddmmyyyy = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() ;
 			if (enableDatesArray.indexOf(dt_ddmmyyyy) !== -1) {
@@ -2903,14 +2760,12 @@ $(function() {
 		$("#fire_range-max").val(var_options[index]["max"]).trigger('change');
 	}).change();
 
+	//update Fire WMS layer when fire range max value is change
 	$("#fire_range-max").on('change',function(){
 		var freq = ($("#fire_freq_table option:selected").val());
 		var rd_type = ($("#fire_rd_table option:selected").val());
 		var parameter_url = "mk_aqx/fire/";
-		var datetime = $scope.selectedDate_fire.replace("-","").substring(0, 6);
-		if(datetime === ''){
-			datetime = "201810";
-		}
+		var datetime = $("#date_selector_fire").val().replace('-','');
 		var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
 		var var_type = ($("#fire_var_table option:selected").val());
 		var style =  ($("#fire_style_table option:selected").val());
@@ -2919,6 +2774,13 @@ $(function() {
 		time_global = "";
 		add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
+
+
+	//update Fire WMS layer when user change the date selector
+	$("#date_selector_fire").change(function(){
+		$("#fire_range-max").trigger("change");
+	});
+
 
 	$("#fire_style_table").change(function () {
 		var style = ($("#fire_style_table option:selected").val());

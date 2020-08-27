@@ -3,7 +3,7 @@
 {% block main_container %}
 
 <!-- Main Container -->
-<div class="row" ng-controller="airexplorer">
+<div class="row" ng-controller="airexplorer" id="main-container">
     <!-- Loader Container -->
     <div id="loader" class="loader" ng-show="showLoader">
         <i class="loading-img fas fa-spinner fa-pulse fa-4x"></i>
@@ -483,27 +483,6 @@
                 <span class="glyphicon glyphicon-backward" aria-hidden="true" style="right: 2px;"></span>
             </button>
         </div>
-        <div class="sliderContainer" ng-show="showTimeSlider_fire">
-          <div id="datePickerSlider_fire" class="datePickerSlider" name="datePickerSlider_fire" ></div>
-            <button type="button" class="btn btn-default slide-forward" title="move the slider by 1 day forward" ng-click="slideForward_fire()">
-                <span class="glyphicon glyphicon-forward" aria-hidden="true" style="left: 2px;"></span>
-            </button>
-            <button type="button" class="btn btn-default slide-backward" title="move the slider by 1 day backward" ng-click="slideBackward_fire()">
-                <span class="glyphicon glyphicon-backward" aria-hidden="true" style="right: 2px;"></span>
-            </button>
-        </div>
-        <div class="sliderContainer" ng-show="showTimeSlider_aod">
-          <div id="datePickerSlider_aod" class="datePickerSlider" name="datePickerSlider_aod" ></div>
-            <button type="button" class="btn btn-default slide-forward" title="move the slider by 1 day forward" ng-click="slideForward_aod()">
-                <span class="glyphicon glyphicon-forward" aria-hidden="true" style="left: 2px;"></span>
-            </button>
-            <button type="button" class="btn btn-default slide-backward" title="move the slider by 1 day backward" ng-click="slideBackward_aod()">
-                <span class="glyphicon glyphicon-backward" aria-hidden="true" style="right: 2px;"></span>
-            </button>
-        </div>
-
-
-
 
 </section>
 

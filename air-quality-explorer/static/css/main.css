@@ -3,12 +3,12 @@
 @media(min-width:768px) {
     body {
         /*margin-top: 50px;*/
-        margin-top: 100px;
         font-family: 'Poppins', sans-serif;
     }
 }
 body {
     font-family: 'Poppins', sans-serif;
+    overflow-y: hidden;
 }
 h1, h2, h3, h4, h5, h6 {
     margin: 10px 0;
@@ -185,6 +185,8 @@ b, strong {
     margin-right: -15px;
     margin-left: -15px;
     overflow: hidden;
+    top: 100px;
+    position: relative;
 }
 
 .map {
@@ -755,7 +757,7 @@ p {
 .map-panel__sidebar {
     position: absolute;
     left: 15px;
-    top: 160px;
+    top: 50px;
     background-color: #fff;
     width: 380px;
     max-height: calc(100vh - 90px);
