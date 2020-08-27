@@ -2312,7 +2312,7 @@ if (interaction == "Station") {
 
 } else {
 		arr = [];
-		console.log(result.data["geom"][2]);
+
 		if(result.data["geom"][2]!=undefined)
 			title = $scope.var_type + " values at Lat (min, max) - (" + result.data["geom"][0]+", "+result.data["geom"][2]+") and Lon (min, max) - ("+result.data["geom"][1]+", "+result.data["geom"][3] +")";
 		else

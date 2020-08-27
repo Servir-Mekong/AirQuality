@@ -377,13 +377,10 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
     maxy = float(bounds[2])
     maxx = float(bounds[3])
 
-
+    """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
     if "geos" in run_type:
-        """access a netcdf file from Thredds server via OPANDAP service"""
-        #infile = os.path.join(THREDDS_OPANDAP, run_type, run_date)
-        infile = THREDDS_OPANDAP+"/"+ run_type+"/"+ run_date
+        infile = THREDDS_OPANDAP + "/" + run_type + "/" + run_date
     else:
-        """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
         infile = os.path.join(DATA_DIR, run_type, freq, run_date)
     nc_fid = netCDF4.Dataset(infile, 'r')
     lis_var = nc_fid.variables
@@ -407,7 +404,9 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
                 dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
                                           calendar=lis_var['time'].calendar)
                 test = dt_str + timedelta(hours=7)
-                time_stamp = calendar.timegm(test.timetuple()) * 1000
+                dtt = test.strftime('%Y-%m-%dT%H:%M:%SZ')
+                dt = datetime.strptime(dtt, '%Y-%m-%dT%H:%M:%SZ')
+                time_stamp = calendar.timegm(dt.timetuple()) * 1000
                 ts_plot.append([time_stamp, float(val)])
     else:
         """Reading variables from combined.nc"""
@@ -430,7 +429,9 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
             if np.isnan(val) == False:
                 dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
                                           calendar=lis_var['time'].calendar)
-                time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+                dtt = dt_str.strftime('%Y-%m-%dT%H:%M:%SZ')
+                dt = datetime.strptime(dtt, '%Y-%m-%dT%H:%M:%SZ')
+                time_stamp = calendar.timegm(dt.utctimetuple()) * 1000
                 ts_plot.append([time_stamp, float(val)])
 
     ts_plot.sort()
