@@ -1,17 +1,13 @@
 (function () {
 	'use strict';
 	angular.module('baseApp')
-	.controller('airexplorer' ,function ($scope, $timeout, MapService, appSettings) {
+	.controller('pm25-airexplorer' ,function ($scope, $timeout, MapService, appSettings) {
 
 		/* global variables to be tossed around like hot potatoes */
 		$scope.initdate = '';
 		$scope.stylesSelectors = appSettings.stylesSelectors;
 		$scope.showTimeSlider = true;
-		$scope.selectedDate_fire = '';
-		$scope.selectedDate_aod = '';
 		$scope.toggle_pcd = true;
-		$scope.toggle_fire = false;
-		$scope.toggle_aod = false;
 		$scope.toggle_geos = true;
 		$scope.showPlayButton = false;
 		$scope.showPauseButton = false;
@@ -31,8 +27,6 @@
 		lwmsLayer,
 		rwmsLayer,
 		tdWmsLayer,
-		tdWmsFireLayer,
-		tdWmsAODLayer,
 		tdWmsGEOSLayer,
 		drawnItems,
 		drawing_polygon,
@@ -48,18 +42,14 @@
 		threddss_wms_url,
 		markersLayer,
 		$modalChart,
+		fire_24,
+		fire_48,
 		time_global, titleforst, coordinates, selectforGIF, guage_val, field_day1_avg, field_day2_avg, field_day3_avg,
 		forecast_day1_avg, forecast_day2_avg, forecast_day3_avg, sum1 = 0, sum2 = 0,
 		enableDates=[],
-		enableDates_fire=[],
-		enableDates_aod=[],
 		sum3 = 0;
 
 		var enableDatesArray=[];
-		var enableMonthsFireArray=[];
-		var enableYearsFireArray=[];
-		var enableMonthsAODArray=[];
-		var enableYearsAODArray=[];
 		var enableDatesArraySlide=[];
 
 		var playLoop;
@@ -121,35 +111,6 @@
 		}).addTo(map);
 
 
-		thredds_options['catalog']['fire']['monthly'].forEach(function (item, i) {
-			var opt = item.split('/').reverse()[0];;
-			opt = opt.split('.')[1];
-			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6);
-			enableDates_fire.push(newdate);
-		});
-		for (var i = 0; i < enableDates_fire.length; i++) {
-
-
-			var dt = enableDates_fire[i];
-
-			if(enableYearsFireArray.indexOf(parseInt(dt.split('-')[0])) < 0) {
-					enableYearsFireArray.push(parseInt(dt.split('-')[0]));
-			}
-			var dd, mm, yyy;
-			if (parseInt(dt.split('-')[1]) <= 9) {
-				mm = parseInt(dt.split('-')[1]);
-				yyy = dt.split('-')[0];
-				enableMonthsFireArray.push(yyy + '-' + mm);
-
-			}
-			else {
-				enableMonthsFireArray.push(dt);
-			}
-		}
-
-
-
-
 		/**
 		* tabs controller
 		*/
@@ -168,28 +129,7 @@
 		/**
 		* Toggle layer visibility
 		*/
-		$("#btn_toggle_fire").on('change', function() {
-			var opacity = $('#opacity-slider').val();
-			if ($(this).is(':checked')) {
-				tdWmsFireLayer.setOpacity(opacity);
-				$("#opacity_fire").css("display","block");
-			}
-			else {
-				tdWmsFireLayer.setOpacity(0);
-				$("#opacity_fire").css("display","none");
-			}
-		});
-		$("#btn_toggle_aod").on('change', function() {
-			var opacity = $('#opacity-slider-aod').val();
-			if ($(this).is(':checked')) {
-				tdWmsAODLayer.setOpacity(opacity);
-				$("#opacity_aod").css("display","block");
-			}
-			else {
-				tdWmsAODLayer.setOpacity(0);
-				$("#opacity_aod").css("display","none");
-			}
-		});
+
 		$("#btn_toggle_geos").on('change', function() {
 			var opacity = $('#opacity-slider-geos').val();
 			if ($(this).is(':checked')) {
@@ -245,6 +185,44 @@
 				$('#btn_toggle_light').trigger("click");
 			}
 		});
+
+
+		$("#toggle_fire_24").on('click', function() {
+			if ($(this).is(':checked')) {
+				if(map.hasLayer(fire_24)){
+					map.removeLayer(fire_24);
+				}
+
+			fire_24 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
+					layers:'fires_viirs_24',
+					format: 'image/png',
+					transparent: true,
+					pane: 'fire24Layer'
+				});
+				fire_24.addTo(map);
+			}
+			else {
+				fire_24.setOpacity(0);
+			}
+		});
+		$("#toggle_fire_48").on('click', function() {
+			if ($(this).is(':checked')) {
+				if(map.hasLayer(fire_48)){
+					map.removeLayer(fire_48);
+				}
+				fire_48 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
+					layers:'fires_viirs_48',
+					format: 'image/png',
+					transparent: true,
+					pane: 'fire48Layer'
+				});
+				fire_48.addTo(map);
+			}
+			else {
+				fire_48.setOpacity(0);
+			}
+		});
+
 
 
 		$('#toggle_layers').click(function(){
@@ -319,45 +297,13 @@
 			}
 
 		});
-		$('#fire_tab').click(function(){
-			$("#opacity-slider").bootstrapSlider('setValue', 0.7)
-			var opacity = $("#opacity-slider").val();
-			tdWmsAODLayer.setOpacity(0);
-			tdWmsFireLayer.setOpacity(opacity);
-			tdWmsGEOSLayer.setOpacity(0);
-			$scope.showTimeSlider = false;
-			$scope.var_type = 'Fire';
 
-			$scope.toggle_geos = false;
-			$scope.toggle_fire = true;
-			$scope.toggle_aod = false;
-			$scope.$apply();
-		});
-		$('#aod_tab').click(function(){
-			$("#opacity-slider-aod").bootstrapSlider('setValue', 0.7)
-			var opacity = $("#opacity-slider-aod").val();
-			tdWmsAODLayer.setOpacity(opacity);
-			tdWmsFireLayer.setOpacity(0);
-			tdWmsGEOSLayer.setOpacity(0);
-			$scope.showTimeSlider = false;
-			$scope.var_type = 'AOD';
-
-			$scope.toggle_geos = false;
-			$scope.toggle_fire = false;
-			$scope.toggle_aod = true;
-			$scope.$apply();
-		});
 		$('#geos_tab').click(function(){
 			var opacity = $("#opacity-slider-geos").val();
-			tdWmsAODLayer.setOpacity(0);
-			tdWmsFireLayer.setOpacity(0);
 			tdWmsGEOSLayer.setOpacity(opacity);
 			$scope.showTimeSlider = true;
 			$scope.var_type = 'PM 2.5';
-
 			$scope.toggle_geos = true;
-			$scope.toggle_fire = false;
-			$scope.toggle_aod = false;
 			$scope.$apply();
 		});
 
@@ -427,9 +373,6 @@
 					map.removeControl(compare);
 					map.removeLayer(lwmsLayer);
 					map.removeLayer(rwmsLayer);
-					tdWmsFireLayer.addTo(map);
-					tdWmsAODLayer.addTo(map);
-					tdWmsGEOSLayer.addTo(map);
 				}else{
 					$modalCompare.modal('show');
 				}
@@ -532,18 +475,12 @@
 			var value_txt = Object.values(item)[0];
 			var roption = new Option(display_txt,value_txt);
 			var loption = new Option(display_txt,value_txt);
-			var fireoption = new Option(display_txt,value_txt);
-			var aodoption = new Option(display_txt,value_txt);
 			var geosoption = new Option(display_txt,value_txt);
 			$("#rstyle_table").append(roption);
 			$("#lstyle_table").append(loption);
-			$("#fire_style_table").append(fireoption);
-			$("#aod_style_table").append(aodoption);
 			$("#geos_style_table").append(geosoption);
 			if (value_txt.toUpperCase() == "PM25") {
 				geosoption.selected = true;
-				aodoption.selected = true;
-				fireoption.selected = true;
 			}
 		});
 
@@ -748,194 +685,11 @@
 				}
 			}
 
-			// showErrorAlert('No data is available for ' + $scope.selectedDate[0].split(" ")[0]);
-			//  // $("#date_selector").val("");
-			//  $("hour_table").html('');
-			//  if(map.hasLayer(tdWmsGEOSLayer)){
-			// 	map.removeLayer(tdWmsGEOSLayer);
-			// }
-
-			//$('#date_selector').change();
 		};
-
-
-
-		$scope.changeTimeSlider_fire = function () {
-			$("#fire_range-max").trigger('change');
-			//$("#aod_range-max").trigger('change');
-			//$scope.getPCDStation();
-			//$scope.selectedDate
-			//$scope.updateMap(true);
-		};
-
-		$scope.changeTimeSlider_aod = function () {
-			//$("#fire_range-max").trigger('change');
-			$("#aod_range-max").trigger('change');
-			//$scope.getPCDStation();
-			//$scope.selectedDate
-			//$scope.updateMap(true);
-		};
-
-		// Forward Slider
-		$scope.slideForward = function () {
-			var date = new Date($scope.selectedDate);
-			date.setHours(date.getHours() + 3);
-			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
-			tooltipInput.value = $scope.selectedDate;
-			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
-		};
-
-		// Backward Slider
-		$scope.slideBackward = function () {
-			//var date = new Date($scope.selectedDate);
-			var date = new Date($scope.selectedDate);
-			date.setHours(date.getHours() - 3);
-			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
-			tooltipInput.value = $scope.selectedDate;
-			timeSlider.noUiSlider.set(new Date($scope.selectedDate).getTime());
-
-		};
-
-		function startTimer(duration) {
-			var timer = duration, minutes, seconds;
-			intervaltime = setInterval(function () {
-				minutes = parseInt(timer / 60, 10)
-				seconds = parseInt(timer % 60, 10);
-
-				minutes = minutes < 10 ? "0" + minutes : minutes;
-				seconds = seconds < 10 ? "0" + seconds : seconds;
-
-				if (--timer < 0) {
-					timer = duration;
-				}
-			}, 1000);
-		}
-		function stopINT(){
-			clearInterval(intervaltime);
-		}
-		function playAnimation () {
-			if(playLoop > 0){var time = 2500;}else{var time=0;} //every 10 s.
-			setTimeout(function () {
-				$scope.slideForward();
-				playLoop++;
-				if($scope.runDateonNoUIslider === $scope.lastDateonNoUIslider || timeSlider.noUiSlider.get()[0] === $scope.lastDateonNoUIslider){
-					stopINT();
-					$scope.showPlayButton = true;
-					$scope.showPauseButton = false;
-					$scope.$apply();
-				}
-				else{
-					clearInterval(intervaltime);
-					startTimer(fiveMinutes);
-					playAnimation();
-				}
-			}, time)
-		}
-
-
-		// Backward Slider
-		// $scope.slidePlay = function () {
-		// 	//var date = new Date($scope.selectedDate);
-		// 	if(i > 0){var time = 11000;}else{var time=0;} //every 10 s.
-		// 	setTimeout(function () {
-		// 			//postFB(i);
-		// 			alert(i); //do the stuffffff
-		// 			i++;
-		// 			if(i == 3){
-		// 					stopINT();
-		// 			}
-		// 			if (i <= 2) {
-		// 					clearInterval(intervaltime);
-		// 					startTimer(fiveMinutes);
-		// 					scope.slidePlay();
-		// 			}
-		// 	}, time)
-		//
-		//
-		// };
-
-
-
-
-
-
-
-
-		// Forward Slider fire
-		$scope.slideForward_fire = function () {
-			var date = new Date($scope.selectedDate_fire);
-			date.setMonth(date.getMonth() + 1);
-			$scope.selectedDate_fire = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + '-01'] ;
-			tooltipInput_fire.value = $scope.selectedDate_fire;
-			timeSlider_fire.noUiSlider.set(new Date($scope.selectedDate_fire).getTime());
-			$timeout(function () {
-				$scope.changeTimeSlider_fire();
-			}, 500);
-		};
-
-		// Backward Slider fire
-		$scope.slideBackward_fire = function () {
-			//var date = new Date($scope.selectedDate_fire);
-			var date = new Date($scope.selectedDate_fire);
-			date.setMonth(date.getMonth() - 1);
-			$scope.selectedDate_fire = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + '-01'];
-			tooltipInput_fire.value = $scope.selectedDate_fire;
-			timeSlider_fire.noUiSlider.set(new Date($scope.selectedDate_fire).getTime());
-			$timeout(function () {
-				$scope.changeTimeSlider_fire();
-			}, 500);
-		};
-
-
-		// Forward Slider AOD
-		$scope.slideForward_aod = function () {
-			var date = new Date($scope.selectedDate_aod);
-			date.setMonth(date.getMonth() + 1);
-			$scope.selectedDate_aod = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + '-01'] ;
-			tooltipInput_aod.value = $scope.selectedDate_aod;
-			timeSlider_aod.noUiSlider.set(new Date($scope.selectedDate_aod).getTime());
-			$timeout(function () {
-				$scope.changeTimeSlider_aod();
-			}, 500);
-		};
-
-		// Backward Slider fire
-		$scope.slideBackward_aod = function () {
-			//var date = new Date($scope.selectedDate_fire);
-			var date = new Date($scope.selectedDate_aod);
-			date.setMonth(date.getMonth() - 1);
-			$scope.selectedDate_aod = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + '-01'];
-			tooltipInput_aod.value = $scope.selectedDate_aod;
-			timeSlider_aod.noUiSlider.set(new Date($scope.selectedDate_aod).getTime());
-			$timeout(function () {
-				$scope.changeTimeSlider_aod();
-			}, 500);
-		};
-
-
-		//$scope.slideForward();
-
-
 
 		var init_opacity_slider = function(){
 			opacity = 1;
 			$("#opacity").text(opacity);
-			$( "#opacity-slider" ).bootstrapSlider({
-				value: 0,
-				min: 0.0,
-				max: 1,
-				step: 0.1, //Assigning the slider step based on the depths that were retrieved in the controller
-				animate:"fast",
-				slide: function( event, ui ){}
-			});
-			$( "#opacity-slider-aod" ).bootstrapSlider({
-				value: 0,
-				min: 0.0,
-				max: 1,
-				step: 0.1, //Assigning the slider step based on the depths that were retrieved in the controller
-				animate:"fast",
-				slide: function( event, ui ){}
-			});
 			$( "#opacity-slider-geos" ).bootstrapSlider({
 				value: opacity,
 				min: 0.0,
@@ -1132,17 +886,10 @@
 			var wmsUrl = threddss_wms_url+run_date;
 			wms_layer=wmsUrl;
 			run_type = run_type.toUpperCase();
-			if(run_type === 'FIRE'){
-				if(map.hasLayer(tdWmsFireLayer)){
-					map.removeLayer(tdWmsFireLayer);
-				}
-			}else if(run_type === 'GEOS'){
+			console.log(run_type)
+			if(run_type === 'GEOS'){
 				if(map.hasLayer(tdWmsGEOSLayer)){
 					map.removeLayer(tdWmsGEOSLayer);
-				}
-			}else if(run_type !== 'GEOS' || run_type !== 'FIRE'){
-				if(map.hasLayer(tdWmsAODLayer)){
-					map.removeLayer(tdWmsAODLayer);
 				}
 			}
 
@@ -1161,25 +908,8 @@
 			}
 			var style = 'boxfill/'+styling;
 
-			var opacity_fire = $('#opacity-slider').val();
-			var opacity_aod = $('#opacity-slider-aod').val();
 			var opacity_geos = Number($('#opacity-slider-geos').val());
 
-			if(run_type === 'FIRE'){
-				tdWmsFireLayer = L.tileLayer.wms(wmsUrl, {
-					layers: var_type,
-					format: 'image/png',
-					transparent: true,
-					styles: style,
-					colorscalerange: range,
-					opacity:opacity_fire,
-					version:'1.3.0',
-					zIndex:100,
-					bounds: [[0, 90], [22, 120]],
-				});
-				tdWmsFireLayer.addTo(map);
-				$('#img-legend-fire').attr('src',imgsrc);
-			}else if(run_type === 'GEOS'){
 				tdWmsGEOSLayer = L.tileLayer.wms(wmsUrl, {
 					layers: var_type,
 					format: 'image/png',
@@ -1196,23 +926,7 @@
 				});
 				tdWmsGEOSLayer.addTo(map);
 				$('#img-legend-geos').attr('src',imgsrc);
-			}else if(run_type !== 'GEOS' || run_type !== 'FIRE'){
-				tdWmsAODLayer = L.tileLayer.wms(wmsUrl, {
-					layers: var_type,
-					format: 'image/png',
-					transparent: true,
-					styles: style,
-					colorscalerange: range,
-					opacity:opacity_aod,
-					version:'1.3.0',
-					zIndex:100,
-					bounds: [[0, 90], [22, 120]],
-					abovemaxcolor:'extend',
-          belowmincolor:'extend'
-				});
-				tdWmsAODLayer.addTo(map);
-				$('#img-legend-aod').attr('src',imgsrc);
-			}
+
 
 		};
 
@@ -1220,8 +934,6 @@
 		* layers comparing function
 		*/
 		add_compare = function(){
-			map.removeLayer(tdWmsFireLayer);
-			map.removeLayer(tdWmsAODLayer);
 			map.removeLayer(tdWmsGEOSLayer);
 			$modalCompare.modal('hide');
 			var lstyle =  ($("#lstyle_table option:selected").val());
@@ -1597,20 +1309,6 @@
 				noWrap: true,
 				continuousWorld: true
 			}),
-			'FIRES_VIIRS_24':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
-				layers:'fires_viirs_24',
-				format: 'image/png',
-				time:day,
-				transparent: true,
-				pane: 'fire24Layer'
-			}),
-			'FIRES_VIIRS_48':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
-				layers:'fires_viirs_48',
-				format: 'image/png',
-				time:day,
-				transparent: true,
-				pane: 'fire48Layer'
-			}),
 
 		};
 
@@ -1742,8 +1440,6 @@
 		/**
 		* Create and add a TimeDimension Layer to the map
 		*/
-		tdWmsFireLayer = L.timeDimension.layer.wms(wmsLayer);
-		//tdWmsLayer.addTo(map);
 
 		lwmsLayer = L.tileLayer.wms();
 
@@ -1881,16 +1577,6 @@
 				// if (($("#date_table option:selected").val()) != undefined)
 				// rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
 				rd_type = rd_type.split('/').reverse()[0];
-			}else if($scope.toggle_fire){
-				var run_type = 'fire';
-				var freq = ($("#fire_freq_table option:selected").val());
-				var rd_type = ($("#fire_rd_table option:selected").text());
-				var var_type = ($("#fire_var_table option:selected").val());
-			}else if($scope.toggle_aod){
-				var run_type = ($("#aod_run_table option:selected").val());
-				var freq = ($("#aod_freq_table option:selected").val());
-				var rd_type = ($("#aod_rd_table option:selected").text());
-				var var_type = ($("#aod_var_table option:selected").val());
 			}
 
 
@@ -2282,156 +1968,6 @@ get_times = function (rd_type) {
 $(function() {
 
 	/**
-	* AOD options
-	*/
-	$.each(thredds_options['catalog'],function(item,i){
-		if(item.toUpperCase()!== "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase()!== "GEOS_TAVG3_2D_AER_NX" && item.toUpperCase()!== "GEOS" && item.toUpperCase()!== "FIRE"){
-			var new_option = new Option(item.toUpperCase(),item);
-			$("#aod_run_table").append(new_option);
-		}
-	});
-
-	$("#aod_run_table").change(function(){
-
-		var run_type = ($("#aod_run_table option:selected").val());
-		$("#aod_freq_table").html('');
-		$("#aod_var_table").html('');
-		var_options.forEach(function(item,i){
-			if(item["category"] === run_type){
-				var option = new Option(item["display_name"],item["id"]);
-				$("#aod_var_table").append(option);
-			}
-		});
-		$.each(thredds_options['catalog'][run_type],function(item,i){
-			if (item === 'combined'){
-				var new_option = new Option(item,item);
-				$("#aod_freq_table").append(new_option);
-			}
-		});
-		$("#aod_freq_table").trigger('change');
-
-
-		thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
-			var opt = item.split('/').reverse()[0];;
-			opt = opt.split('.')[1];
-			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6);
-			enableDates_aod.push(newdate);
-		});
-
-		for (var i = 0; i < enableDates_aod.length; i++) {
-			var dt = enableDates_aod[i];
-			if(enableYearsAODArray.indexOf(parseInt(dt.split('-')[0])) < 0) {
-					enableYearsAODArray.push(parseInt(dt.split('-')[0]));
-			}
-			var dd, mm, yyy;
-			if (parseInt(dt.split('-')[1]) <= 9) {
-				mm = parseInt(dt.split('-')[1]);
-				yyy = dt.split('-')[0];
-				enableMonthsAODArray.push(yyy + '-' + mm);
-			}
-			else {
-				enableMonthsAODArray.push(dt);
-			}
-		}
-
-		$("#date_selector_aod").datepicker("destroy");
-		$('#date_selector_aod').datepicker({
-			beforeShowYear: function (date) {
-				var yyyy = date.getFullYear();
-				if (enableYearsAODArray.indexOf(yyyy) !== -1) {
-					return {
-						tooltip: 'There is data available',
-						classes: 'active'
-					};
-				} else {
-					return false;
-				}
-			},
-			beforeShowMonth: function (date) {
-				var mmyyyy = date.getFullYear() + '-' + (date.getMonth() + 1);
-				if (enableMonthsAODArray.indexOf(mmyyyy) !== -1) {
-					return {
-						tooltip: 'There is data available',
-						classes: 'active'
-					};
-				} else {
-					return false;
-				}
-			}
-		});
-		$("#date_selector_aod").datepicker("setDate", enableMonthsAODArray[0]);
-
-
-	}).change();
-
-	$("#aod_freq_table").change(function(){
-		var freq = ($("#aod_freq_table option:selected").val());
-		var run_type = ($("#aod_run_table option:selected").val());
-		$("#aod_rd_table").html('');
-		$("#aod_var_table").html('');
-		if(thredds_options['catalog'][run_type][freq]){
-			thredds_options['catalog'][run_type][freq].forEach(function(item,i){
-				var opt = item.split('/').reverse()[0];
-				var new_option = new Option(opt,item);
-				$("#aod_rd_table").append(new_option);
-			});
-		}
-		$("#aod_rd_table").trigger('change');
-
-	}).change();
-
-	$("#aod_rd_table").change(function(){
-		var freq = ($("#aod_freq_table option:selected").val());
-		var run_type = ($("#aod_run_table option:selected").val());
-		var rd_type = ($("#aod_rd_table option:selected").val());
-		$("#aod_var_table").html('');
-		var_options.forEach(function(item,i){
-			if(item["category"] === run_type){
-				var new_option = new Option(item["display_name"],item["id"]);
-				$("#aod_var_table").append(new_option);
-			}
-		});
-		$("#aod_var_table").trigger('change');
-	}).change();
-
-	$("#aod_var_table").change(function(){
-		var var_type = ($("#aod_var_table option:selected").val());
-		var index = find_var_index(var_type,var_options);
-		$("#aod_range-min").val(var_options[index]["min"]);
-		$("#aod_range-max").val(var_options[index]["max"]).trigger('change');
-	}).change();
-
-	$("#aod_range-max").on('change',function(){
-		var run_type = ($("#aod_run_table option:selected").val());
-		var freq = ($("#aod_freq_table option:selected").val());
-		var datetime = $("#date_selector_aod").val().replace('-','');
-		var var_type = ($("#aod_var_table option:selected").val());
-		var style =  ($("#aod_style_table option:selected").val());
-		var rmin = $("#aod_range-min").val();
-		var rmax = $("#aod_range-max").val();
-		time_global = "";
-		if(run_type.toUpperCase() === 'AOD_AQUA'){
-			var parameter_url = "mk_aqx/" + run_type;
-			var rd_type = parameter_url + "/MYD04_L2."+ datetime +".MEKONG.nc";
-		}
-		if(run_type.toUpperCase() === 'AOD_TERRA'){
-			var parameter_url = "mk_aqx/"+ run_type;
-			var rd_type = parameter_url + "/MOD04_L2."+ datetime +".MEKONG.nc";
-		}
-		add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
-	}).change();
-
-	//update the AOD wms layer when user change the date selector
-	$("#date_selector_aod").change(function(){
-		$("#aod_range-max").trigger('change');
-	});
-
-	$("#aod_style_table").change(function () {
-		var style = ($("#aod_style_table option:selected").val());
-		$("#aod_range-max").trigger('change');
-	}).change();
-
-	/**
 	* GEOS options
 	*/
 	$.each(thredds_options['catalog'],function(item,i){
@@ -2550,37 +2086,7 @@ $(function() {
 
 
 	var recent_date = enableDates[0];
-	$("#date_selector_fire").datepicker("destroy");
 
-	$('#date_selector_fire').datepicker({
-		beforeShowYear: function (date) {
-			var yyyy = date.getFullYear();
-			if (enableYearsFireArray.indexOf(yyyy) !== -1) {
-				return {
-					tooltip: 'There is data available',
-					classes: 'active'
-				};
-			} else {
-				return false;
-			}
-		},
-		beforeShowMonth: function (date) {
-			var mmyyyy = date.getFullYear() + '-' + (date.getMonth() + 1);
-			if (enableMonthsFireArray.indexOf(mmyyyy) !== -1) {
-				return {
-					tooltip: 'There is data available',
-					classes: 'active'
-				};
-			} else {
-				return false;
-			}
-		}
-	});
-
-	$("#date_selector_fire").datepicker("setDate", enableMonthsFireArray[0]);
-
-
-	var recent_date = enableDates[0];
 	$("#date_selector").datepicker("destroy");
 	for (var i = 0; i < enableDates.length; i++) {
 		var dt = enableDates[i];
@@ -2656,37 +2162,7 @@ $(function() {
 		}
 
 		$scope.selectedDate;
-		// var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
-		// //var date = new Date($scope.selectedDate[0].split(" ")[0]);
-		// date.setDate(date.getDate());
-		// date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
-		// var hour = date + ' ' + $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00';
-		// var _time1 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
-		// var _time2 = new Date(date + ' ' +  $scope.selectedDate[0].split(" ")[1].substring(0, 2) + ':30:00');
-		// _time1.setHours(_time1.getHours() - 1);
-		// _time2.setHours(_time2.getHours() + 1);
-		//
-		// _time1 = _time1.getFullYear() +	'-' + ((_time1.getMonth() + 1) > 9 ? '' : '0') + (_time1.getMonth() + 1) +	'-' + (_time1.getDate() > 9 ? '' : '0') + _time1.getDate() + ' ' + (_time1.getHours() > 9 ? '' : '0') + _time1.getHours()  + ':30:00';
-		// _time2 = _time2.getFullYear() +	'-' + ((_time2.getMonth() + 1) > 9 ? '' : '0') + (_time2.getMonth() + 1) +	'-' + (_time2.getDate() > 9 ? '' : '0') + _time2.getDate() + ' ' + (_time2.getHours() > 9 ? '' : '0') + _time2.getHours()  + ':30:00' ;
 
-		// if(date_arr.includes(_time1) || date_arr.includes(hour) || date_arr.includes(_time2)){
-		// 	var run_type = ($("#geos_run_table option:selected").val());
-		// 	var freq = ($("#geos_freq_table option:selected").val());
-		// 	var rd_type = ($("#geos_rd_table option:selected").val());
-		// 	var z = rd_type.split('/').reverse()[0];
-		// 	var y = ($("#date_selector").val());
-		// 	rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
-		// 	var var_type = ($("#geos_var_table option:selected").val());
-		// 	var style = ($("#geos_style_table option:selected").val());
-		// 	//update_style(style);
-		// 	var rmin = $("#geos_range-min").val();
-		// 	var rmax = $("#geos_range-max").val();
-		//
-		// 	add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
-		// }else{
-		//
-		//
-		// }
 		var run_type = ($("#geos_run_table option:selected").val());
 		var freq = ($("#geos_freq_table option:selected").val());
 		var rd_type = ($("#geos_rd_table option:selected").val());
@@ -2720,80 +2196,11 @@ $(function() {
 		var rmax = $("#geos_range-max").val();
 		$scope.changeTimeSlider();
 
-		//add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
-		//$("#date_table").trigger('change');
-
 	});
 
 	$("#geos_style_table").change(function () {
 		var style = ($("#geos_style_table option:selected").val());
 		$("#geos_range-max").trigger('change');
-	}).change();
-
-	/**
-	* Fire options
-	*/
-	$.each(thredds_options['catalog']['fire'],function(item,i){
-		if (item === 'combined'){
-			var new_option = new Option(item,item);
-			$("#fire_freq_table").append(new_option);
-		}
-	});
-	$("#fire_freq_table").change(function(){
-		var freq = ($("#fire_freq_table option:selected").val());
-		$("#fire_rd_table").html('');
-		if(thredds_options['catalog']['fire'][freq]){
-			thredds_options['catalog']['fire'][freq].forEach(function(item,i){
-				var opt = item.split('/').reverse()[0];
-				var new_option = new Option(opt,item);
-				$("#fire_rd_table").append(new_option);
-			});
-		}
-		$("#fire_rd_table").trigger('change');
-
-	}).change();
-
-	$("#fire_freq_table").trigger('change');
-
-	var_options.forEach(function(item,i){
-		if(item["category"] === 'fire'){
-			var new_option = new Option(item["display_name"],item["id"]);
-			$("#fire_var_table").append(new_option);
-		}
-	});
-
-	$("#fire_var_table").change(function(){
-		var var_type = ($("#fire_var_table option:selected").val());
-		var index = find_var_index(var_type,var_options);
-		$("#fire_range-min").val(var_options[index]["min"]);
-		$("#fire_range-max").val(var_options[index]["max"]).trigger('change');
-	}).change();
-
-	//update Fire WMS layer when fire range max value is change
-	$("#fire_range-max").on('change',function(){
-		var freq = ($("#fire_freq_table option:selected").val());
-		var rd_type = ($("#fire_rd_table option:selected").val());
-		var parameter_url = "mk_aqx/fire/";
-		var datetime = $("#date_selector_fire").val().replace('-','');
-		var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
-		var var_type = ($("#fire_var_table option:selected").val());
-		var style =  ($("#fire_style_table option:selected").val());
-		var rmin = $("#fire_range-min").val();
-		var rmax = $("#fire_range-max").val();
-		time_global = "";
-		add_wms('fire',freq,rd_type,var_type,rmin,rmax,style);
-	}).change();
-
-
-	//update Fire WMS layer when user change the date selector
-	$("#date_selector_fire").change(function(){
-		$("#fire_range-max").trigger("change");
-	});
-
-
-	$("#fire_style_table").change(function () {
-		var style = ($("#fire_style_table option:selected").val());
-		$("#fire_range-max").trigger('change');
 	}).change();
 
 
@@ -2898,30 +2305,7 @@ $(function() {
 	/**
 	* Downloading Air Quality products
 	*/
-	$("#btn-download-fire").click(function(){
-		var fileUrl = threddss_wms_url.replace('wms','fileServer');
-		// /thredds/fileServer/mk_aqx/fire/MCD14ML.201810..MEKONG.nc
-		var filename = 'MCD14ML.'+($("#date_selector_fire").val().replace('-',''))+'..MEKONG.nc';
-		var downUrl = fileUrl+'mk_aqx/fire/'+filename;
-		console.log(downUrl);
-		window.location = (downUrl);
-	});
-	$("#btn-download-aod").click(function(){
-		var fileUrl = threddss_wms_url.replace('wms','fileServer');
-		var run_type = $("#aod_run_table option:selected").val();
 
-		if(run_type==='aod_terra'){
-			// /thredds/fileServer/mk_aqx/aod_aqua/MYD04_L2.201902.MEKONG.nc
-			var filename = 'MOD04_L2.'+($("#date_selector_aod").val().replace('-',''))+'.MEKONG.nc';
-		}else{
-			 // /thredds/fileServer/mk_aqx/aod_terra/MOD04_L2.201801.MEKONG.nc
-			var filename = 'MYD04_L2.'+($("#date_selector_aod").val().replace('-',''))+'.MEKONG.nc';
-		}
-
-		var downUrl = fileUrl+'mk_aqx/'+run_type+'/'+filename;
-		console.log(downUrl);
-		window.location = (downUrl);
-	});
 	$("#btn-download-geos").click(function(){
 		var fileUrl = threddss_wms_url.replace('wms','fileServer');
 		var rd_type = ($("#geos_rd_table option:selected").val());
@@ -2935,17 +2319,6 @@ $(function() {
 	/**
 	* Layers transparent
 	*/
-	$("#opacity-slider").on("slide", function(e) {
-		$("#OpacityVal").text(e.value);
-		opacity = e.value;
-		tdWmsFireLayer.setOpacity(opacity);
-	});
-
-	$("#opacity-slider-aod").on("slide", function(e) {
-		$("#OpacityVal2").text(e.value);
-		opacity = e.value;
-		tdWmsAODLayer.setOpacity(opacity);
-	});
 
 	$("#opacity-slider-geos").on("slide", function(e) {
 		$("#OpacityVal3").text(e.value);
@@ -3021,45 +2394,22 @@ $(function() {
 
 	});
 
-
 	/**
 	* tab controller
 	*/
-	$("#tab-fire").click(function () {
-		$("#legend-tab-fire").css("display", "block");
-		$("#legend-tab-aod").css("display", "none");
-		$("#legend-tab-geos").css("display", "none");
-		$("#tab-fire").addClass("active");
-		$("#tab-aod").removeClass("active");
-		$("#tab-geos").removeClass("active");
-	});
-	$("#tab-aod").click(function () {
-		$("#legend-tab-fire").css("display", "none");
-		$("#legend-tab-aod").css("display", "block");
-		$("#legend-tab-geos").css("display", "none");
-		$("#tab-aod").addClass("active");
-		$("#tab-fire").removeClass("active");
-		$("#tab-geos").removeClass("active");
-	});
+
 	$("#tab-geos").click(function () {
 		$("#legend-tab-geos").css("display", "block");
-		$("#legend-tab-fire").css("display", "none");
-		$("#legend-tab-aod").css("display", "none");
 		$("#tab-geos").addClass("active");
-		$("#tab-fire").removeClass("active");
-		$("#tab-aod").removeClass("active");
 	});
 
 	/**
 	* tab defualt
 	*/
 	$("#tab-geos").click();
-	// $scope.changeTimeSlider();
-	//$('#toggle_layers').click();
-	//$(".datepicker .datepicker-dropdown .dropdown-menu .datepicker-orient-left .datepicker-orient-top").css("top", '30px');
 
 	$( document ).ready(function() {
-			$modalDisclaimer.modal('show');
+	    $modalDisclaimer.modal('show');
 			setTimeout(function(){ $modalDisclaimer.modal('hide'); }, 5000);
 	});
 

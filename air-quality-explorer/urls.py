@@ -29,6 +29,7 @@ urlpatterns += i18n_patterns(
     #url(r'^$', TemplateView.as_view(template_name="map.html")),
     url(r'^$', views.index),
     url(r'^home/', views.index),
-    url(r'^mapviewer/', views.map),
+    url(r'^mapviewer/', views.pm25map),
+    url(r'^map/', views.map),
     url(r'^api/mapclient/$', mapclient_api.api),
 )
