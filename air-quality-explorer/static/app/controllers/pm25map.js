@@ -1135,7 +1135,7 @@
             position: "topright",
             content: '<div id="controls"><button id="prev">Previous Day</button><input id="date"><button id="next">Next Day</button></div>'
         });
-        map.addControl(nrt_date);
+        //map.addControl(nrt_date);
                 var DATE_FORMAT = 'dd.mm.yy';
         var strToDateUTC = function (str) {
             var date = $.datepicker.parseDate(DATE_FORMAT, str);
@@ -1170,8 +1170,8 @@
 
             }
         });
-            document.getElementById("prev").onclick = alterDate.bind(null, -1);
-            document.getElementById("next").onclick = alterDate.bind(null, 1);
+            // document.getElementById("prev").onclick = alterDate.bind(null, -1);
+           // document.getElementById("next").onclick = alterDate.bind(null, 1);
 
 		var baselayers = {};
 		var today = new Date();
@@ -1312,9 +1312,9 @@
 
 		};
 
-		var layersControl = L.control.layers.minimap(baselayers, overlays, {
-			collapsed: true
-		}).addTo(map);
+		// var layersControl = L.control.layers.minimap(baselayers, overlays, {
+		// 	collapsed: true
+		// }).addTo(map);
 
 		drawnItems = new L.FeatureGroup();
 		map.addLayer(drawnItems);
