@@ -92,8 +92,8 @@
 
 		map.createPane('fire24Layer');
 		map.createPane('fire48Layer');
-		map.getPane('fire24Layer').style.zIndex = 9998;
-		map.getPane('fire48Layer').style.zIndex = 9999;
+		map.getPane('fire24Layer').style.zIndex = 500;
+		map.getPane('fire48Layer').style.zIndex = 501;
 
 		var basemap_gray = L.tileLayer('https://api.mapbox.com/styles/v1/servirmekong/ckecoool62f6n19r9jrf3ldtd/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g', {
 			attribution: 'Map data &copy; <a href="https://www.mapbox.com/">MapBox</a> contributors',
@@ -403,6 +403,11 @@
 			var cb = document.getElementsByClassName('leaflet-draw-draw-marker');
 			!cb[0].dispatchEvent(event);
 			return false;
+		});
+
+		$("#disclaimer").click(function(){
+			$modalDisclaimer.modal('show');
+			setTimeout(function(){ $modalDisclaimer.modal('hide'); }, 50000);
 		});
 
 
@@ -3057,11 +3062,6 @@ $(function() {
 	// $scope.changeTimeSlider();
 	//$('#toggle_layers').click();
 	//$(".datepicker .datepicker-dropdown .dropdown-menu .datepicker-orient-left .datepicker-orient-top").css("top", '30px');
-
-	$( document ).ready(function() {
-			$modalDisclaimer.modal('show');
-			setTimeout(function(){ $modalDisclaimer.modal('hide'); }, 5000);
-	});
 
 });
 });

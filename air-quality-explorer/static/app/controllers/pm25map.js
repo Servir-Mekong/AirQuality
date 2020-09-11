@@ -82,8 +82,8 @@
 
 		map.createPane('fire24Layer');
 		map.createPane('fire48Layer');
-		map.getPane('fire24Layer').style.zIndex = 9998;
-		map.getPane('fire48Layer').style.zIndex = 9999;
+		map.getPane('fire24Layer').style.zIndex = 500;
+		map.getPane('fire48Layer').style.zIndex = 501;
 
 		var basemap_gray = L.tileLayer('https://api.mapbox.com/styles/v1/servirmekong/ckecoool62f6n19r9jrf3ldtd/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g', {
 			attribution: 'Map data &copy; <a href="https://www.mapbox.com/">MapBox</a> contributors',
@@ -109,6 +109,25 @@
 			opacity: 0.7,
 			zIndex:99999
 		}).addTo(map);
+
+		fire_48 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
+			layers:'fires_viirs_48',
+			format: 'image/png',
+			transparent: true,
+			pane: 'fire48Layer'
+		});
+		fire_48.addTo(map);
+		fire_48.setOpacity(0);
+
+		fire_24 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
+				layers:'fires_viirs_24',
+				format: 'image/png',
+				transparent: true,
+				pane: 'fire24Layer'
+			});
+			fire_24.addTo(map);
+			fire_24.setOpacity(0);
+
 
 
 		/**
@@ -186,20 +205,9 @@
 			}
 		});
 
-
 		$("#toggle_fire_24").on('click', function() {
 			if ($(this).is(':checked')) {
-				if(map.hasLayer(fire_24)){
-					map.removeLayer(fire_24);
-				}
-
-			fire_24 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
-					layers:'fires_viirs_24',
-					format: 'image/png',
-					transparent: true,
-					pane: 'fire24Layer'
-				});
-				fire_24.addTo(map);
+				fire_24.setOpacity(1);
 			}
 			else {
 				fire_24.setOpacity(0);
@@ -207,16 +215,7 @@
 		});
 		$("#toggle_fire_48").on('click', function() {
 			if ($(this).is(':checked')) {
-				if(map.hasLayer(fire_48)){
-					map.removeLayer(fire_48);
-				}
-				fire_48 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
-					layers:'fires_viirs_48',
-					format: 'image/png',
-					transparent: true,
-					pane: 'fire48Layer'
-				});
-				fire_48.addTo(map);
+				fire_48.setOpacity(1);
 			}
 			else {
 				fire_48.setOpacity(0);
@@ -349,6 +348,11 @@
 			var cb = document.getElementsByClassName('leaflet-draw-draw-marker');
 			!cb[0].dispatchEvent(event);
 			return false;
+		});
+
+		$("#disclaimer").click(function(){
+			$modalDisclaimer.modal('show');
+			setTimeout(function(){ $modalDisclaimer.modal('hide'); }, 50000);
 		});
 
 
@@ -2408,10 +2412,7 @@ $(function() {
 	*/
 	$("#tab-geos").click();
 
-	$( document ).ready(function() {
-	    $modalDisclaimer.modal('show');
-			setTimeout(function(){ $modalDisclaimer.modal('hide'); }, 5000);
-	});
+
 
 });
 });

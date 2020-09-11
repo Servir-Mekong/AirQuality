@@ -48,6 +48,13 @@
 
 }
 
+.navbar-fixed-bottom, .navbar-fixed-top {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+}
+
 .banner-container {
     background: url("https://servir.adpc.net/themes/svmk/images/optimized/satellite-inside.png");
     background-position: 110% 70%;

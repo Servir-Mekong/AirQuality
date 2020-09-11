@@ -84,7 +84,7 @@
 						</svg>
 						<span class="tooltipmap tooltipmap3 left"> FULL SCREEN</span>
 					</li>
-					<li class="timeline-sync pointer" id="time-toggle">
+					<!-- <li class="timeline-sync pointer" id="time-toggle">
 						<svg class="panel-icon">
               <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-clock-history" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
                 <title>Time</title>
@@ -95,7 +95,7 @@
 
 						</svg>
 						<span class="tooltipmap tooltipmap4 left"> Time Slider</span>
-					</li>
+					</li> -->
 					<li class="print pointer" id="compare-layers">
 						<svg class="panel-icon">
                   <svg width="2em" height="2em" id="icon-print" viewBox="0 0 16 16" class="bi bi-input-cursor" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
@@ -128,6 +128,18 @@
 								</svg>
 						</svg>
 						<span class="tooltipmap tooltipmap6 left"> Draw a marker</span>
+					</li>
+          <li class="draw pointer" id="disclaimer">
+						<svg class="panel-icon">
+
+                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-exclamation-octagon" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                  <title>Disclaimer</title>
+                  <path fill-rule="evenodd" d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353L4.54.146zM5.1 1L1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1H5.1z"/>
+                  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                </svg>
+
+						</svg>
+						<span class="tooltipmap tooltipmap6 left"> Disclaimer</span>
 					</li>
           <li class="draw pointer" id="admin-tool" style="display: none;">
 						<svg class="panel-icon">
@@ -469,7 +481,7 @@
             </div>
         </div>
 
-        <div class="sliderContainer" ng-show="showTimeSlider">
+        <div class="sliderContainer" ng-show="false">
           <div id="datePickerSlider" class="datePickerSlider" name="datePickerSlider" ></div>
             <button type="button" class="btn btn-default slide-forward" title="move the slider by 1 day forward" ng-click="slideForward()">
                 <span class="glyphicon glyphicon-forward" aria-hidden="true" style="left: 2px;"></span>

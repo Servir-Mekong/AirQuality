@@ -1,4 +1,19 @@
-.control-panel
+
+/******************/
+/* Spinner Widget */
+/******************/
+
+.spinner {
+  display: none;
+ position: absolute;
+ z-index: 9999;
+ top: 35%;
+ left: 45%;
+ width: 8rem;
+ height: 8rem;
+ background: url(/static/images/spinner.gif) center center no-repeat,url(/static/images/spinner.gif) center center no-repeat;
+}
+
 
 .toggle-slider {
   position: absolute;
