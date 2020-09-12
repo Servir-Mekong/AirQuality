@@ -632,8 +632,9 @@
 
 			var date = new Date($scope.selectedDate);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
-			var selected_date = $("#hour_table option:selected").text();
-			selected_date = selected_date.replace(":30:00", ":00:00");
+			var selected_date = $("#date_selector").val();
+			selected_date = selected_date+" 23:59:59";
+
 			var parameters = {
 				obs_date: selected_date
 			};
@@ -988,7 +989,7 @@
 			lwmsLayer.addTo(map);
 			rwmsLayer.addTo(map);
 			compare = L.control.sideBySide(lwmsLayer,rwmsLayer);
-			compare.addTo(map);
+		//	compare.addTo(map);
 
 		};
 
