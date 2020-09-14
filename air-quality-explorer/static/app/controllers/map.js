@@ -115,7 +115,7 @@
 		}).addTo(map);
 
 		L.esri.tiledMapLayer({
-			url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
+			url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
 			layers:[0],
 			opacity: 0.7,
 			zIndex:99999
