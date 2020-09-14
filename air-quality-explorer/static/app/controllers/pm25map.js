@@ -127,19 +127,26 @@
 		// 		pane: 'fire24Layer'
 		// 	});
 
-			// Load VIIRS active fire 24kml file
-			$.get("/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_24h.kml", function(data, status){
-				var parser = new DOMParser();
-				var kml = parser.parseFromString(data, 'text/xml');
-				fire_24 = new L.KML(kml);
-    	});
-			// Load VIIRS active fire 48 kml file
-			$.get("/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_48h.kml", function(data, status){
-				var parser = new DOMParser();
-				var kml = parser.parseFromString(data, 'text/xml');
-				fire_48 = new L.KML(kml);
-			});
+		// Load VIIRS active fire 24kml file
+		fetch('/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_24h.kml')
+        .then(res => res.text())
+        .then(kmltext => {
+            // Create new kml overlay
+            var parser = new DOMParser();
+            var kml = parser.parseFromString(kmltext, 'text/xml');
+            fire_24 = new L.KML(kml);
+        });
 
+
+			// Load VIIRS active fire 48 kml file
+      fetch('/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_48h.kml')
+          .then(res => res.text())
+          .then(kmltext => {
+              // Create new kml overlay
+              var parser = new DOMParser();
+              var kml = parser.parseFromString(kmltext, 'text/xml');
+              fire_48 = new L.KML(kml);
+          });
 
 
 
@@ -223,7 +230,7 @@
 				map.removeControl(fire_24);
 			}
 			if ($(this).is(':checked')) {
-					fire_24.addTo(map);
+						map.addLayer(fire_24);
 			}
 		});
 		$("#toggle_fire_48").on('click', function() {
@@ -231,7 +238,7 @@
 				map.removeControl(fire_48);
 			}
 			if ($(this).is(':checked')) {
-				fire_48.addTo(map);
+				map.addLayer(fire_48);
 			}
 		});
 
