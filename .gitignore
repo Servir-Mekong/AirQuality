@@ -6,6 +6,7 @@ credentials/
 static/*
 # Setting and config files
 air-quality-explorer/settings.py
+air-quality-explorer/static/data/active_fire/*
 mapclient/config.py
 # Unused templates
 # ======================
@@ -15,6 +16,7 @@ mapclient/config.py
 air-quality-explorer/static/vendor/*
 air-quality-explorer/static/dist/*
 air-quality-explorer/static/aq_dir/*
+
 # Exception to the rule
 !air-quality-explorer/static/dist/README.md
 
