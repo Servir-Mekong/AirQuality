@@ -61,6 +61,7 @@
 		var enableMonthsAODArray=[];
 		var enableYearsAODArray=[];
 		var enableDatesArraySlide=[];
+		var default_forecastDate ='';
 
 		var playLoop;
 		var intervaltime;
@@ -408,6 +409,11 @@
 		$("#disclaimer").click(function(){
 			$modalDisclaimer.modal('show');
 			setTimeout(function(){ $modalDisclaimer.modal('hide'); }, 50000);
+		});
+
+		$("#reset-btn").click(function(){
+			$("#date_selector").datepicker("setDate", default_forecastDate);
+			map.setView([15.8700, 100.9925], 6);
 		});
 
 
@@ -2627,6 +2633,7 @@ $(function() {
 		setDate = yyear + '-' + mmonth + '-' + ddate;
 	}
 	$("#date_selector").datepicker("setDate", setDate);
+	default_forecastDate = $("#date_selector").val();
 	//$("#date_selector").trigger("change");
 
 	$("#date_selector").change(function () {

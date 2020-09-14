@@ -51,6 +51,7 @@
 
 		var enableDatesArray=[];
 		var enableDatesArraySlide=[];
+		var default_forecastDate ='';
 
 		var playLoop;
 		var intervaltime;
@@ -110,23 +111,35 @@
 			zIndex:99999
 		}).addTo(map);
 
-		fire_48 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
-			layers:'fires_viirs_48',
-			format: 'image/png',
-			transparent: true,
-			pane: 'fire48Layer'
-		});
-		fire_48.addTo(map);
-		fire_48.setOpacity(0);
+		// fire_48 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
+		// 	layers:'fires_viirs_48',
+		// 	format: 'image/png',
+		// 	transparent: true,
+		// 	pane: 'fire48Layer'
+		// });
+		// fire_48.addTo(map);
+		// fire_48.setOpacity(0);
 
-		fire_24 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
-				layers:'fires_viirs_24',
-				format: 'image/png',
-				transparent: true,
-				pane: 'fire24Layer'
+		// fire_24 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
+		// 		layers:'fires_viirs_24',
+		// 		format: 'image/png',
+		// 		transparent: true,
+		// 		pane: 'fire24Layer'
+		// 	});
+
+			// Load VIIRS active fire 24kml file
+			$.get("/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_24h.kml", function(data, status){
+				var parser = new DOMParser();
+				var kml = parser.parseFromString(data, 'text/xml');
+				fire_24 = new L.KML(kml);
+    	});
+			// Load VIIRS active fire 48 kml file
+			$.get("/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_48h.kml", function(data, status){
+				var parser = new DOMParser();
+				var kml = parser.parseFromString(data, 'text/xml');
+				fire_48 = new L.KML(kml);
 			});
-			fire_24.addTo(map);
-			fire_24.setOpacity(0);
+
 
 
 
@@ -206,19 +219,19 @@
 		});
 
 		$("#toggle_fire_24").on('click', function() {
-			if ($(this).is(':checked')) {
-				fire_24.setOpacity(1);
+			if(map.hasLayer(fire_24)){
+				map.removeControl(fire_24);
 			}
-			else {
-				fire_24.setOpacity(0);
+			if ($(this).is(':checked')) {
+					fire_24.addTo(map);
 			}
 		});
 		$("#toggle_fire_48").on('click', function() {
-			if ($(this).is(':checked')) {
-				fire_48.setOpacity(1);
+			if(map.hasLayer(fire_48)){
+				map.removeControl(fire_48);
 			}
-			else {
-				fire_48.setOpacity(0);
+			if ($(this).is(':checked')) {
+				fire_48.addTo(map);
 			}
 		});
 
@@ -353,6 +366,11 @@
 		$("#disclaimer").click(function(){
 			$modalDisclaimer.modal('show');
 			setTimeout(function(){ $modalDisclaimer.modal('hide'); }, 50000);
+		});
+
+		$("#reset-btn").click(function(){
+			$("#date_selector").datepicker("setDate", default_forecastDate);
+			map.setView([15.8700, 100.9925], 6);
 		});
 
 
@@ -891,7 +909,6 @@
 			var wmsUrl = threddss_wms_url+run_date;
 			wms_layer=wmsUrl;
 			run_type = run_type.toUpperCase();
-			console.log(run_type)
 			if(run_type === 'GEOS'){
 				if(map.hasLayer(tdWmsGEOSLayer)){
 					map.removeLayer(tdWmsGEOSLayer);
@@ -1937,7 +1954,6 @@ get_times = function (rd_type) {
 			//console.log(_time1, "  ", hour, "   ", _time2)
 			if (date_text === _time1 || date_text === hour || date_text === _time2) {
 				opt.selected = true;
-
 				var run_type = ($("#geos_run_table option:selected").val());
 				var freq = ($("#geos_freq_table option:selected").val());
 				// var rd_type = ($("#geos_rd_table option:selected").val());
@@ -2131,6 +2147,7 @@ $(function() {
 		setDate = yyear + '-' + mmonth + '-' + ddate;
 	}
 	$("#date_selector").datepicker("setDate", setDate);
+	default_forecastDate = $("#date_selector").val();
 	//$("#date_selector").trigger("change");
 
 	$("#date_selector").change(function () {
@@ -2412,6 +2429,7 @@ $(function() {
 	* tab defualt
 	*/
 	$("#tab-geos").click();
+
 
 
 

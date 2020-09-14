@@ -24,7 +24,7 @@
 
     <div class="map" id="map" >
       <div class="pm25-legend">
-        <p style="font-size: 10px;color: #FFF;margin-bottom: 0;">PM 2.5 (µgm<<sup>-3</sup>)</p>
+        <p style="font-size: 10px;color: #FFF;margin-bottom: 0;">Surface PM 2.5 (µgm<sup>-3</sup>)</p>
         <table style="width:100%">
           <tr>
           <!-- <td><i class="fas fa-circle fa-2x" style="color:#6ef0ff"></i> 0-25</td>
@@ -51,25 +51,6 @@
               </svg>
 						</svg>
 						<span class="tooltipmap tooltipmap1 left"> MENU </span>
-					</li>
-					<li class="zoom-in pointer" id="zoom-in">
-						<svg class="panel-icon">
-                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                  <title>Zoom In</title>
-                <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
-                <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
-              </svg>
-						</svg>
-						<span class="tooltipmap tooltipmap1 left"> ZOOM IN </span>
-					</li>
-					<li class="zoom-in pointer" id="zoom-out">
-						<svg class="panel-icon">
-              <svg width="2em" height="2em" id="icon-minus"  viewBox="0 0 16 16" class="bi bi-dash" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                <title>Zoom Out</title>
-                <path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
-              </svg>
-						</svg>
-						<span class="tooltipmap tooltipmap2 left"> ZOOM OUT</span>
 					</li>
 					<li class="show-hide pointer" id="full-screen">
 						<svg class="panel-icon">
@@ -141,6 +122,19 @@
 						</svg>
 						<span class="tooltipmap tooltipmap6 left"> Disclaimer</span>
 					</li>
+          <li class="draw pointer" id="reset-btn">
+						<svg class="panel-icon">
+
+                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                  <title>Reset</title>
+                  <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                  <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                </svg>
+
+						</svg>
+						<span class="tooltipmap tooltipmap6 left"> Reset</span>
+					</li>
+
           <li class="draw pointer" id="admin-tool" style="display: none;">
 						<svg class="panel-icon">
                             <?xml version="1.0" encoding="iso-8859-1"?>
@@ -251,6 +245,32 @@
 
 				</ul>
 			</div>
+
+      <div class="control-panel map-component" style="top:9%; left: unset; right: 10px;">
+      <div class="scalebar-container"></div>
+      <ul style="flex-wrap: wrap;">
+        <li class="zoom-in pointer" id="zoom-in">
+          <svg class="panel-icon">
+              <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                <title>Zoom In</title>
+              <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
+              <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
+            </svg>
+          </svg>
+          <span class="tooltipmap tooltipmap4 left"> ZOOM IN </span>
+        </li>
+        <li class="zoom-in pointer" id="zoom-out">
+          <svg class="panel-icon">
+            <svg width="2em" height="2em" id="icon-minus"  viewBox="0 0 16 16" class="bi bi-dash" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+              <title>Zoom Out</title>
+              <path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+          </svg>
+          <span class="tooltipmap tooltipmap5 left"> ZOOM OUT</span>
+        </li>
+      </ul>
+    </div>
+
     </div>
     {% include "panels/compare_layers.html" %}
     {% include "panels/disclaimer.html" %}
