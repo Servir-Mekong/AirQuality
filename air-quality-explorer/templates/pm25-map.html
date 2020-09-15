@@ -243,7 +243,7 @@
                                 </div>
                           </div>
                           <div style="display:flex;flex-direction:column;width: 100%;padding-left: 5px">
-                              <p style="color: #f5f5f5"><b>[[ ' Forecasted date' | translate]]</b></p>
+                              <p style="color: #f5f5f5"><b>[[ 'Forecasted date' | translate]]</b></p>
                               <select  class="form-control"  name="hour_table" id="hour_table" style="width: 100%">
 
                               </select>
@@ -257,14 +257,14 @@
                                     <input id="toggle_fire_24" type="checkbox">
                                     <span class="slider_toggle round"></span>
                                   </label>
-                                  <label>VIIRS active fire data last 24 hours </label>
+                                  <label>[[ 'VIIRS active fire data last 24 hours' | translate]] </label>
                               </li>
                               <li class="toggle">
                                   <label class="switch_layer">
                                     <input id="toggle_fire_48" type="checkbox">
                                     <span class="slider_toggle round"></span>
                                   </label>
-                                  <label>VIIRS active fire data last 48 hours </label>
+                                  <label>[[ 'VIIRS active fire data last 48 hours' | translate]] </label>
                               </li>
                           </ul>
                       </div>
@@ -282,7 +282,7 @@
                   <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12.41 148.02l232.94 105.67c6.8 3.09 14.49 3.09 21.29 0l232.94-105.67c16.55-7.51 16.55-32.52 0-40.03L266.65 2.31a25.607 25.607 0 0 0-21.29 0L12.41 107.98c-16.55 7.51-16.55 32.53 0 40.04zm487.18 88.28l-58.09-26.33-161.64 73.27c-7.56 3.43-15.59 5.17-23.86 5.17s-16.29-1.74-23.86-5.17L70.51 209.97l-58.1 26.33c-16.55 7.5-16.55 32.5 0 40l232.94 105.59c6.8 3.08 14.49 3.08 21.29 0L499.59 276.3c16.55-7.5 16.55-32.5 0-40zm0 127.8l-57.87-26.23-161.86 73.37c-7.56 3.43-15.59 5.17-23.86 5.17s-16.29-1.74-23.86-5.17L70.29 337.87 12.41 364.1c-16.55 7.5-16.55 32.5 0 40l232.94 105.59c6.8 3.08 14.49 3.08 21.29 0L499.59 404.1c16.55-7.5 16.55-32.5 0-40z"></path>
                   </svg>
-                  Layers
+                  [[ 'Layers' | translate]]
               </span>
               <span id="toggle_download" class="map-panel__tabs--item" data-target="layers">
                   <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -292,7 +292,7 @@
                       </g>
                     </g>
                   </svg>
-                  Download
+                  [[ 'Download' | translate]]
               </span>
               <span id="toggle_print" class="map-panel__tabs--item" data-target="layers">
                   <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -311,7 +311,7 @@
                           S436.733,265.046,433.116,268.656z"/>
                       </g>
                   </svg>
-                  Print
+                  [[ 'Print' | translate]]
               </span>
 
           </div>
@@ -324,39 +324,39 @@
                         <input id="btn_toggle_geos" type="checkbox" checked>
                         <span class="slider_toggle round"></span>
                       </label>
-                      <label>PM 2.5 (GEOS-ML)</label>
+                      <label>[['PM 2.5 (GEOS-ML)' | translate]]</label>
                   </li>
                   <li class="toggle" ng-show="toggle_pcd">
                       <label class="switch_layer">
                         <input id="btn_toggle_stations" type="checkbox" checked>
                         <span class="slider_toggle round"></span>
                       </label>
-                      <label>PM 2.5 (PCD)</label>
+                      <label>[['PM 2.5 (PCD)' | translate]]</label>
                   </li>
               </ul>
 
-              <p>Base Map</p>
+              <p>[['Base Map' | translate]]</p>
               <ul class="toggles-list">
                   <li class="toggle" >
                       <label class="switch_layer">
                         <input id="btn_toggle_light" type="checkbox" checked>
                         <span class="slider_toggle round"></span>
                       </label>
-                      <label>Light</label>
+                      <label>[['Light' | translate]]</label>
                   </li>
                   <li class="toggle" >
                       <label class="switch_layer">
                         <input id="btn_toggle_dark" type="checkbox">
                         <span class="slider_toggle round"></span>
                       </label>
-                      <label>Dark</label>
+                      <label>[['Dark' | translate]]</label>
                   </li>
                   <li class="toggle" >
                       <label class="switch_layer">
                         <input id="btn_toggle_satellite" type="checkbox">
                         <span class="slider_toggle round"></span>
                       </label>
-                      <label>Satellite</label>
+                      <label>[['Satellite' | translate]]</label>
                   </li>
 
               </ul>
@@ -375,7 +375,7 @@
                               </g>
                           </svg>
                       </button>
-                      <label class="download-label">GEOS</label>
+                      <label class="download-label">[['GEOS' | translate]]</label>
                   </li>
               </ul>
 
@@ -402,12 +402,12 @@
                               S436.733,265.046,433.116,268.656z"/>
                       </g>
                   </svg>
-                  <b>Print</b>
+                  <b>[['Print' | translate]]</b>
               </button>
 
           </div>
           <div id="imagery_layer_box" class="map-panel__toggle--panel" style="display: none;">
-              <p>True Color Imagery</p>
+              <p>[['True Color Imagery' | translate]]</p>
 
           </div>
 

@@ -636,3 +636,9 @@ position:relative;
   -webkit-transition: .4s;
   transition: .4s;
 }
+
+.leaflet-top, .leaflet-bottom {
+    position: absolute;
+    z-index: 999;
+    pointer-events: none;
+}
