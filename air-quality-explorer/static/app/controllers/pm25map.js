@@ -2437,6 +2437,11 @@ $(function() {
 	*/
 	$("#tab-geos").click();
 
+	$( document ).ready(function() {
+	    $(".pcd").css("display", "block");
+			$(".gistda").css("display", "block");
+	});
+
 
 
 

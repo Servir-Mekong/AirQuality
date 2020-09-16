@@ -46,30 +46,33 @@
             <input id="opacity-slider-geos" type="text" style="width: 90%;left: 60px;"/>
        </div>
    </div>
-<div  style="display:flex;flex-direction:row;justify-content: space-around;">
-    <div style="display:flex;flex-direction:column;width: 100%">
-        <p><b>[[ 'Forecast Initialization Date' | translate]]</b></p>
-        <select class="form-control hidden" name="date_table" id="date_table" style="width: 100%"></select>
-          <div class="form-group">
-            <input class = "form-control" id="date_selector"
-            name="date_selector"
-            type="text"
-            orientation="bottom left"
-            data-date-autoclose="true"
-            data-date-format="yyyy-mm-dd"
-            data-date-min-view-mode="days"
-            data-date-multidate="1"
-            data-date-start-view="decade"
-            data-date-today-btn="false"></input>
-          </div>
-    </div>
-    <div style="display:flex;flex-direction:column;width: 100%;padding-left: 5px">
-        <p><b>[[ 'Forecasted date' | translate]]</b></p>
-        <select  class="form-control"  name="hour_table" id="hour_table" style="width: 100%">
+  <div  style="display:flex;flex-direction:row;">
+      <div style="display:flex;flex-direction:column;width: 80%">
+          <p><b>[[ 'Forecast Initialization Date' | translate]]</b></p>
+          <select class="form-control hidden" name="date_table" id="date_table" style="width: 100%"></select>
+            <div class="form-group" style="margin-bottom: 0px;">
+              <input class = "form-control" id="date_selector"
+              name="date_selector"
+              type="text"
+              orientation="bottom left"
+              data-date-autoclose="true"
+              data-date-format="yyyy-mm-dd"
+              data-date-min-view-mode="days"
+              data-date-multidate="1"
+              data-date-start-view="decade"
+              data-date-today-btn="false"></input>
+            </div>
+      </div>
+  </div>
 
-        </select>
-    </div>
-</div>
+  <div  style="display:flex;flex-direction:row;">
+      <div style="display:flex;flex-direction:column;width: 80%;padding-left: 5px">
+          <p><b>[[ 'Forecasted date' | translate]]</b></p>
+          <select  class="form-control"  name="hour_table" id="hour_table" style="width: 100%">
+
+          </select>
+      </div>
+  </div>
    <p id="info"></p>
        <p> [[ 'Note: Date and time are in local Indochina Time(ICT)' | translate]]</p>
 

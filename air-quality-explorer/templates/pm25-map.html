@@ -157,7 +157,7 @@
 
     <section>
 
-        <div class="map-panel__area map-panel__sidebar" style="display: block;">
+        <div class="map-panel__area map-panel__sidebar" style="display: block;width: 300px;">
 
             <div class="map-panel__tabs" style="display:none;">
 
@@ -223,13 +223,13 @@
                                   <input id="opacity-slider-geos" type="text" style="width: 90%;left: 60px;"/>
                              </div>
                          </div>
-                         <p style="color: #bde456;font-size:18px;letter-spacing: 3px;margin-left:50px;margin-bottom: 10px;font-weight: 800;">[[ 'PM2.5 FORECASTING']]</p><br>
+                         <p style="color: #bde456;font-size:18px;letter-spacing: 3px;margin-left:25px;margin-bottom: 10px;font-weight: 800;">[[ 'PM2.5 Forecasting' | translate]]</p><br>
 
-                      <div  style="display:flex;flex-direction:row;justify-content: space-around;">
+                      <div  style="display:flex;flex-direction:row;">
                           <div style="display:flex;flex-direction:column;width: 100%">
                               <p style="color: #f5f5f5"><b>[[ 'Forecast Initialization Date' | translate]]</b></p>
                               <select class="form-control hidden" name="date_table" id="date_table" style="width: 100%"></select>
-                                <div class="form-group">
+                                <div class="form-group" style="margin-bottom: 0px;">
                                   <input class = "form-control" id="date_selector"
                                   name="date_selector"
                                   type="text"
@@ -242,10 +242,11 @@
                                   data-date-today-btn="false"></input>
                                 </div>
                           </div>
+                      </div>
+                      <div  style="display:flex;flex-direction:row;">
                           <div style="display:flex;flex-direction:column;width: 100%;padding-left: 5px">
                               <p style="color: #f5f5f5"><b>[[ 'Forecasted date' | translate]]</b></p>
                               <select  class="form-control"  name="hour_table" id="hour_table" style="width: 100%">
-
                               </select>
                           </div>
                       </div>

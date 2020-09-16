@@ -3072,6 +3072,12 @@ $(function() {
 	//$('#toggle_layers').click();
 	//$(".datepicker .datepicker-dropdown .dropdown-menu .datepicker-orient-left .datepicker-orient-top").css("top", '30px');
 
+	// // A $( document ).ready() block.
+	// $( document ).ready(function() {
+	//     $(".pcd").css("display", "none");
+	// 		$(".gistda").css("display", "none");
+	// });
+
 });
 });
 })();
