@@ -1,5 +1,5 @@
 angular.module('baseApp').constant('appSettings', {
-	applicationName: 'Air Quality Explorer',
+	applicationName: 'Mekong Air Quality Explorer',
 	footerLinks: [
 		{
 			'name': 'About',

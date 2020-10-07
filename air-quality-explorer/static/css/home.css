@@ -37,8 +37,12 @@ p {
  .overlay-text{
    color: #FFF;
    font-size: 40px;
-   margin-left: 350px;
+   margin-left: 250px;
    margin-top: 50px;
+ }
+ .overlay-text p{
+   color: #FFF;
+   font-size: 20px;
  }
 
  .home-nasa {
