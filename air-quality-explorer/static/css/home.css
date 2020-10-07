@@ -30,6 +30,7 @@ p {
    font-size: 14px;
  }
  .overlay-layer{
+   text-align: right;
    height: 100%;
     background: rgb(0 0 0 / 22%);
     padding: 50px;
@@ -37,10 +38,18 @@ p {
  .overlay-text{
    color: #FFF;
    font-size: 40px;
-   margin-left: 250px;
+   margin-left: 50px;
    margin-top: 50px;
  }
+ .overlay-text label{
+   color: #FFF;
+ }
+ .overlay-text label span{
+   font-size: 18px;
+ }
+
  .overlay-text p{
+   margin-left: 150px;
    color: #FFF;
    font-size: 20px;
  }
