@@ -15,6 +15,7 @@
 			$rootScope.lang = key;
 			$translate.use(key);
 		};
+		$scope.changeLanguage('th');
 		$('.dropdown-toggle').dropdown();
 	});
 	// A $( document ).ready() block.

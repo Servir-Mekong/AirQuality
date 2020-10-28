@@ -82,6 +82,16 @@
 		var admin_enabled = false;
 
 		/**
+		* Menu tab active class
+		*/
+		//add active class to ANALYSIS tab
+		$("#menu-map").addClass("tab-active");
+		//remove active class on HOME tab
+		$("#menu-home").removeClass("tab-active");
+		//remove active class on PM2.5 FORECASTING tab
+		$("#menu-mapviewer").removeClass("tab-active");
+
+		/**
 		* initialize leaflet map
 		*/
 		map = L.map('map',{

@@ -160,7 +160,7 @@
     text-transform: uppercase;
 }
 
-#toggle-nav:hover, .nav > li > a:hover {
+#toggle-nav:hover, .nav > li > a:hover , .tab-active{
     color: #bde456 !important;
     font-weight: 700;
 }
