@@ -70,6 +70,7 @@
 		style_options = JSON.parse(style_options);
 
 		var admin_enabled = false;
+		var initStation = false;
 
 		/**
 		* Menu tab active class
@@ -379,6 +380,7 @@
 		});
 
 		$("#reset-btn").click(function(){
+			initStation = false;
 			$("#date_selector").datepicker("setDate", default_forecastDate);
 			map.setView([15.8700, 100.9925], 6);
 		});
@@ -655,9 +657,47 @@
 
 		// --------------------------------------------------------------------------------------------------------------------------------------
 
+		// get 24 average PCD data
+		$scope.get24hoursPCDStation = function () {
+			initStation = true;
+			fetch('http://air4thai.pcd.go.th/forappV2/getAQI_JSON.php')
+		  .then(
+		    function(response) {
+		      if (response.status !== 200) {
+		        console.log('Looks like there was a problem. Status Code: ' +
+		          response.status);
+		        return;
+		      }
+		      // Examine the text in the response
+		      response.json().then(function(data) {
+		        console.log(data["stations"]);
+						var pcdstations = data["stations"];
+						stations = [];
+						for(var i=0; i<pcdstations.length; i++){
+							stations.push({
+								'rid': i,
+								'aqi': pcdstations[i]["AQILast"]["AQI"]["aqi"],
+								'aqi_level': pcdstations[i]["AQILast"]["AQI"]["color_id"],
+								'lat':  pcdstations[i]["lat"],
+								'lon': pcdstations[i]["long"],
+								'latest_date':pcdstations[i]["AQILast"]["date"]+ " " + pcdstations[i]["AQILast"]["time"],
+								'name':pcdstations[i]["nameEN"],
+								'pm25':pcdstations[i]["AQILast"]["PM25"]["value"],
+								'station_id':pcdstations[i]["stationID"],
+							})
+						}
+						addStations();
+		      });
+		    }
+		  )
+		  .catch(function(err) {
+		    console.log('Fetch Error :-S', err);
+		  });
+
+		};
+		// $scope.get24hoursPCDStation();
 		// get PCD station
 		$scope.getPCDStation = function () {
-
 			var date = new Date($scope.selectedDate);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			var selected_date = $("#hour_table option:selected").text();
@@ -670,21 +710,11 @@
 			};
 			MapService.getAirStations(parameters)
 			.then(function (result){
-				// var day = $scope.selectedDate;
-				// day = day[0].split(' ');
-				// day = day[0];
-				// for (var l in overlays) {
-				// 	if(!(l.includes('FIRES_VIIRS'))){
-				// 		overlays[l].options.time = day;
-				// 		overlays[l].redraw();
-				// 	}
-				// }
 				stations = result;
 				addStations();
 			}), function (error){
 				console.log(error);
 			};
-
 		};
 
 		$scope.changeTimeSlider = function () {
@@ -797,15 +827,13 @@
 			if(map.hasLayer(markersLayer)){
 				markersLayer.clearLayers();
 			}
-
 			var icon_src;
 			markersLayer = L.featureGroup().addTo(map);
-
-
 			for (var i = 0; i < stations.length; ++i) {
 				var color="red";
 				var pm2_val = stations[i].pm25;
 				var aqi_level = stations[i].aqi_level;
+				var aqi = stations[i].aqi;
 				if(aqi_level === 1){
 					icon_src = '/static/images/B1_Excellent.png';
 				}else if(aqi_level === 2){
@@ -818,56 +846,57 @@
 					icon_src = '/static/images/B5_V-Unhealthy.png';
 				}
 
-				if(pm2_val>90){
-					color="#ed1e02";
-					myIcon = L.ExtraMarkers.icon({
-						icon: 'fa-number',
-						number: pm2_val,
-						markerColor: 'orange-dark',
-						shape: 'square',
-						prefix: 'fa'
-					});
-				}
-				else if(pm2_val>50 && pm2_val<91){
-					color="#eda702";
-					myIcon = L.ExtraMarkers.icon({
-						icon: 'fa-number',
-						number: pm2_val,
-						markerColor: 'orange',
-						shape: 'square',
-						prefix: 'fa'
-					});
-				}
-				else if(pm2_val>37 && pm2_val<51){
-					color="#eff213";
-					myIcon = L.ExtraMarkers.icon({
-						icon: 'fa-number',
-						number: pm2_val,
-						markerColor: 'yellow',
-						shape: 'square',
-						prefix: 'fa',
-						iconColor: '#aaa'
-					});
+					if(pm2_val>90){
+						color="#ed1e02";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'orange-dark',
+							shape: 'square',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>50 && pm2_val<91){
+						color="#eda702";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'orange',
+							shape: 'square',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>37 && pm2_val<51){
+						color="#eff213";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'yellow',
+							shape: 'square',
+							prefix: 'fa',
+							iconColor: '#aaa'
+						});
 
-				}else if(pm2_val>25 && pm2_val<38){
-					color="#24cf1b";
-					myIcon = L.ExtraMarkers.icon({
-						icon: 'fa-number',
-						number: pm2_val,
-						markerColor: 'green-light',
-						shape: 'square',
-						prefix: 'fa'
-					});
-				}else if(pm2_val>=0 && pm2_val<26){
-					color="#6ef0ff";
-					myIcon = L.ExtraMarkers.icon({
-						icon: 'fa-number',
-						number: pm2_val,
-						markerColor: 'blue-dark',
-						shape: 'square',
-						prefix: 'fa'
-					});
-				}
+					}else if(pm2_val>25 && pm2_val<38){
+						color="#24cf1b";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'green-light',
+							shape: 'square',
+							prefix: 'fa'
+						});
+					}else if(pm2_val>=0 && pm2_val<26){
+						color="#6ef0ff";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'blue-dark',
+							shape: 'square',
+							prefix: 'fa'
+						});
+					}
+
 				var oneMarker =
 				L.marker([stations[i].lat, stations[i].lon], {
 					icon: myIcon
@@ -1999,7 +2028,6 @@ get_times = function (rd_type) {
 };
 
 $(function() {
-
 	/**
 	* GEOS options
 	*/
@@ -2188,13 +2216,17 @@ $(function() {
 	});
 
 	$("#hour_table").change(function () {
-		$scope.getPCDStation();
+		if(initStation){
+			$scope.getPCDStation();
+		}else{
+			$scope.get24hoursPCDStation();
+		}
+
 		var dd = document.getElementById('hour_table');
 		var date_arr = [];
 		for (var i = 0; i < dd.options.length; i++) {
 			date_arr.push(dd.options[i].text);
 		}
-
 		$scope.selectedDate;
 
 		var run_type = ($("#geos_run_table option:selected").val());
@@ -2443,11 +2475,10 @@ $(function() {
 	$("#tab-geos").click();
 
 	$( document ).ready(function() {
+			$("#changeLangTH").click();
 	    $(".pcd").css("display", "block");
 			$(".gistda").css("display", "block");
 	});
-
-
 
 
 });
