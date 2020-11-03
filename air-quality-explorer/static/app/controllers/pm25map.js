@@ -115,27 +115,15 @@
 		}).addTo(map);
 
 		L.esri.tiledMapLayer({
-			url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
+			url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer',
 			layers:[0],
 			opacity: 0.7,
 			zIndex:99999
 		}).addTo(map);
 
-		// fire_48 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
-		// 	layers:'fires_viirs_48',
-		// 	format: 'image/png',
-		// 	transparent: true,
-		// 	pane: 'fire48Layer'
-		// });
-		// fire_48.addTo(map);
-		// fire_48.setOpacity(0);
-
-		// fire_24 = L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
-		// 		layers:'fires_viirs_24',
-		// 		format: 'image/png',
-		// 		transparent: true,
-		// 		pane: 'fire24Layer'
-		// 	});
+		//Active Fire Firms icon_src
+		var firmIcon = "https://earthdata.nasa.gov/media/firms-google-earth-fire-icon.png";
+		var firmCustomIcon = "https://aqatmekong-servir.adpc.net/static/images/fire-firms.png";
 
 		// Load VIIRS active fire 24kml file
 		fetch('/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_24h.kml')
@@ -143,7 +131,9 @@
         .then(kmltext => {
             // Create new kml overlay
             var parser = new DOMParser();
-            var kml = parser.parseFromString(kmltext, 'text/xml');
+						//change firms icon
+						kmltext = kmltext.replace(firmIcon, firmCustomIcon).replace(firmIcon, firmCustomIcon);
+						var kml = parser.parseFromString(kmltext, 'text/xml');
             fire_24 = new L.KML(kml);
         });
 
@@ -154,8 +144,11 @@
           .then(kmltext => {
               // Create new kml overlay
               var parser = new DOMParser();
-              var kml = parser.parseFromString(kmltext, 'text/xml');
+							//change firms icon
+							kmltext = kmltext.replace(firmIcon, firmCustomIcon).replace(firmIcon, firmCustomIcon);
+							var kml = parser.parseFromString(kmltext, 'text/xml');
               fire_48 = new L.KML(kml);
+
           });
 
 
