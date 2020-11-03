@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from celery.result import AsyncResult
-from mapclient.controllers import get_time, get_current_station, get_ts
+from mapclient.controllers import get_time, get_current_station, get_ts, get_24h_station
 from django.conf import settings
 from django.http import JsonResponse
 from datetime import datetime
@@ -13,7 +13,7 @@ def api(request):
     action = get('action', '')
 
     if action:
-        public_methods = ['get-time', 'get-stations', 'get-chartData']
+        public_methods = ['get-time', 'get-stations', 'get-chartData', 'get-24hstations']
         if action in public_methods:
             run_type = get('run_type', '')
             freq = get('freq', '')
@@ -29,6 +29,8 @@ def api(request):
                 data = get_time(freq, run_type, run_date_time)
             elif action == 'get-stations':
                 data = get_current_station(obs_date)
+            elif action == 'get-24hstations':
+                data = get_24h_station()
             elif action == 'get-chartData':
                 data = get_ts(s_var=variable, interaction=interaction, run_type=run_type_chart, freq=freq_chart, run_date=run_date, geom_data=geom_data)
 

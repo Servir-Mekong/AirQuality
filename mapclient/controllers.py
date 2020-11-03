@@ -607,3 +607,10 @@ def gen_style_legend(style):
                 rgb = (lval[0], lval[1], lval[2])
                 scale.append(rgb)
     return scale
+
+def get_24h_station():
+    url = "http://air4thai.pcd.go.th/forappV2/getAQI_JSON.php"
+    response = requests.get(url)
+    response = response.json()
+    stations = response['stations']
+    return json.dumps(stations, indent=4)

@@ -80,7 +80,6 @@
 		style_options = JSON.parse(style_options);
 
 		var admin_enabled = false;
-		var initStation = false;
 
 		/**
 		* Menu tab active class
@@ -423,7 +422,6 @@
 		});
 
 		$("#reset-btn").click(function(){
-			initStation = false;
 			$("#date_selector").datepicker("setDate", default_forecastDate);
 			map.setView([15.8700, 100.9925], 6);
 		});
@@ -708,44 +706,6 @@
 		$scope.runDateonNoUIslider;
 
 		// --------------------------------------------------------------------------------------------------------------------------------------
-		// get 24 average PCD data
-		$scope.get24hoursPCDStation = function () {
-			initStation = true;
-			fetch('http://air4thai.pcd.go.th/forappV2/getAQI_JSON.php')
-			.then(
-				function(response) {
-					if (response.status !== 200) {
-						console.log('Looks like there was a problem. Status Code: ' +
-							response.status);
-						return;
-					}
-					// Examine the text in the response
-					response.json().then(function(data) {
-						console.log(data["stations"]);
-						var pcdstations = data["stations"];
-						stations = [];
-						for(var i=0; i<pcdstations.length; i++){
-							stations.push({
-								'rid': i,
-								'aqi': pcdstations[i]["AQILast"]["AQI"]["aqi"],
-								'aqi_level': pcdstations[i]["AQILast"]["AQI"]["color_id"],
-								'lat':  pcdstations[i]["lat"],
-								'lon': pcdstations[i]["long"],
-								'latest_date':pcdstations[i]["AQILast"]["date"]+ " " + pcdstations[i]["AQILast"]["time"],
-								'name':pcdstations[i]["nameEN"],
-								'pm25':pcdstations[i]["AQILast"]["PM25"]["value"],
-								'station_id':pcdstations[i]["stationID"],
-							})
-						}
-						addStations();
-					});
-				}
-			)
-			.catch(function(err) {
-				console.log('Fetch Error :-S', err);
-			});
-
-		};
 
 		// get PCD station
 		$scope.getPCDStation = function () {
@@ -2712,11 +2672,7 @@ $(function() {
 	});
 
 	$("#hour_table").change(function () {
-		if(initStation){
-			$scope.getPCDStation();
-		}else{
-			$scope.get24hoursPCDStation();
-		}
+		$scope.getPCDStation();
 		var dd = document.getElementById('hour_table');
 		var date_arr = [];
 		for (var i = 0; i < dd.options.length; i++) {

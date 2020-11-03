@@ -36,6 +36,20 @@
 			return promise;
 		};
 
+		service.get24hStations = function () {
+			var config = {
+				params: {
+					action: 'get-24hstations'
+				}
+			};
+			var promise = $http.get('/api/mapclient/', config)
+			.then(function (response) {
+				return response.data;
+			});
+			return promise;
+		};
+
+
 
 		service.getChartData = function (options) {
 			var config = {
