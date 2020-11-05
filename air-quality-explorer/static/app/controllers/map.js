@@ -1848,7 +1848,7 @@
 						},
 						csize: "7%",     //Needle Width
 						size: "90%",    //Needle Length
-						'background-color': "blue",  //Needle Color
+						'background-color': "black",  //Needle Color
 						text: "PM2.5 Measurement"
 					},
 					{
