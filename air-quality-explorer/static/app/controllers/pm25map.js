@@ -1664,7 +1664,6 @@
 
 			MapService.getChartData(parameters)
 			.then(function (result){
-				result = JSON.parse(result);
 				if (interaction == "Station") {
 					var values = result.data["field_data"];
 					var forecast_values = result.data["bc_mlpm25"];

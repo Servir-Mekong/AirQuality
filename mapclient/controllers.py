@@ -592,7 +592,8 @@ def get_ts(s_var, interaction, run_type, freq, run_date, geom_data):
         except Exception as e:
             return_obj["error"] = "Error processing request: "+ str(e)
 
-    return json.dumps(return_obj, indent=2)
+    dump = json.dumps(return_obj)
+    return return_obj
 
 
 def gen_style_legend(style):
