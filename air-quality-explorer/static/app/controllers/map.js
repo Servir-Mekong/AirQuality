@@ -762,6 +762,7 @@
 				checkDateTime = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
 				$("#date_selector").datepicker("setDate", checkDateTime);
 			}
+			default_forecastDate = $("#date_selector").val();
 
 
 			for (var i = 0; i < dd.options.length; i++) {

@@ -184,14 +184,28 @@
 				$("#opacity_geos").css("display","none");
 			}
 		});
-		$("#btn_toggle_stations").on('change', function() {
+		$("#btn_toggle_stations_avg24hr").on('change', function() {
 			if ($(this).is(':checked')) {
-				map.addLayer(markersLayer);
+				map.removeLayer(markersLayer);
+				$scope.get24hoursPCDStation();
+				$('#btn_toggle_stations_hourly').prop('checked', false); // Unchecks btn_toggle_stations_hourly
 			}
 			else {
 				map.removeLayer(markersLayer);
 			}
 		});
+
+		$("#btn_toggle_stations_hourly").on('change', function() {
+			if ($(this).is(':checked')) {
+				map.removeLayer(markersLayer);
+				$scope.getPCDStation();
+				$('#btn_toggle_stations_avg24hr').prop('checked', false); // Unchecks btn_toggle_stations_avg24hr
+			}
+			else {
+				map.removeLayer(markersLayer);
+			}
+		});
+
 
 		/**
 		* Basemap control
@@ -381,6 +395,7 @@
 
 		$("#reset-btn").click(function(){
 			initStation = false;
+			console.log(default_forecastDate)
 			$("#date_selector").datepicker("setDate", default_forecastDate);
 			map.setView([15.8700, 100.9925], 6);
 		});
@@ -513,7 +528,7 @@
 			$("#rstyle_table").append(roption);
 			$("#lstyle_table").append(loption);
 			$("#geos_style_table").append(geosoption);
-			if (value_txt.toUpperCase() == "PM25") {
+			if (value_txt.toUpperCase() == "FERRET") {
 				geosoption.selected = true;
 			}
 		});
@@ -728,6 +743,7 @@
 				checkDateTime = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
 				$("#date_selector").datepicker("setDate", checkDateTime);
 			}
+			default_forecastDate = $("#date_selector").val();
 
 
 			for (var i = 0; i < dd.options.length; i++) {
@@ -904,12 +920,8 @@
 			markersLayer.on("click", markerOnClick);
 			markersLayer.setZIndex(500);
 
-			if ($("#btn_toggle_stations").is(':checked')) {
-				map.addLayer(markersLayer);
-			}
-			else {
-				map.removeLayer(markersLayer);
-			}
+			map.addLayer(markersLayer);
+
 
 		};
 
@@ -975,6 +987,18 @@
           belowmincolor:'extend'
 				});
 				tdWmsGEOSLayer.addTo(map);
+
+
+        // var tdWmsLayer = L.timeDimension.layer.wms(tdWmsGEOSLayer, {
+        //     updateTimeDimension: true,
+        //     setDefaultTime: true,
+        //     cache: 365,
+        //     zIndex: 100,
+        // });
+        // tdWmsLayer.addTo(map);
+
+
+
 				$('#img-legend-geos').attr('src',imgsrc);
 
 
@@ -1126,37 +1150,37 @@
 			return new L.TileLayer.BetterWMS(url, options);
 		};
 
-
-		var timeDimension = new L.TimeDimension();
-		map.timeDimension = timeDimension;
-
-		var player = new L.TimeDimension.Player({
-			loop: true,
-			startOver:true
-		}, timeDimension);
-
-		var timeDimensionControlOptions = {
-			player:        player,
-			timeDimension: timeDimension,
-			position:      'bottomleft',
-			autoPlay:      false,
-			minSpeed:      1,
-			speedStep:     0.5,
-			maxSpeed:      20,
-			timeSliderDragUpdate: true,
-			loopButton:true,
-			limitSliders:true
-		};
-
-		Date.prototype.format = function (mask, utc) {
-			return dateFormat(this, mask, utc);
-		};
-
-		L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
-			_getDisplayDateFormat: function(date){
-				return date.format("mmmm yyyy");
-			}
-		});
+		//
+		// var timeDimension = new L.TimeDimension();
+		// map.timeDimension = timeDimension;
+		//
+		// var player = new L.TimeDimension.Player({
+		// 	loop: true,
+		// 	startOver:true
+		// }, timeDimension);
+		//
+		// var timeDimensionControlOptions = {
+		// 	player:        player,
+		// 	timeDimension: timeDimension,
+		// 	position:      'bottomleft',
+		// 	autoPlay:      false,
+		// 	minSpeed:      1,
+		// 	speedStep:     0.5,
+		// 	maxSpeed:      20,
+		// 	timeSliderDragUpdate: true,
+		// 	loopButton:true,
+		// 	limitSliders:true
+		// };
+		//
+		// Date.prototype.format = function (mask, utc) {
+		// 	return dateFormat(this, mask, utc);
+		// };
+		//
+		// L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
+    //         _getDisplayDateFormat: function (date) {
+    //             return date.format("mmmm dd,yyyy HH:MM");
+    //         }
+    //     });
 
 		L.Control.InfoControl = L.Control.extend({
 			initialize: function (options) {
@@ -1477,15 +1501,6 @@
 
 		// var timeDimensionControl = new L.Control.TimeDimensionCustom(timeDimensionControlOptions);
 		// map.addControl(timeDimensionControl);
-
-
-		var wmsUrl = "https://tethys.servirglobal.net/thredds/wms/tethys/HIWAT/hkhControl_20180329-1800_latlon.nc";
-		var wmsLayer = L.tileLayer.wms(wmsUrl, {
-			layers: 'APCP_surface',
-			format: 'image/png',
-			transparent: true,
-			style:'boxfill/apcp_surface'
-		});
 
 		/**
 		* Create and add a TimeDimension Layer to the map
@@ -2003,6 +2018,7 @@ get_times = function (rd_type) {
 				add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, date_val.toISOString());
 
 
+
 			}
 			$("#hour_table").append(opt);
 		});
@@ -2202,12 +2218,16 @@ $(function() {
 	});
 
 	$("#hour_table").change(function () {
+
 		if(initStation){
 			$scope.getPCDStation();
+			$('#btn_toggle_stations_hourly').prop('checked', true); // checks btn_toggle_stations_hourly
+			$('#btn_toggle_stations_avg24hr').prop('checked', false); // Unchecks btn_toggle_stations_avg24hr
 		}else{
 			$scope.get24hoursPCDStation();
+			$('#btn_toggle_stations_hourly').prop('checked', false); // checks btn_toggle_stations_hourly
+			$('#btn_toggle_stations_avg24hr').prop('checked', true); // Unchecks btn_toggle_stations_avg24hr
 		}
-
 		var dd = document.getElementById('hour_table');
 		var date_arr = [];
 		for (var i = 0; i < dd.options.length; i++) {

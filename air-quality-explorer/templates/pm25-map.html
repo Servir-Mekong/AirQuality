@@ -38,6 +38,14 @@
           </tr>
         </table>
       </div>
+
+      <div class="geos-legend">
+        <p style="font-size: 10px;color: #FFF;margin-bottom: 0;">GEOS PM 2.5 (µgm<sup>-3</sup>)</p>
+          <div class="" style="padding:5px;">
+            <img class="geos-legend-graphic" src="https://thredds-servir.adpc.net/thredds/wms/mk_aqx/geos/20201115.nc?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=BC_MLPM25&time=2020-11-16T10:30:00.000Z&colorscalerange=0,100&PALETTE=ferret&transparent=TRUE" alt="GEOS legend">
+          </div>
+        </div>
+
         <div class="control-panel map-component">
 				<div class="scalebar-container"></div>
 				<ul>
@@ -325,14 +333,21 @@
                         <input id="btn_toggle_geos" type="checkbox" checked>
                         <span class="slider_toggle round"></span>
                       </label>
-                      <label>[['PM 2.5 (GEOS-ML)' | translate]]</label>
+                      <label>[['PM 2.5 (GEOS-ML, 25x25 km.)' | translate]]</label>
                   </li>
                   <li class="toggle" ng-show="toggle_pcd">
                       <label class="switch_layer">
-                        <input id="btn_toggle_stations" type="checkbox" checked>
+                        <input id="btn_toggle_stations_hourly" type="checkbox">
                         <span class="slider_toggle round"></span>
                       </label>
-                      <label>[['PM 2.5 (PCD)' | translate]]</label>
+                      <label>[['PM 2.5 (PCD hourly)' | translate]]</label>
+                  </li>
+                  <li class="toggle" ng-show="toggle_pcd">
+                      <label class="switch_layer">
+                        <input id="btn_toggle_stations_avg24hr" type="checkbox" checked>
+                        <span class="slider_toggle round"></span>
+                      </label>
+                      <label>[['PM 2.5 (PCD Avg 24 hr)' | translate]]</label>
                   </li>
               </ul>
 

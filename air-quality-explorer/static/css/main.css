@@ -872,6 +872,7 @@ p {
     background-color: #fff;
     padding: 10px;
     width: auto;
+    max-width: 200px;
 }
 
 .map-panel__toggle .map-panel__tabs {
