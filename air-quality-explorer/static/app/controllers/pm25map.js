@@ -433,6 +433,9 @@
 			if(map.hasLayer(markersLayer)){
 				markersLayer.clearLayers();
 			}
+			if(map.hasLayer(tdWmsGEOSLayer)){
+				map.removeLayer(tdWmsGEOSLayer);
+			}
 			$('.pm25-legendnew').css('display', 'block');
 			$('.geos-legend').css('display', 'none');
 			$("#geos_style_table").val("pm25");
@@ -2312,11 +2315,17 @@ $(function() {
 	});
 
 	$("#hour_table").change(function () {
-
+		$scope.showLoader = true;
+		// if(map.hasLayer(markersLayer)){
+		// 	markersLayer.clearLayers();
+		// }
 		if(initStation){
 			$scope.getPCDStation();
 			$('#btn_toggle_stations_hourly').prop('checked', true); // checks btn_toggle_stations_hourly
 			$('#btn_toggle_stations_avg24hr').prop('checked', false); // Unchecks btn_toggle_stations_avg24hr
+			$("#geos_style_table").val("ferret");
+			$('.pm25-legendnew').css('display', 'none');
+			$('.geos-legend').css('display', 'block');
 		}else{
 			$scope.get24hoursPCDStation();
 			$('#btn_toggle_stations_hourly').prop('checked', false); // checks btn_toggle_stations_hourly
@@ -2336,6 +2345,8 @@ $(function() {
 		var y = ($("#date_selector").val());
 		rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
 		var var_type = ($("#geos_var_table option:selected").val());
+
+
 		var style = ($("#geos_style_table option:selected").val());
 		var rmin = $("#geos_range-min").val();
 		var rmax = $("#geos_range-max").val();
