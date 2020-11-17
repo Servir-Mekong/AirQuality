@@ -570,6 +570,7 @@ ul {
 }
 
 .geos-legend {
+  display: none;
   bottom: 15px;
   right: 5px;
   height: auto;

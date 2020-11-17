@@ -12,6 +12,7 @@
 		$scope.showPlayButton = false;
 		$scope.showPauseButton = false;
 		$scope.var_type = 'PM 2.5';
+		$scope.showLoader = true;
 
 
 		var map,
@@ -185,10 +186,28 @@
 			}
 		});
 		$("#btn_toggle_stations_avg24hr").on('change', function() {
+			$scope.showLoader = true;
 			if ($(this).is(':checked')) {
 				map.removeLayer(markersLayer);
 				$scope.get24hoursPCDStation();
 				$('#btn_toggle_stations_hourly').prop('checked', false); // Unchecks btn_toggle_stations_hourly
+				$('.pm25-legendnew').css('display', 'block');
+				$('.geos-legend').css('display', 'none');
+				$("#geos_style_table").val("pm25");
+
+				var run_type = ($("#geos_run_table option:selected").val());
+				var freq = ($("#geos_freq_table option:selected").val());
+				var rd_type = ($("#geos_rd_table option:selected").val());
+				var z = rd_type.split('/').reverse()[0];
+				var y = ($("#date_selector").val());
+				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+				var var_type = ($("#geos_var_table option:selected").val());
+				var style = ($("#geos_style_table option:selected").val());
+				var rmin = $("#geos_range-min").val();
+				var rmax = $("#geos_range-max").val();
+
+				add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
+
 			}
 			else {
 				map.removeLayer(markersLayer);
@@ -196,10 +215,27 @@
 		});
 
 		$("#btn_toggle_stations_hourly").on('change', function() {
+			$scope.showLoader = true;
 			if ($(this).is(':checked')) {
 				map.removeLayer(markersLayer);
-				$scope.getPCDStation();
 				$('#btn_toggle_stations_avg24hr').prop('checked', false); // Unchecks btn_toggle_stations_avg24hr
+				$('.pm25-legendnew').css('display', 'none');
+				$('.geos-legend').css('display', 'block');
+				$("#geos_style_table").val("ferret");
+				$("#hour_table").trigger('change');
+
+				var run_type = ($("#geos_run_table option:selected").val());
+				var freq = ($("#geos_freq_table option:selected").val());
+				var rd_type = ($("#geos_rd_table option:selected").val());
+				var z = rd_type.split('/').reverse()[0];
+				var y = ($("#date_selector").val());
+				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+				var var_type = ($("#geos_var_table option:selected").val());
+				var style = ($("#geos_style_table option:selected").val());
+				var rmin = $("#geos_range-min").val();
+				var rmax = $("#geos_range-max").val();
+
+				add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, ($("#hour_table option:selected").val()));
 			}
 			else {
 				map.removeLayer(markersLayer);
@@ -259,8 +295,6 @@
 				map.addLayer(fire_48);
 			}
 		});
-
-
 
 		$('#toggle_layers').click(function(){
 			$('#imagery_layer_box').css("display", "none");
@@ -394,9 +428,16 @@
 		});
 
 		$("#reset-btn").click(function(){
+			$scope.showLoader = true;
 			initStation = false;
-			console.log(default_forecastDate)
+			if(map.hasLayer(markersLayer)){
+				markersLayer.clearLayers();
+			}
+			$('.pm25-legendnew').css('display', 'block');
+			$('.geos-legend').css('display', 'none');
+			$("#geos_style_table").val("pm25");
 			$("#date_selector").datepicker("setDate", default_forecastDate);
+
 			map.setView([15.8700, 100.9925], 6);
 		});
 
@@ -528,7 +569,7 @@
 			$("#rstyle_table").append(roption);
 			$("#lstyle_table").append(loption);
 			$("#geos_style_table").append(geosoption);
-			if (value_txt.toUpperCase() == "FERRET") {
+			if (value_txt.toUpperCase() == "PM25") {
 				geosoption.selected = true;
 			}
 		});
@@ -692,7 +733,7 @@
 						'station_id':pcdstations[i]["stationID"],
 					})
 				}
-				addStations();
+				addStations('24hr');
 			}), function (error){
 				console.log(error);
 			};
@@ -713,7 +754,7 @@
 			MapService.getAirStations(parameters)
 			.then(function (result){
 				stations = result;
-				addStations();
+				addStations('hourly');
 			}), function (error){
 				console.log(error);
 			};
@@ -826,7 +867,7 @@
 			prefix: 'fa'
 		});
 
-		function addStations(){
+		function addStations(type){
 			if(map.hasLayer(markersLayer)){
 				markersLayer.clearLayers();
 			}
@@ -849,6 +890,58 @@
 					icon_src = '/static/images/B5_V-Unhealthy.png';
 				}
 
+				if(type === 'hourly'){
+					if(pm2_val>90){
+						color="#ed1e02";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'red',
+							shape: 'square',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>75 && pm2_val<91){
+						color="#eda702";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'orange-dark',
+							shape: 'square',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>50 && pm2_val<75){
+						color="#eff213";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'green-light',
+							shape: 'square',
+							prefix: 'fa',
+							iconColor: '#aaa'
+						});
+
+					}else if(pm2_val>25 && pm2_val<50){
+						color="#24cf1b";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'blue',
+							shape: 'square',
+							prefix: 'fa'
+						});
+					}else if(pm2_val>=0 && pm2_val<26){
+						color="#6ef0ff";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'violet',
+							shape: 'square',
+							prefix: 'fa'
+						});
+					}
+				}else{
 					if(pm2_val>90){
 						color="#ed1e02";
 						myIcon = L.ExtraMarkers.icon({
@@ -899,6 +992,8 @@
 							prefix: 'fa'
 						});
 					}
+				}
+
 
 				var oneMarker =
 				L.marker([stations[i].lat, stations[i].lon], {
@@ -921,6 +1016,7 @@
 			markersLayer.setZIndex(500);
 
 			map.addLayer(markersLayer);
+			$scope.showLoader = false;
 
 
 		};
@@ -946,6 +1042,7 @@
 
 
 		add_wms = function (run_type, freq, run_date, var_type, rmin, rmax, styling, time = "") {
+			$("#btn_toggle_geos").prop('checked', true);
 			var wmsUrl = threddss_wms_url+run_date;
 			wms_layer=wmsUrl;
 			run_type = run_type.toUpperCase();
@@ -2016,9 +2113,6 @@ get_times = function (rd_type) {
 				var rmax = $("#geos_range-max").val();
 
 				add_wms(run_type, freq, rd_type, var_type, rmin, rmax, style, date_val.toISOString());
-
-
-
 			}
 			$("#hour_table").append(opt);
 		});
