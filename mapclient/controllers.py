@@ -139,6 +139,7 @@ def get_styles():
         {'Ferret': 'ferret'},
         {'Reflectivity': 'enspmm-refc'},
         {'PM25': 'pm25'},
+        {'Browse Color Scale': 'browse'},
         # ('Probability', 'prob'),
         # ('White-Blue', whiteblue'),
         # ('Grace', 'grace'),

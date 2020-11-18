@@ -169,6 +169,10 @@ angular.module('baseApp').constant('appSettings', {
         {
             'value': 'enspmm-refc',
             'name': 'Reflectivity'
+        },
+        {
+            'value': 'browse',
+            'name': 'Browse Color Scale'
         }
     ],
 	months : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],

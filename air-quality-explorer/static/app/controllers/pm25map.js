@@ -80,6 +80,7 @@
 		$("#menu-mapviewer").addClass("tab-active");
 		//remove active class on HOME tab
 		$("#menu-home").removeClass("tab-active");
+		$("#analysis-tab").hide();
 		//remove active class on  ANALYSIS tab
 		$("#menu-map").removeClass("tab-active");
 
@@ -221,7 +222,7 @@
 				$('#btn_toggle_stations_avg24hr').prop('checked', false); // Unchecks btn_toggle_stations_avg24hr
 				$('.pm25-legendnew').css('display', 'none');
 				$('.geos-legend').css('display', 'block');
-				$("#geos_style_table").val("ferret");
+				$("#geos_style_table").val("browse");
 				$("#hour_table").trigger('change');
 
 				var run_type = ($("#geos_run_table option:selected").val());
@@ -899,48 +900,98 @@
 						myIcon = L.ExtraMarkers.icon({
 							icon: 'fa-number',
 							number: pm2_val,
-							markerColor: 'red',
-							shape: 'square',
+							markerColor: 'pink',
+							shape: 'penta',
 							prefix: 'fa'
 						});
 					}
-					else if(pm2_val>75 && pm2_val<91){
+					else if(pm2_val>80 && pm2_val<=90){
 						color="#eda702";
 						myIcon = L.ExtraMarkers.icon({
 							icon: 'fa-number',
 							number: pm2_val,
-							markerColor: 'orange-dark',
-							shape: 'square',
+							markerColor: 'violet',
+							shape: 'penta',
 							prefix: 'fa'
 						});
 					}
-					else if(pm2_val>50 && pm2_val<75){
+					else if(pm2_val>70 && pm2_val<=80){
 						color="#eff213";
 						myIcon = L.ExtraMarkers.icon({
 							icon: 'fa-number',
 							number: pm2_val,
-							markerColor: 'green-light',
-							shape: 'square',
+							markerColor: 'purple',
+							shape: 'penta',
 							prefix: 'fa',
 							iconColor: '#aaa'
 						});
 
-					}else if(pm2_val>25 && pm2_val<50){
+					}else if(pm2_val>60 && pm2_val<=70){
 						color="#24cf1b";
 						myIcon = L.ExtraMarkers.icon({
 							icon: 'fa-number',
 							number: pm2_val,
-							markerColor: 'blue',
-							shape: 'square',
+							markerColor: 'cyan',
+							shape: 'penta',
 							prefix: 'fa'
 						});
-					}else if(pm2_val>=0 && pm2_val<26){
+					}else if(pm2_val>50 && pm2_val<=60){
 						color="#6ef0ff";
 						myIcon = L.ExtraMarkers.icon({
 							icon: 'fa-number',
 							number: pm2_val,
-							markerColor: 'violet',
-							shape: 'square',
+							markerColor: 'blue',
+							shape: 'penta',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>40 && pm2_val<=50){
+						color="#6ef0ff";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'blue-dark',
+							shape: 'penta',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>30 && pm2_val<=40){
+						color="#6ef0ff";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'yellow',
+							shape: 'penta',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>20 && pm2_val<=30){
+						color="#6ef0ff";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'orange',
+							shape: 'penta',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>10 && pm2_val<=20){
+						color="#6ef0ff";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'orange-dark',
+							shape: 'penta',
+							prefix: 'fa'
+						});
+					}
+					else if(pm2_val>=0 && pm2_val<=10){
+						color="#6ef0ff";
+						myIcon = L.ExtraMarkers.icon({
+							icon: 'fa-number',
+							number: pm2_val,
+							markerColor: 'red',
+							shape: 'penta',
 							prefix: 'fa'
 						});
 					}
@@ -950,7 +1001,7 @@
 						myIcon = L.ExtraMarkers.icon({
 							icon: 'fa-number',
 							number: pm2_val,
-							markerColor: 'orange-dark',
+							markerColor: 'orange-drak',
 							shape: 'square',
 							prefix: 'fa'
 						});
@@ -2323,7 +2374,7 @@ $(function() {
 			$scope.getPCDStation();
 			$('#btn_toggle_stations_hourly').prop('checked', true); // checks btn_toggle_stations_hourly
 			$('#btn_toggle_stations_avg24hr').prop('checked', false); // Unchecks btn_toggle_stations_avg24hr
-			$("#geos_style_table").val("ferret");
+			$("#geos_style_table").val("browse");
 			$('.pm25-legendnew').css('display', 'none');
 			$('.geos-legend').css('display', 'block');
 		}else{
