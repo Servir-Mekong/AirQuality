@@ -923,7 +923,6 @@
 							markerColor: 'purple',
 							shape: 'penta',
 							prefix: 'fa',
-							iconColor: '#aaa'
 						});
 
 					}else if(pm2_val>60 && pm2_val<=70){
@@ -972,7 +971,7 @@
 							number: pm2_val,
 							markerColor: 'orange',
 							shape: 'penta',
-							prefix: 'fa'
+							prefix: 'fa',
 						});
 					}
 					else if(pm2_val>10 && pm2_val<=20){
@@ -982,7 +981,8 @@
 							number: pm2_val,
 							markerColor: 'orange-dark',
 							shape: 'penta',
-							prefix: 'fa'
+							prefix: 'fa',
+							iconColor: '#333'
 						});
 					}
 					else if(pm2_val>=0 && pm2_val<=10){
@@ -992,7 +992,8 @@
 							number: pm2_val,
 							markerColor: 'red',
 							shape: 'penta',
-							prefix: 'fa'
+							prefix: 'fa',
+							iconColor: '#333'
 						});
 					}
 				}else{
@@ -1003,7 +1004,7 @@
 							number: pm2_val,
 							markerColor: 'orange-drak',
 							shape: 'square',
-							prefix: 'fa'
+							prefix: 'fa',
 						});
 					}
 					else if(pm2_val>50 && pm2_val<91){
@@ -1013,7 +1014,7 @@
 							number: pm2_val,
 							markerColor: 'orange',
 							shape: 'square',
-							prefix: 'fa'
+							prefix: 'fa',
 						});
 					}
 					else if(pm2_val>37 && pm2_val<51){
@@ -1024,7 +1025,7 @@
 							markerColor: 'yellow',
 							shape: 'square',
 							prefix: 'fa',
-							iconColor: '#aaa'
+							iconColor: '#333'
 						});
 
 					}else if(pm2_val>25 && pm2_val<38){
@@ -1034,7 +1035,7 @@
 							number: pm2_val,
 							markerColor: 'green-light',
 							shape: 'square',
-							prefix: 'fa'
+							prefix: 'fa',
 						});
 					}else if(pm2_val>=0 && pm2_val<26){
 						color="#6ef0ff";
@@ -1043,7 +1044,8 @@
 							number: pm2_val,
 							markerColor: 'blue-dark',
 							shape: 'square',
-							prefix: 'fa'
+							prefix: 'fa',
+							iconColor: '#333'
 						});
 					}
 				}

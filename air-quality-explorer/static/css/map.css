@@ -513,6 +513,9 @@ ul {
  .extra-marker .fa-number:before{
    font-family: 'Poppins', sans-serif;
  }
+ .fa-number .dark{
+   color: #333;
+ }
 
  .pm25_info {
      padding: 5px 2px 5px 2px;
