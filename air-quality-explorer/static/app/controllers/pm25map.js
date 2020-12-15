@@ -1002,7 +1002,7 @@
 						myIcon = L.ExtraMarkers.icon({
 							icon: 'fa-number',
 							number: pm2_val,
-							markerColor: 'orange-drak',
+							markerColor: 'orange-dark',
 							shape: 'square',
 							prefix: 'fa',
 						});
