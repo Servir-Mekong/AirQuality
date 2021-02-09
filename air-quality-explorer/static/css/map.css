@@ -11,7 +11,7 @@
  left: 45%;
  width: 8rem;
  height: 8rem;
- background: url(/static/images/spinner.gif) center center no-repeat,url(/static/images/spinner.gif) center center no-repeat;
+ background: url(/static/images/spinner.gif) center center no-repeat;
 }
 
 
@@ -544,7 +544,7 @@ ul {
 }
 
 .pm25-legend {
-  top: 0px;
+  top: 0;
   right: 270px;
   height: auto;
   position: absolute;
@@ -558,7 +558,7 @@ ul {
   margin-top: 3px;
 }
 .pm25-legendnew {
-  top: 0px;
+  top: 0;
   right: 5px;
   height: auto;
   position: absolute;

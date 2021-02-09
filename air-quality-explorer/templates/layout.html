@@ -12,7 +12,7 @@
 	<meta name="keywords" content="Air, Air Quality, Air Explorer, SERVIR MEKONG, Mekong region">
 	<title>Air Quality Explorer</title>
 	<link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
-	{% addtoblock "css" %}
+
 	<style type="text/css">
 	/** Hide when Angular is not yet loaded and initialized */
 	[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -29,7 +29,7 @@
 
 		gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
 	</script>
-
+	{% addtoblock "css" %}
 	<!-- Bootstrap Core CSS -->
 	<link href="{% static 'vendor/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.css" rel="stylesheet">
@@ -65,10 +65,13 @@
 	<link href="{% static 'vendor/nouislider/distribute/nouislider.min.css' %}" rel="stylesheet">
 	<!-- Load CSS -->
 	<!-- Custom CSS -->
+
 	<link href="{% static 'css/main.css' %}" rel="stylesheet">
 	<link href="{% static 'css/map.css' %}" rel="stylesheet">
 	<link href="{% static 'css/navigation.css' %}" rel="stylesheet">
 	<link href="{% static 'css/footer.css' %}" rel="stylesheet">
+
+
 
 	{% block extra_css %}{% endblock %}
 
@@ -167,9 +170,12 @@
 	<script src="{% static 'app/services/map.js' %}"></script>
 
 	<!-- Controllers -->
+
 	<script src="{% static 'app/controllers/settings.js' %}"></script>
 	<script src="{% static 'app/controllers/map.js' %}"></script>
 	<script src="{% static 'app/controllers/pm25map.js' %}"></script>
+
+
 
 	{% block extra_script %}{% endblock %}
 

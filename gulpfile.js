@@ -50,10 +50,7 @@ gulp.task('uglify', function () {
 	);
 
 	return gulp.src(_assets)
-		.pipe(plugins.ngAnnotate())
-		.pipe(plugins.uglify().on('error', function(err) {
-	        console.log(err);
-	    }))
+		
 		.pipe(plugins.concat('application.min.js'))
 		.pipe(gulp.dest('./air-quality-explorer/static/dist/'));
 });

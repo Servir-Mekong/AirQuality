@@ -109,7 +109,7 @@
 		var basemap_gray = L.tileLayer('https://api.mapbox.com/styles/v1/servirmekong/ckecoool62f6n19r9jrf3ldtd/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g', {
 			attribution: 'Map data &copy; <a href="https://www.mapbox.com/">MapBox</a> contributors',
 			maxZoom: 16
-		})
+		});
 		var mbAttr = 'Map data &copy; <a href="https://www.mapbox.com/">MapBox</a> contributors';
 		var mbUrl = 'https://api.mapbox.com/styles/v1/servirmekong/ckebgnyea0s8219ki3dfp8von/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g';
 
@@ -131,9 +131,41 @@
 			zIndex:99999
 		}).addTo(map);
 
+		var drawPluginOptions = {
+			draw: {
+				polygon: {
+					allowIntersection: false, // Restricts shapes to simple polygons
+					drawError: {
+						color: '#e1e100', // Color the shape will turn when intersects
+						message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+					},
+					shapeOptions: {
+						color: '#fd5a24',
+						strokeWeight: 2,
+						fillOpacity: 0
+					}
+				},
+
+				// disable toolbar item by setting it to false
+				polyline: false,
+				circle: false, // Turns off this drawing tool
+				circlemarker: false,
+				rectangle: {
+					shapeOptions: {
+						color: '#fd5a24',
+						strokeWeight: 2,
+						fillOpacity: 0
+					}
+				},
+				marker: true,
+			}
+		};
+
+		var drawControlFull = new L.Control.Draw(drawPluginOptions);
+		map.addControl(drawControlFull);
 
 		thredds_options['catalog']['fire']['monthly'].forEach(function (item, i) {
-			var opt = item.split('/').reverse()[0];;
+			var opt = item.split('/').reverse()[0];
 			opt = opt.split('.')[1];
 			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6);
 			enableDates_fire.push(newdate);
@@ -157,8 +189,6 @@
 				enableMonthsFireArray.push(dt);
 			}
 		}
-
-
 
 
 		/**
@@ -269,10 +299,10 @@
 			$('#toggle_print').removeClass("active");
 			if($('#toggle_layer_box').css("display") === "none"){
 				$('#toggle_layer_box').css("display", "block");
-				$(this).addClass("active")
+				$(this).addClass("active");
 			}else{
 				$('#toggle_layer_box').css("display", "none");
-				$(this).removeClass("active")
+				$(this).removeClass("active");
 			}
 
 		});
@@ -287,10 +317,10 @@
 			$('#toggle_print').removeClass("active");
 			if($('#download_box').css("display") === "none"){
 				$('#download_box').css("display", "block");
-				$(this).addClass("active")
+				$(this).addClass("active");
 			}else{
 				$('#download_box').css("display", "none");
-				$(this).removeClass("active")
+				$(this).removeClass("active");
 			}
 
 		});
@@ -305,10 +335,10 @@
 			$('#toggle_print').removeClass("active");
 			if($('#imagery_layer_box').css("display") === "none"){
 				$('#imagery_layer_box').css("display", "block");
-				$(this).addClass("active")
+				$(this).addClass("active");
 			}else{
 				$('#imagery_layer_box').css("display", "none");
-				$(this).removeClass("active")
+				$(this).removeClass("active");
 			}
 
 		});
@@ -323,15 +353,15 @@
 			$('#toggle_print').removeClass("active");
 			if($('#legend_box').css("display") === "none"){
 				$('#legend_box').css("display", "block");
-				$(this).addClass("active")
+				$(this).addClass("active");
 			}else{
 				$('#legend_box').css("display", "none");
-				$(this).removeClass("active")
+				$(this).removeClass("active");
 			}
 
 		});
 		$('#fire_tab').click(function(){
-			$("#opacity-slider").bootstrapSlider('setValue', 0.7)
+			$("#opacity-slider").bootstrapSlider('setValue', 0.7);
 			var opacity = $("#opacity-slider").val();
 			tdWmsAODLayer.setOpacity(0);
 			tdWmsFireLayer.setOpacity(opacity);
@@ -345,7 +375,7 @@
 			$scope.$apply();
 		});
 		$('#aod_tab').click(function(){
-			$("#opacity-slider-aod").bootstrapSlider('setValue', 0.7)
+			$("#opacity-slider-aod").bootstrapSlider('setValue', 0.7);
 			var opacity = $("#opacity-slider-aod").val();
 			tdWmsAODLayer.setOpacity(opacity);
 			tdWmsFireLayer.setOpacity(0);
@@ -412,6 +442,7 @@
 			var event = document.createEvent('Event');
 			event.initEvent('click', true, true);
 			var cb = document.getElementsByClassName('leaflet-draw-draw-marker');
+			/* jshint expr: true */
 			!cb[0].dispatchEvent(event);
 			return false;
 		});
@@ -492,10 +523,10 @@
 			$('#toggle_legend').removeClass("active");
 			if($('#print_box').css("display") === "none"){
 				$('#print_box').css("display", "block");
-				$(this).addClass("active")
+				$(this).addClass("active");
 			}else{
 				$('#print_box').css("display", "none");
-				$(this).removeClass("active")
+				$(this).removeClass("active");
 			}
 
 		});
@@ -561,7 +592,7 @@
 			$("#fire_style_table").append(fireoption);
 			$("#aod_style_table").append(aodoption);
 			$("#geos_style_table").append(geosoption);
-			if (value_txt.toUpperCase() == "PM25") {
+			if (value_txt.toUpperCase() === "PM25") {
 				geosoption.selected = true;
 				aodoption.selected = true;
 				fireoption.selected = true;
@@ -576,7 +607,7 @@
 		function converttimeZ(d){
 			var BKKTimeOffset  = 7*60; //desired time zone, taken as GMT7
 			d.setMinutes(d.getMinutes() + d.getTimezoneOffset() + BKKTimeOffset );
-			return d
+			return d;
 		}
 
 
@@ -703,7 +734,7 @@
 		});
 
 		$scope.lastDateonNoUIslider = timeSlider.noUiSlider.get()[0];
-		$scope.runDateonNoUIslider;
+		$scope.runDateonNoUIslider="";
 
 		// --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -732,9 +763,7 @@
 				// }
 				stations = result;
 				addStations();
-			}), function (error){
-				console.log(error);
-			};
+			});
 
 		};
 
@@ -765,9 +794,9 @@
 			default_forecastDate = $("#date_selector").val();
 
 
-			for (var i = 0; i < dd.options.length; i++) {
-				if (dd.options[i].text === checkDateTime) {
-					dd.selectedIndex = i;
+			for (var j = 0; j < dd.options.length; j++) {
+				if (dd.options[j].text === checkDateTime) {
+					dd.selectedIndex = j;
 					break;
 				}
 			}
@@ -823,7 +852,7 @@
 		function startTimer(duration) {
 			var timer = duration, minutes, seconds;
 			intervaltime = setInterval(function () {
-				minutes = parseInt(timer / 60, 10)
+				minutes = parseInt(timer / 60, 10);
 				seconds = parseInt(timer % 60, 10);
 
 				minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -838,7 +867,8 @@
 			clearInterval(intervaltime);
 		}
 		function playAnimation () {
-			if(playLoop > 0){var time = 2500;}else{var time=0;} //every 10 s.
+			var time = 0;
+			if(playLoop > 0){time = 2500;}else{time=0;} //every 10 s.
 			setTimeout(function () {
 				$scope.slideForward();
 				playLoop++;
@@ -853,9 +883,8 @@
 					startTimer(fiveMinutes);
 					playAnimation();
 				}
-			}, time)
+			}, time);
 		}
-
 
 		// Backward Slider
 		// $scope.slidePlay = function () {
@@ -877,12 +906,6 @@
 		//
 		//
 		// };
-
-
-
-
-
-
 
 
 		// Forward Slider fire
@@ -936,9 +959,7 @@
 			}, 500);
 		};
 
-
 		//$scope.slideForward();
-
 
 
 		var init_opacity_slider = function(){
@@ -971,13 +992,11 @@
 		};
 		init_opacity_slider();
 
-
 		var clear_coords = function(){
 			$("#point-lat-lon").val('');
 			$("#poly-lat-lon").val('');
 			$("#shp-lat-lon").val('');
 		};
-
 
 		function find_var_index(item,data){
 			var index = -1;
@@ -988,7 +1007,7 @@
 				}
 
 			}
-			return index
+			return index;
 		}
 		function handleMouseMove(e,ctx,width,height){
 			$('.tippy').removeClass('hidden');
@@ -1117,7 +1136,7 @@
 				oneMarker.pm25 = stations[i].pm25;
 				oneMarker.aqi = stations[i].aqi;
 				oneMarker.src = icon_src;
-				oneMarker.latest_date = stations[i].latest_date
+				oneMarker.latest_date = stations[i].latest_date;
 				oneMarker.addTo(markersLayer);
 			}
 			markersLayer.on("click", markerOnClick);
@@ -1130,11 +1149,11 @@
 				map.removeLayer(markersLayer);
 			}
 
-		};
+		}
 
 
 		function markerOnClick(e) {
-			if ($("#geos_run_table option:selected").val() == "geos") {
+			if ($("#geos_run_table option:selected").val() === "geos") {
 				var attributes = e.layer;
 				int_type = "Station";
 				$("#station").val(attributes.station_id + ',' + attributes.lat + ',' + attributes.lon);
@@ -1146,7 +1165,7 @@
 				$("#aqi_img").attr('src',attributes.src);
 				$("#obs_date").text(attributes.latest_date);
 			} else {
-				alert("Please select GEOS as the platform to see the chart for station.")
+				alert("Please select GEOS as the platform to see the chart for station.");
 
 			}
 		}
@@ -1178,7 +1197,7 @@
 			var link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&time=" + time + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
 			var imgsrc = link;
 
-			if (time == "") {
+			if (time === "") {
 
 				link = wmsUrl + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=" + layer_id + "&colorscalerange=" + range + "&PALETTE=" + styling + "&transparent=TRUE";
 				imgsrc = link;
@@ -1306,7 +1325,7 @@
 		$("#btn-add-compare").on('click',add_compare);
 		$("#btn-close-compare").on('click', function(){
 			$modalCompare.modal('hide');
-		})
+		});
 
 
 		//add_wms('fire','freq',rd_type,'Number_Of_Fires_All',0,50,'rainbow');
@@ -1448,7 +1467,7 @@
             content: '<div id="controls"><button id="prev">Previous Day</button><input id="date"><button id="next">Next Day</button></div>'
         });
         map.addControl(nrt_date);
-                var DATE_FORMAT = 'dd.mm.yy';
+        var DATE_FORMAT = 'dd.mm.yy';
         var strToDateUTC = function (str) {
             var date = $.datepicker.parseDate(DATE_FORMAT, str);
             return new Date(date - date.getTimezoneOffset() * 60 * 1000);
@@ -1466,8 +1485,147 @@
             $date
                 .val($.datepicker.formatDate(DATE_FORMAT, new Date(date.valueOf() + delta * oneDay)))
                 .change();
-        }
+        };
 
+				var baselayers = {};
+				var today = new Date();
+				var day = new Date(today.getTime());
+				day = $scope.selectedDate;
+				day = day[0].split(' ');
+				day = day[0];
+
+				var overlays = {
+					'MODIS_Terra_Aerosol_Optical_Depth':L.tileLayer( '//gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/' +
+					'{layer}/default/{time}/{tileMatrixSet}/{z}/{y}/{x}.jpg', {
+						layer: 'MODIS_Terra_CorrectedReflectance_TrueColor',
+						bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+						minZoom: 1,
+						maxZoom: 7,
+						format: 'png',
+						time: day,
+						tileMatrixSet: 'GoogleMapsCompatible_Level9',
+						opacity: 1,
+						tileSize: 256,
+						subdomains: 'abc',
+						noWrap: true,
+						continuousWorld: true
+					}),
+					'MODIS_Aqua_Aerosol_Optical_Depth':L.tileLayer( '//gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/' +
+					'{layer}/default/{time}/{tileMatrixSet}/{z}/{y}/{x}.jpg', {
+						layer: 'MODIS_Aqua_CorrectedReflectance_TrueColor',
+						bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+						minZoom: 1,
+						maxZoom: 7,
+						format: 'png',
+						time: day,
+						tileMatrixSet: 'GoogleMapsCompatible_Level9',
+						opacity: 1,
+						tileSize: 256,
+						subdomains: 'abc',
+						noWrap: true,
+						continuousWorld: true
+					}),
+					'VIIRS_SNPP_CorrectedReflectance_TrueColor':L.tileLayer( '//gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/' +
+					'{layer}/default/{time}/{tileMatrixSet}/{z}/{y}/{x}.jpg', {
+						layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
+						bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+						minZoom: 1,
+						maxZoom: 7,
+						format: 'png',
+						time: day,
+						tileMatrixSet: 'GoogleMapsCompatible_Level9',
+						opacity: 1,
+						tileSize: 256,
+						subdomains: 'abc',
+						noWrap: true,
+						continuousWorld: true
+					}),
+					'MODIS_Terra_AOD_DB_Combined':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
+						layer: 'MODIS_Terra_AOD_Deep_Blue_Combined',
+						bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+						minZoom: 1,
+						maxZoom: 9,
+						format: 'png',
+						time: day,
+						TileMatrixSet: 'GoogleMapsCompatible_Level6',
+						opacity: 1,
+						name:'MODIS_Terra_Aerosol_Optical_Depth',
+						subdomains: 'abc',
+						noWrap: true,
+						continuousWorld: true
+					}),
+					'MODIS_Aqua_AOD_DB_Combined':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
+						layer: 'MODIS_Aqua_AOD_Deep_Blue_Combined',
+						bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+						minZoom: 1,
+						maxZoom: 9,
+						format: 'png',
+						time: day,
+						TileMatrixSet: 'GoogleMapsCompatible_Level6',
+						opacity: 1,
+						name:'MODIS_Aqua_Aerosol_Optical_Depth',
+						subdomains: 'abc',
+						noWrap: true,
+						continuousWorld: true
+					}),
+					'OMPS_Aerosol_Index':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
+						layer: 'OMPS_Aerosol_Index',
+						bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+						minZoom: 1,
+						maxZoom: 9,
+						format: 'png',
+						time: day,
+						TileMatrixSet: 'GoogleMapsCompatible_Level6',
+						opacity: 1,
+						name:'OMPS_Aerosol_Index',
+						subdomains: 'abc',
+						noWrap: true,
+						continuousWorld: true
+					}),
+					'MODIS_Terra_AOD_Deep_Blue_Land':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
+						layer: 'MODIS_Terra_AOD_Deep_Blue_Land',
+						bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+						minZoom: 1,
+						maxZoom: 9,
+						format: 'png',
+						time: day,
+						TileMatrixSet: 'GoogleMapsCompatible_Level6',
+						opacity: 1,
+						name:'MODIS_Terra_AOD_Deep_Blue_Land',
+						subdomains: 'abc',
+						noWrap: true,
+						continuousWorld: true
+					}),
+					'MODIS_Aqua_AOD_Deep_Blue_Land':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
+						layer: 'MODIS_Aqua_AOD_Deep_Blue_Land',
+						bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+						minZoom: 1,
+						maxZoom: 9,
+						format: 'png',
+						time: day,
+						TileMatrixSet: 'GoogleMapsCompatible_Level6',
+						opacity: 1,
+						name:'MODIS_Aqua_AOD_Deep_Blue_Land',
+						subdomains: 'abc',
+						noWrap: true,
+						continuousWorld: true
+					}),
+					'FIRES_VIIRS_24':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
+						layers:'fires_viirs_24',
+						format: 'image/png',
+						time:day,
+						transparent: true,
+						pane: 'fire24Layer'
+					}),
+					'FIRES_VIIRS_48':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
+						layers:'fires_viirs_48',
+						format: 'image/png',
+						time:day,
+						transparent: true,
+						pane: 'fire48Layer'
+					}),
+
+				};
 
         // Control date navigation for GIBS WMS layers, adjust the options.time and redraw. Exclude FIRE VIIRS layers (not time-enabled)
         $date.datepicker({
@@ -1482,161 +1640,8 @@
 
             }
         });
-            document.getElementById("prev").onclick = alterDate.bind(null, -1);
-            document.getElementById("next").onclick = alterDate.bind(null, 1);
-
-		var baselayers = {};
-		var today = new Date();
-		var day = new Date(today.getTime());
-		day = $scope.selectedDate;
-		day = day[0].split(' ');
-		day = day[0];
-
-		var DATE_FORMAT = 'dd.mm.yy';
-		var strToDateUTC = function(str) {
-			var date = $.datepicker.parseDate(DATE_FORMAT, str);
-			return new Date(date - date.getTimezoneOffset()*60*1000);
-		};
-		var $date = $('#date');
-		var now = new Date();
-		var oneDay = 1000*60*60*24, // milliseconds in one day
-		startTimestamp = now.getTime() - oneDay + now.getTimezoneOffset()*60*1000,
-		startDate = new Date(startTimestamp); //previous day
-
-		$date.val($.datepicker.formatDate(DATE_FORMAT, startDate));
-
-		var overlays = {
-			'MODIS_Terra_Aerosol_Optical_Depth':L.tileLayer( '//gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/' +
-			'{layer}/default/{time}/{tileMatrixSet}/{z}/{y}/{x}.jpg', {
-				layer: 'MODIS_Terra_CorrectedReflectance_TrueColor',
-				bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-				minZoom: 1,
-				maxZoom: 7,
-				format: 'png',
-				time: day,
-				tileMatrixSet: 'GoogleMapsCompatible_Level9',
-				opacity: 1,
-				tileSize: 256,
-				subdomains: 'abc',
-				noWrap: true,
-				continuousWorld: true
-			}),
-			'MODIS_Aqua_Aerosol_Optical_Depth':L.tileLayer( '//gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/' +
-			'{layer}/default/{time}/{tileMatrixSet}/{z}/{y}/{x}.jpg', {
-				layer: 'MODIS_Aqua_CorrectedReflectance_TrueColor',
-				bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-				minZoom: 1,
-				maxZoom: 7,
-				format: 'png',
-				time: day,
-				tileMatrixSet: 'GoogleMapsCompatible_Level9',
-				opacity: 1,
-				tileSize: 256,
-				subdomains: 'abc',
-				noWrap: true,
-				continuousWorld: true
-			}),
-			'VIIRS_SNPP_CorrectedReflectance_TrueColor':L.tileLayer( '//gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/' +
-			'{layer}/default/{time}/{tileMatrixSet}/{z}/{y}/{x}.jpg', {
-				layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
-				bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-				minZoom: 1,
-				maxZoom: 7,
-				format: 'png',
-				time: day,
-				tileMatrixSet: 'GoogleMapsCompatible_Level9',
-				opacity: 1,
-				tileSize: 256,
-				subdomains: 'abc',
-				noWrap: true,
-				continuousWorld: true
-			}),
-			'MODIS_Terra_AOD_DB_Combined':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
-				layer: 'MODIS_Terra_AOD_Deep_Blue_Combined',
-				bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-				minZoom: 1,
-				maxZoom: 9,
-				format: 'png',
-				time: day,
-				TileMatrixSet: 'GoogleMapsCompatible_Level6',
-				opacity: 1,
-				name:'MODIS_Terra_Aerosol_Optical_Depth',
-				subdomains: 'abc',
-				noWrap: true,
-				continuousWorld: true
-			}),
-			'MODIS_Aqua_AOD_DB_Combined':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
-				layer: 'MODIS_Aqua_AOD_Deep_Blue_Combined',
-				bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-				minZoom: 1,
-				maxZoom: 9,
-				format: 'png',
-				time: day,
-				TileMatrixSet: 'GoogleMapsCompatible_Level6',
-				opacity: 1,
-				name:'MODIS_Aqua_Aerosol_Optical_Depth',
-				subdomains: 'abc',
-				noWrap: true,
-				continuousWorld: true
-			}),
-			'OMPS_Aerosol_Index':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
-				layer: 'OMPS_Aerosol_Index',
-				bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-				minZoom: 1,
-				maxZoom: 9,
-				format: 'png',
-				time: day,
-				TileMatrixSet: 'GoogleMapsCompatible_Level6',
-				opacity: 1,
-				name:'OMPS_Aerosol_Index',
-				subdomains: 'abc',
-				noWrap: true,
-				continuousWorld: true
-			}),
-			'MODIS_Terra_AOD_Deep_Blue_Land':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
-				layer: 'MODIS_Terra_AOD_Deep_Blue_Land',
-				bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-				minZoom: 1,
-				maxZoom: 9,
-				format: 'png',
-				time: day,
-				TileMatrixSet: 'GoogleMapsCompatible_Level6',
-				opacity: 1,
-				name:'MODIS_Terra_AOD_Deep_Blue_Land',
-				subdomains: 'abc',
-				noWrap: true,
-				continuousWorld: true
-			}),
-			'MODIS_Aqua_AOD_Deep_Blue_Land':L.tileLayer( "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/{layer}/default/{time}/{TileMatrixSet}/{z}/{y}/{x}.png", {
-				layer: 'MODIS_Aqua_AOD_Deep_Blue_Land',
-				bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-				minZoom: 1,
-				maxZoom: 9,
-				format: 'png',
-				time: day,
-				TileMatrixSet: 'GoogleMapsCompatible_Level6',
-				opacity: 1,
-				name:'MODIS_Aqua_AOD_Deep_Blue_Land',
-				subdomains: 'abc',
-				noWrap: true,
-				continuousWorld: true
-			}),
-			'FIRES_VIIRS_24':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=c135d300c93ef6c81f32f095073a9a7d",{
-				layers:'fires_viirs_24',
-				format: 'image/png',
-				time:day,
-				transparent: true,
-				pane: 'fire24Layer'
-			}),
-			'FIRES_VIIRS_48':L.tileLayer.wms("https://firms.modaps.eosdis.nasa.gov/wms/?MAP_KEY=37601af187a7c4054759a42043b19adc",{
-				layers:'fires_viirs_48',
-				format: 'image/png',
-				time:day,
-				transparent: true,
-				pane: 'fire48Layer'
-			}),
-
-		};
+      document.getElementById("prev").onclick = alterDate.bind(null, -1);
+      document.getElementById("next").onclick = alterDate.bind(null, 1);
 
 		var layersControl = L.control.layers.minimap(baselayers, overlays, {
 			collapsed: true
@@ -1653,47 +1658,13 @@
 			cql_filter: "NAME_0 IN ('Thailand', 'Laos', 'Myanmar', 'Vietnam', 'Cambodia')"
 
 		});
-		var drawPluginOptions = {
-			draw: {
-				polygon: {
-					allowIntersection: false, // Restricts shapes to simple polygons
-					drawError: {
-						color: '#e1e100', // Color the shape will turn when intersects
-						message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-					},
-					shapeOptions: {
-						color: '#fd5a24',
-						strokeWeight: 2,
-						fillOpacity: 0
-					}
-				},
-
-				// disable toolbar item by setting it to false
-				polyline: false,
-				circle: false, // Turns off this drawing tool
-				circlemarker: false,
-				rectangle: {
-					shapeOptions: {
-						color: '#fd5a24',
-						strokeWeight: 2,
-						fillOpacity: 0
-					}
-				},
-				marker: true,
-			}
-		};
-
-		var drawControlFull = new L.Control.Draw(drawPluginOptions);
-
-		map.addControl(drawControlFull);
-
 
 		var customActionToPrint = function (context, mode) {
 			return function () {
 				//window.alert("Please check if any overlays are selected before you print..");
 				context._printLandscape(mode);
-			}
-		}
+			};
+		};
 
 		L.control.browserPrint({
 			title: 'Air quality Print',
@@ -1881,23 +1852,25 @@
 		get_ts = function () {
 
 			var interaction = int_type;
-			if (interaction == "Station") {
-			} else if ($("#poly-lat-lon").val() == "" && $("#point-lat-lon").val() == "" && $("#shp-lat-lon").val() == "") {
+			if (interaction === "Station") {
+			} else if ($("#poly-lat-lon").val() === "" && $("#point-lat-lon").val() === "" && $("#shp-lat-lon").val() === "") {
 				// $('.error').html('<b>No feature selected. Please create a feature using the map interaction dropdown. Plot cannot be generated without a feature.</b>');
 				return false;
 			} else {
 				$('.error').html('');
 			}
 
+			var run_type = '';
+			var freq = '';
+			var rd_type = '';
+			var var_type = '';
 
 			if($scope.toggle_geos){
-				var run_type = ($("#geos_run_table option:selected").val());
-				var freq = ($("#geos_freq_table option:selected").val());
-				var rd_type = ($("#geos_rd_table option:selected").text());
-				var var_type = ($("#geos_var_table option:selected").val());
-				var z = rd_type.split('/').reverse()[0];
+				run_type = ($("#geos_run_table option:selected").val());
+				freq = ($("#geos_freq_table option:selected").val());
+				var_type = ($("#geos_var_table option:selected").val());
 
-				var rd_type = ($("#geos_rd_table option:selected").val());
+				rd_type = ($("#geos_rd_table option:selected").val());
 				var z = rd_type.split('/').reverse()[0];
 				var y = ($("#date_selector").val());
 				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
@@ -1906,33 +1879,31 @@
 				// rd_type = rd_type.replace(z, y.split('/').reverse()[0]);
 				rd_type = rd_type.split('/').reverse()[0];
 			}else if($scope.toggle_fire){
-				var run_type = 'fire';
-				var freq = ($("#fire_freq_table option:selected").val());
-				var rd_type = ($("#fire_rd_table option:selected").text());
-				var var_type = ($("#fire_var_table option:selected").val());
+				run_type = 'fire';
+				freq = ($("#fire_freq_table option:selected").val());
+				rd_type = ($("#fire_rd_table option:selected").text());
+				var_type = ($("#fire_var_table option:selected").val());
 			}else if($scope.toggle_aod){
-				var run_type = ($("#aod_run_table option:selected").val());
-				var freq = ($("#aod_freq_table option:selected").val());
-				var rd_type = ($("#aod_rd_table option:selected").text());
-				var var_type = ($("#aod_var_table option:selected").val());
+				run_type = ($("#aod_run_table option:selected").val());
+				freq = ($("#aod_freq_table option:selected").val());
+				rd_type = ($("#aod_rd_table option:selected").text());
+				var_type = ($("#aod_var_table option:selected").val());
 			}
 
-
-			if (interaction == "Point") {
-				var geom_data = $("#point-lat-lon").val();
-			} else if (interaction == "Polygon") {
-				var geom_data = $("#poly-lat-lon").val();
-			} else if (interaction == "Station") {
-				var geom_data = $("#station").val();
-				var run_type = ($("#geos_run_table option:selected").val());
-				var freq = ($("#geos_freq_table option:selected").val());
-				var rd_type = ($("#geos_rd_table option:selected").text());
-				var var_type = ($("#geos_var_table option:selected").val());
-				var z = rd_type.split('/').reverse()[0];
-				var rd_type = ($("#geos_rd_table option:selected").val());
-				var z = rd_type.split('/').reverse()[0];
-				var y = ($("#date_selector").val());
-				rd_type = rd_type.replace(z, y.replace('-', '').replace('-', '') + '.nc');
+			var geom_data = '';
+			if (interaction === "Point") {
+				geom_data = $("#point-lat-lon").val();
+			} else if (interaction === "Polygon") {
+				geom_data = $("#poly-lat-lon").val();
+			} else if (interaction === "Station") {
+				geom_data = $("#station").val();
+				run_type = ($("#geos_run_table option:selected").val());
+				freq = ($("#geos_freq_table option:selected").val());
+				var_type = ($("#geos_var_table option:selected").val());
+				rd_type = ($("#geos_rd_table option:selected").val());
+				var _date = rd_type.split('/').reverse()[0];
+				var _selected_date = ($("#date_selector").val());
+				rd_type = rd_type.replace(_date, _selected_date.replace('-', '').replace('-', '') + '.nc');
 				rd_type = rd_type.split('/').reverse()[0];
 			}
 			$('.forpm25').css("display", 'none');
@@ -1952,14 +1923,14 @@
 
 			MapService.getChartData(parameters)
 			.then(function (result){
-				if (interaction == "Station") {
+				if (interaction === "Station") {
 					var values = result.data["field_data"];
 					var forecast_values = result.data["bc_mlpm25"];
 					var firstday = rd_type.substring(0, 4) + '-' + rd_type.substring(4, 6) + '-' + rd_type.substring(6, 8);
 					var d1 = new Date(firstday);
 					var date1 = d1.toISOString().split('T')[0];
 					d1.setDate(d1.getDate() + 1);
-					var d2 = new Date(firstday)
+					var d2 = new Date(firstday);
 					d2.setDate(d2.getDate() + 2);
 					var secondday = d1.toISOString().split('T')[0];
 					var thirdday = d2.toISOString().split('T')[0];
@@ -1971,19 +1942,21 @@
 					document.getElementById("day3_guage").innerHTML = thirdday;
 
 					//     populateValues(values);
-					field_day1_avg = 0
+					field_day1_avg = 0;
 					field_day2_avg = 0;
 					field_day3_avg = 0;
 
-					forecast_day1_avg = 0
+					forecast_day1_avg = 0;
 					forecast_day2_avg = 0;
 					forecast_day3_avg = 0;
-					sum1 = 0, sum2 = 0, sum3 = 0;
-					var count1 = 0, count2 = 0, count3 = 0
+					var sum1 = 0;
+					var sum2 = 0;
+					var sum3 = 0;
+					var count1 = 0, count2 = 0, count3 = 0;
 					for (var i = 0; i < 8; i++) {
-						if (values[i] != -1) count1 = count1 + 1;
-						if (values[i + 8] != -1) count2 = count2 + 1;
-						if (values[i + 16] != -1) count3 = count3 + 1;
+						if (values[i] !== -1) count1 = count1 + 1;
+						if (values[i + 8] !== -1) count2 = count2 + 1;
+						if (values[i + 16] !== -1) count3 = count3 + 1;
 
 						sum1 = sum1 + (values[i] ? values[i][1] : 0);
 						sum2 = sum2 + (values[i + 8] ? values[i + 8][1] : 0);
@@ -1993,19 +1966,22 @@
 					field_day1_avg = sum1 / count1;
 					field_day2_avg = sum2 / count2;
 					field_day3_avg = sum3 / count3;
-					sum1 = 0, sum2 = 0, sum3 = 0;
-					count1 = 0, count2 = 0, count3 = 0
-					for (var i = 0; i < 8; i++) {
-
-						if (i >= 2 && forecast_values[i] != -1) {
+					sum1 = 0;
+					sum2 = 0;
+					sum3 = 0;
+					count1 = 0;
+					count2 = 0;
+					count3 = 0;
+					for (var j = 0; j < 8; j++) {
+						if (j >= 2 && forecast_values[j] !== -1) {
 							count1 = count1 + 1;
-							sum1 = sum1 + (forecast_values[i] ? forecast_values[i][1] : 0);
+							sum1 = sum1 + (forecast_values[j] ? forecast_values[j][1] : 0);
 						}
-						if (forecast_values[i + 8] != -1) count2 = count2 + 1;
-						sum2 = sum2 + (forecast_values[i + 8] ? forecast_values[i + 8][1] : 0);
-						if ((i + 16) < 22 && forecast_values[i + 16] != -1) {
+						if (forecast_values[j + 8] !== -1) count2 = count2 + 1;
+						sum2 = sum2 + (forecast_values[j + 8] ? forecast_values[j + 8][1] : 0);
+						if ((j + 16) < 22 && forecast_values[j + 16] !== -1) {
 							count3 = count3 + 1;
-							sum3 = sum3 + (forecast_values[i + 16] ? forecast_values[i + 16][1] : 0);
+							sum3 = sum3 + (forecast_values[j + 16] ? forecast_values[j + 16][1] : 0);
 						}
 
 
@@ -2029,13 +2005,13 @@
 				var arr = [];
 				var title = "";
 				var index = find_var_index(var_type, var_options);
-				var display_name = var_options[index]["display_name"] == "BC_MLPM25" ? "PM 2.5" : var_options[index]["display_name"];
+				var display_name = var_options[index]["display_name"] === "BC_MLPM25" ? "PM 2.5" : var_options[index]["display_name"];
 				var units = var_options[index]["units"];
-				if (units == 'mcgm-3') {
+				if (units === 'mcgm-3') {
 					units = '&micro;gm<sup>-3</sup>';
 				}
 
-				if (interaction == "Station") {
+				if (interaction === "Station") {
 					document.getElementsByClassName("forpm25")[0].style.display = 'table';
 					document.getElementsByClassName("forpm25")[1].style.display = 'table';
 					// document.getElementsByClassName("forpm25")[2].style.display = 'table';
@@ -2092,7 +2068,7 @@
 	}];
 	document.getElementById('pmlabel').style.display="none";
 }
-if (interaction == "Station") {
+if (interaction === "Station") {
 
 	arr = [{
 		color: "#6ef0ff",
@@ -2124,7 +2100,7 @@ if (interaction == "Station") {
 } else {
 		arr = [];
 
-		if(result.data["geom"][2]!=undefined)
+		if(result.data["geom"][2]!==undefined)
 			title = $scope.var_type + " values at Lat (min, max) - (" + result.data["geom"][0]+", "+result.data["geom"][2]+") and Lon (min, max) - ("+result.data["geom"][1]+", "+result.data["geom"][3] +")";
 		else
 			title = $scope.var_type + " values at Lat: " + result.data["geom"][0]+", Lon: "+result.data["geom"][1];
@@ -2218,11 +2194,7 @@ $('#plotter').highcharts({
 $("#cube").addClass('hidden');
 $("#plotter").removeClass('hidden');
 
-
-
-}), function (error){
-	console.log(error);
-};
+});
 
 };
 
@@ -2253,8 +2225,7 @@ get_times = function (rd_type) {
 			var date_text = date.toISOString().replace('T', ' ').replace('.000Z', '');
 			var opt = new Option(date_text, date_val.toISOString());
 
-			$scope.selectedDate;
-			var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
+			date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
 			//var date = new Date($scope.selectedDate[0].split(" ")[0]);
 			date.setDate(date.getDate());
 			date = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
@@ -2297,9 +2268,7 @@ get_times = function (rd_type) {
 		});
 
 		$("#hour_table").trigger('change');
-	}), function (error){
-		console.log(error);
-	};
+	});
 };
 
 $(function() {
@@ -2335,7 +2304,7 @@ $(function() {
 
 
 		thredds_options['catalog'][run_type]['monthly'].forEach(function (item, i) {
-			var opt = item.split('/').reverse()[0];;
+			var opt = item.split('/').reverse()[0];
 			opt = opt.split('.')[1];
 			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6);
 			enableDates_aod.push(newdate);
@@ -2433,13 +2402,15 @@ $(function() {
 		var rmin = $("#aod_range-min").val();
 		var rmax = $("#aod_range-max").val();
 		time_global = "";
+		var parameter_url = "";
+		var rd_type = "";
 		if(run_type.toUpperCase() === 'AOD_AQUA'){
-			var parameter_url = "mk_aqx/" + run_type;
-			var rd_type = parameter_url + "/MYD04_L2."+ datetime +".MEKONG.nc";
+			parameter_url = "mk_aqx/" + run_type;
+			rd_type = parameter_url + "/MYD04_L2."+ datetime +".MEKONG.nc";
 		}
 		if(run_type.toUpperCase() === 'AOD_TERRA'){
-			var parameter_url = "mk_aqx/"+ run_type;
-			var rd_type = parameter_url + "/MOD04_L2."+ datetime +".MEKONG.nc";
+			parameter_url = "mk_aqx/"+ run_type;
+			rd_type = parameter_url + "/MOD04_L2."+ datetime +".MEKONG.nc";
 		}
 		add_wms(run_type,freq,rd_type,var_type,rmin,rmax,style);
 	}).change();
@@ -2473,13 +2444,14 @@ $(function() {
 		$("#rrd_table").html('');
 		$("#lvar_table").html('');
 		$("#rvar_table").html('');
+		var new_option = "";
 		$.each(thredds_options['catalog'][run_type], function (item, i) {
-			if ((item == '3dayrecent') && (run_type == "geos")) {
+			if ((item === '3dayrecent') && (run_type === "geos")) {
 
-				var new_option = new Option(item, item);
+				new_option = new Option(item, item);
 				$("#geos_freq_table").append(new_option);
-			} else if (item == 'combined') {
-				var new_option = new Option(item, item);
+			} else if (item === 'combined') {
+				new_option = new Option(item, item);
 				$("#geos_freq_table").append(new_option);
 			}
 		});
@@ -2496,14 +2468,16 @@ $(function() {
 		}
 
 		var_options.forEach(function (item, i) {
-			if (item["category"] == run_type) {
+			var noption= "";
+			var new_option ="";
+			if (item["category"] === run_type) {
 
 				if(item["display_name"] === "BC_MLPM25"){
-					var noption = new Option("PM 2.5", item["id"]);
-					var new_option = new Option(item["display_name"]);
+					noption = new Option("PM 2.5", item["id"]);
+					new_option = new Option(item["display_name"]);
 				}else{
-					var noption = new Option(item["display_name"], item["id"]);
-					var new_option = new Option(item["display_name"]);
+					noption = new Option(item["display_name"], item["id"]);
+					new_option = new Option(item["display_name"]);
 				}
 
 				$("#lvar_table").append(new_option);
@@ -2545,8 +2519,8 @@ $(function() {
 
 			var opt = item.split('/').reverse()[0];
 			var newdate = opt.substring(0, 4) + '-' + opt.substring(4, 6) + '-' + opt.substring(6, 8);
-			enableDates.push(newdate)
-			if (run_type == "geos") {
+			enableDates.push(newdate);
+			if (run_type === "geos") {
 				var new_option2 = new Option(newdate, item);
 
 				$("#date_table").append(new_option2);
@@ -2557,11 +2531,11 @@ $(function() {
 		$("#geos_var_table").html('');
 
 		var_options.forEach(function (item, i) {
-			if (item["category"] == run_type) {
-				var value = item["display_name"] == "BC_MLPM25" ? "PM 2.5" : item["display_name"];
+			if (item["category"] === run_type) {
+				var value = item["display_name"] === "BC_MLPM25" ? "PM 2.5" : item["display_name"];
 				var new_option = new Option(value, item["id"]);
 				$("#geos_var_table").append(new_option);
-				if (item["id"].toUpperCase() == "BC_MLPM25") {
+				if (item["id"].toUpperCase() === "BC_MLPM25") {
 					new_option.selected = true;
 				}
 			}
@@ -2602,8 +2576,6 @@ $(function() {
 
 	$("#date_selector_fire").datepicker("setDate", enableMonthsFireArray[0]);
 
-
-	var recent_date = enableDates[0];
 	$("#date_selector").datepicker("destroy");
 	for (var i = 0; i < enableDates.length; i++) {
 		var dt = enableDates[i];
@@ -2649,7 +2621,7 @@ $(function() {
 	$("#date_selector").change(function () {
 
 		var run_type = ($("#geos_run_table option:selected").val());
-		if (run_type == "geos") {
+		if (run_type === "geos") {
 			var datestr = ($("#date_table option:selected").val().split('/').reverse()[0]);
 			datestr = datestr.substring(0, 4) + '-' + datestr.substring(4, 6) + '-' + datestr.substring(6, 8);
 			//$('#info').text("Displaying " + datestr + " data on the map..");
@@ -2679,7 +2651,6 @@ $(function() {
 			date_arr.push(dd.options[i].text);
 		}
 
-		$scope.selectedDate;
 		// var date = converttimeZ(new Date($scope.selectedDate[0].split(" ")[0]));
 		// //var date = new Date($scope.selectedDate[0].split(" ")[0]);
 		// date.setDate(date.getDate());
@@ -2796,7 +2767,6 @@ $(function() {
 	//update Fire WMS layer when fire range max value is change
 	$("#fire_range-max").on('change',function(){
 		var freq = ($("#fire_freq_table option:selected").val());
-		var rd_type = ($("#fire_rd_table option:selected").val());
 		var parameter_url = "mk_aqx/fire/";
 		var datetime = $("#date_selector_fire").val().replace('-','');
 		var rd_type = parameter_url + "MCD14ML."+ datetime +"..MEKONG.nc";
@@ -2822,7 +2792,7 @@ $(function() {
 
 
 	$.each(thredds_options['catalog'], function(item,i){
-		if (item.toUpperCase() != "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase() != "GEOS_TAVG3_2D_AER_NX") {
+		if (item.toUpperCase() !== "GEOS_TAVG1_2D_SLV_NX" && item.toUpperCase() !== "GEOS_TAVG3_2D_AER_NX") {
 			var new_option = new Option(item.toUpperCase(),item);
 			var noption = new Option(item.toUpperCase(),item);
 			var noption2 = new Option(item.toUpperCase(),item);
@@ -2854,11 +2824,12 @@ $(function() {
 		}
 
 		var_options.forEach(function (item, i) {
-			if (item["category"] == run_type) {
+			var new_option = "";
+			if (item["category"] === run_type) {
 				if(item["display_name"] === "BC_MLPM25"){
-					var new_option = new Option("PM 2.5", item["id"]);
+					new_option = new Option("PM 2.5", item["id"]);
 				}else{
-					var new_option = new Option(item["display_name"], item["id"]);
+					new_option = new Option(item["display_name"], item["id"]);
 				}
 
 				$("#lvar_table").append(new_option);
@@ -2890,11 +2861,12 @@ $(function() {
 			}
 		}
 		var_options.forEach(function (item, i) {
-			if (item["category"] == run_type) {
+			var new_option = "";
+			if (item["category"] === run_type) {
 				if(item["display_name"] === "BC_MLPM25"){
-					var new_option = new Option("PM 2.5", item["id"]);
+					new_option = new Option("PM 2.5", item["id"]);
 				}else{
-					var new_option = new Option(item["display_name"], item["id"]);
+					new_option = new Option(item["display_name"], item["id"]);
 				}
 
 				$("#rvar_table").append(new_option);
@@ -2933,13 +2905,13 @@ $(function() {
 	$("#btn-download-aod").click(function(){
 		var fileUrl = threddss_wms_url.replace('wms','fileServer');
 		var run_type = $("#aod_run_table option:selected").val();
-
+		var filename = "";
 		if(run_type==='aod_terra'){
 			// /thredds/fileServer/mk_aqx/aod_aqua/MYD04_L2.201902.MEKONG.nc
-			var filename = 'MOD04_L2.'+($("#date_selector_aod").val().replace('-',''))+'.MEKONG.nc';
+			filename = 'MOD04_L2.'+($("#date_selector_aod").val().replace('-',''))+'.MEKONG.nc';
 		}else{
 			 // /thredds/fileServer/mk_aqx/aod_terra/MOD04_L2.201801.MEKONG.nc
-			var filename = 'MYD04_L2.'+($("#date_selector_aod").val().replace('-',''))+'.MEKONG.nc';
+			filename = 'MYD04_L2.'+($("#date_selector_aod").val().replace('-',''))+'.MEKONG.nc';
 		}
 
 		var downUrl = fileUrl+'mk_aqx/'+run_type+'/'+filename;

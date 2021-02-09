@@ -7,7 +7,7 @@
 	"noarg": true, // Prohibit use of `arguments.caller` and `arguments.callee`.
 	"undef": true, // Require all non-global variables be declared before they are used.
 	"unused": false, // Warn unused variables.
-	"strict": true, // Require `use strict` pragma in every file.
+	"strict": false, // Require `use strict` pragma in every file.
 	"sub":true,
 	"globals": {
 		// Globals variables.
@@ -24,7 +24,14 @@
 		"toGeoJSON": true,
 		"Option": true,
 		"dateFormat": true,
-		"canvas": true
+		"canvas": true,
+		"noUiSlider": true,
+		"tooltipInput_fire": true,
+		"timeSlider_fire": true,
+		"tooltipInput_aod": true,
+		"timeSlider_aod": true,
+		"zingchart": true,
+		"fetch": true
 	},
 	"predef": [ // Extra globals.
 		"inject",

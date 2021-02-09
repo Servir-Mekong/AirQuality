@@ -7,7 +7,9 @@ module.exports = {
         ],
         js: [
             'air-quality-explorer/static/app/*.js',
-            'air-quality-explorer/static/app/**/*.js'
+            'air-quality-explorer/static/app/config/*.js',
+            'air-quality-explorer/static/app/controllers/*.js',
+            'air-quality-explorer/static/app/services/map.js',
         ],
         views: [
             'air-quality-explorer/templates/*.html',
