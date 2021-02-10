@@ -1,7 +1,5 @@
 (function () {
-
 	'use strict';
-
 	angular.module('baseApp')
 	.service('MapService', function ($http, $q) {
 		var service = this;
@@ -49,8 +47,6 @@
 			return promise;
 		};
 
-
-
 		service.getChartData = function (options) {
 			var config = {
 				params: {
@@ -69,8 +65,6 @@
 			});
 			return promise;
 		};
-
-
 	});
 
 })();
