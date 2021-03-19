@@ -168,31 +168,7 @@
 		var firmIcon = "https://earthdata.nasa.gov/media/firms-google-earth-fire-icon.png";
 		var firmCustomIcon = "https://aqatmekong-servir.adpc.net/static/images/fire-firms.png";
 
-		// Load VIIRS active fire 24kml file
-		fetch('/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_24h.kml')
-		.then(res => res.text())
-		.then(kmltext => {
-			// Create new kml overlay
-			var parser = new DOMParser();
-			//change firms icon
-			kmltext = kmltext.replace(firmIcon, firmCustomIcon).replace(firmIcon, firmCustomIcon);
-			var kml = parser.parseFromString(kmltext, 'text/xml');
-			fire_24 = new L.KML(kml);
-		});
 
-
-		// Load VIIRS active fire 48 kml file
-		fetch('/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_48h.kml')
-		.then(res => res.text())
-		.then(kmltext => {
-			// Create new kml overlay
-			var parser = new DOMParser();
-			//change firms icon
-			kmltext = kmltext.replace(firmIcon, firmCustomIcon).replace(firmIcon, firmCustomIcon);
-			var kml = parser.parseFromString(kmltext, 'text/xml');
-			fire_48 = new L.KML(kml);
-
-		});
 
 
 
@@ -325,6 +301,7 @@
 				map.removeControl(fire_24);
 			}
 			if ($(this).is(':checked')) {
+				$scope.showLoader = true;
 				map.addLayer(fire_24);
 			}
 		});
@@ -2395,6 +2372,31 @@
 			$("#tab-geos").click();
 
 			$( document ).ready(function() {
+				// Load VIIRS active fire 24kml file
+				fetch('/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_24h.kml')
+				.then(res => res.text())
+				.then(kmltext => {
+					// Create new kml overlay
+					var parser = new DOMParser();
+					//change firms icon
+					kmltext = kmltext.replace(firmIcon, firmCustomIcon).replace(firmIcon, firmCustomIcon);
+					var kml = parser.parseFromString(kmltext, 'text/xml');
+					fire_24 = new L.KML(kml);
+				});
+
+				// Load VIIRS active fire 48 kml file
+				fetch('/static/data/active_fire/SUOMI_VIIRS_C2_SouthEast_Asia_48h.kml')
+				.then(res => res.text())
+				.then(kmltext => {
+					// Create new kml overlay
+					var parser = new DOMParser();
+					//change firms icon
+					kmltext = kmltext.replace(firmIcon, firmCustomIcon).replace(firmIcon, firmCustomIcon);
+					var kml = parser.parseFromString(kmltext, 'text/xml');
+					fire_48 = new L.KML(kml);
+
+				});
+
 				$("#changeLangTH").click();
 				$(".pcd").css("display", "block");
 				$(".gistda").css("display", "block");
