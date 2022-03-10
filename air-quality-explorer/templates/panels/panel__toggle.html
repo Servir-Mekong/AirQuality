@@ -1,5 +1,5 @@
 {% load cms_tags staticfiles %}
-<div id="toggle_layer_box" class="map-panel__toggle--panel" style="display: block;">
+<div id="toggle_layer_box" class="map-panel__toggle--panel">
     <p>[['Toggle layer visibility' | translate]]</p>
     <ul class="toggles-list">
         <li class="toggle" ng-show="toggle_fire">
@@ -55,10 +55,9 @@
             </label>
             <label>[['Satellite' | translate]]</label>
         </li>
-
     </ul>
-
 </div>
+
 <div id="download_box" class="map-panel__toggle--panel" style="display: none;">
     <p>[['Download the netCDF file(s)' | translate]]</p>
     <ul class="toggles-list">
@@ -99,13 +98,11 @@
             <label class="download-label">[[ 'GEOS' | translate]]</label>
         </li>
     </ul>
-
 </div>
+
 <div id="print_box" class="map-panel__toggle--panel" style="display: none;">
     <p>[['Please check if any overlays are selected before you print..' | translate]]</p>
-    <!-- <div id="btn-print">
-
-    </div> -->
+    <!-- <div id="btn-print"></div> -->
     <button type="button" class="btn btn-download" id="btn-print">
         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g>
@@ -125,11 +122,9 @@
         </svg>
         <b>Print</b>
     </button>
-
 </div>
 <div id="imagery_layer_box" class="map-panel__toggle--panel" style="display: none;">
     <p>[[ 'True Color Imagery' | translate]]</p>
-
 </div>
 <div id="legend_box" class="map-panel__toggle--panel--legendbox" style="display: none; width:180px;">
     <div class="legend-tabs">

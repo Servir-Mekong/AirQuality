@@ -7,7 +7,7 @@
 <!-- Main Container -->
 
 <div class="home">
-  <div class="col-lg-12" style="margin-bottom: 300px;">
+  <div class="col-lg-12" style="margin-bottom: 0px;">
     <div class="row justify-content-md-center">
       <div class="col-lg-1 col-md-6"></div>
       <div class="col-lg-10">
@@ -53,43 +53,43 @@
         <p>Lower Mekong countries</p>
         <br>
 
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-lg-12 col-md-6">
             <b>Developer(s)</b>
             <br>
             <br>
           </div>
-        </div>
+        </div> -->
 
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-lg-6 col-md-6">
             <img src="{% static 'images/adpc.png' %}" alt="" class="grow img-responsive home-adpc">
           </div>
           <div class="col-lg-6 col-md-6">
             <p>Asian Disaster Preparedness Center</p>
           </div>
-        </div>
-        <div class="row">
+        </div> -->
+        <!-- <div class="row">
           <div class="col-lg-6 col-md-6">
             <img src="{% static 'images/servir-mekong.png' %}" alt="" class="grow img-responsive home-servir">
           </div>
           <div class="col-lg-6 col-md-6">
             <p>SERVIR-Mekong</p>
           </div>
-        </div>
-        <div class="row">
+        </div> -->
+        <!-- <div class="row">
           <div class="col-lg-6 col-md-6">
             <img src="{% static 'images/nasa.png' %}" alt="" class="grow img-responsive home-nasa">
           </div>
           <div class="col-lg-6 col-md-6">
             <p>The National Aeronautics and Space Administration</p>
           </div>
-        </div>
+        </div> -->
         <br>
 
         <div class="row">
           <div class="col-lg-12 col-md-6">
-            <b>Contributors/Partners/Production Collaboration</b>
+            <b>Co-development Partners</b>
             <br>
             <br>
           </div>
@@ -160,7 +160,30 @@
       </div>
       <div class="col-lg-1 col-md-6"></div>
 
+      <div class="row justify-content-md-center">
+        <div class="col-lg-10">
+          <div class="row partner">
+            <h2 style="font-weight: bold; margin-top: 50px; margin-bottom: 20px;">OUR PARTNERS</h2>
+            <div class="col-lg-4">
+              <img class="img-fluid partner-sig" src="{% static 'images/sig.png' %}" alt="SERVIR-MEKONG">
+            </div>
+            <div class="col-lg-4 text-center">
+                <img class="img-fluid partner-sei" src="{% static 'images/sei.png' %}" alt="SERVIR-MEKONG">
+            </div>
+            <div class="col-lg-4">
+                <img class="img-fluid partner-deltares" src="{% static 'images/deltares.jpg' %}" alt="SERVIR-MEKONG">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-md-center" style="margin-top: 50px;">
+        <div class="col-lg-1 col-md-6"></div>
+        <div class="col-lg-10">
+          {% include "footer.html" %}
+        </div>
+        <div class="col-lg-1 col-md-6"></div>
+
     </div>
 </div>
-
     {% endblock main_container %}

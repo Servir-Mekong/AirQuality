@@ -14,8 +14,6 @@
         <strong>[[alertContent]]</strong>
     </div>
 
-
-
     <div id="metadata" style="display: none"  data-var-options="{{var_options}}" data-style-options="{{style_options}}" data-wms-url="{{thredds_wms_url}}"  data-thredds-options="{{thredds_options}}"></div>
     <input type="text" name="point-lat-lon" id="point-lat-lon" hidden>
     <input type="text" name="poly-lat-lon" id="poly-lat-lon" hidden>
@@ -23,114 +21,108 @@
     <input type="text" name="shp-lat-lon" id="shp-lat-lon" hidden>
 
     <div class="map" id="map" >
-      <div class="pm25-legend">
-        <p style="font-size: 10px;color: #FFF;margin-bottom: 0;">Surface PM 2.5 (µgm<sup>-3</sup>)</p>
-        <table style="width:100%">
-          <tr>
-          <td style="background:#6ef0ff; font-size:10px; width:15%; text-align: center;color:black;">0-25 <br> [[ 'Excellent' | translate]]</td>
-          <td style="background:#24cf1b; font-size:10px; width:15%; text-align: center;color:black;">26-37 <br> [[ 'Satifactory' | translate]]</td>
-          <td style="background:#eff213; font-size:10px; width:15%; text-align: center;color:black;">38-50 <br> [[ 'Moderate' | translate]]</td>
-          <td style="background:#eda702; font-size:10px; width:15%; text-align: center;color:black;">51-90 <br> [[ 'Unhealthy' | translate]]</td>
-          <td style="background:#ed1e02; font-size:10px; width:15%; text-align: center;color:black;">91 and up <br> [[ 'Very Unhealthy' | translate]]</td>
-          </tr>
-        </table>
-      </div>
+        <div class="pm25-legend">
+            <p style="font-size: 10px;color: #FFF;margin-bottom: 0;">Surface PM 2.5 (µgm<sup>-3</sup>)</p>
+            <table style="width:100%">
+                <tr>
+                    <td style="background:#6ef0ff; font-size:10px; width:15%; text-align: center;color:black;">0-25 <br> [[ 'Excellent' | translate]]</td>
+                    <td style="background:#24cf1b; font-size:10px; width:15%; text-align: center;color:black;">26-37 <br> [[ 'Satifactory' | translate]]</td>
+                    <td style="background:#eff213; font-size:10px; width:15%; text-align: center;color:black;">38-50 <br> [[ 'Moderate' | translate]]</td>
+                    <td style="background:#eda702; font-size:10px; width:15%; text-align: center;color:black;">51-90 <br> [[ 'Unhealthy' | translate]]</td>
+                    <td style="background:#ed1e02; font-size:10px; width:15%; text-align: center;color:black;">91 and up <br> [[ 'Very Unhealthy' | translate]]</td>
+                </tr>
+            </table>
+        </div>
         <div class="control-panel map-component">
-				<div class="scalebar-container"></div>
+		    <div class="scalebar-container"></div>
 				<ul>
-          <li class="zoom-in pointer" id="menu-burger">
+                    <li class="zoom-in pointer" id="menu-burger">
 						<svg class="panel-icon">
-                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-menu-up" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M15 3.207v9a1 1 0 0 1-1 1h-3.586A2 2 0 0 0 9 13.793l-1 1-1-1a2 2 0 0 0-1.414-.586H2a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-13 11a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-3.586a1 1 0 0 0-.707.293l-1.353 1.354a.5.5 0 0 1-.708 0L6.293 14.5a1 1 0 0 0-.707-.293H2z"/>
-                <path fill-rule="evenodd" d="M15 5.207H1v1h14v-1zm0 4H1v1h14v-1zm-13-5.5a.5.5 0 0 0 .5.5h6a.5.5 0 1 0 0-1h-6a.5.5 0 0 0-.5.5zm0 4a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11a.5.5 0 0 0-.5.5zm0 4a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 0-1h-8a.5.5 0 0 0-.5.5z"/>
-              </svg>
+                            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-menu-up" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M15 3.207v9a1 1 0 0 1-1 1h-3.586A2 2 0 0 0 9 13.793l-1 1-1-1a2 2 0 0 0-1.414-.586H2a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-13 11a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-3.586a1 1 0 0 0-.707.293l-1.353 1.354a.5.5 0 0 1-.708 0L6.293 14.5a1 1 0 0 0-.707-.293H2z"/>
+                                <path fill-rule="evenodd" d="M15 5.207H1v1h14v-1zm0 4H1v1h14v-1zm-13-5.5a.5.5 0 0 0 .5.5h6a.5.5 0 1 0 0-1h-6a.5.5 0 0 0-.5.5zm0 4a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11a.5.5 0 0 0-.5.5zm0 4a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 0-1h-8a.5.5 0 0 0-.5.5z"/>
+                            </svg>
 						</svg>
 						<span class="tooltipmap tooltipmap1"> MENU </span>
 					</li>
 					<li class="show-hide pointer" id="full-screen">
 						<svg class="panel-icon">
-                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrows-fullscreen" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                  <title>Full Screen</title>
-                  <path fill-rule="evenodd" d="M1.464 10.536a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3.5a.5.5 0 0 1-.5-.5v-3.5a.5.5 0 0 1 .5-.5z"/>
-                  <path fill-rule="evenodd" d="M5.964 10a.5.5 0 0 1 0 .707l-4.146 4.147a.5.5 0 0 1-.707-.708L5.257 10a.5.5 0 0 1 .707 0zm8.854-8.854a.5.5 0 0 1 0 .708L10.672 6a.5.5 0 0 1-.708-.707l4.147-4.147a.5.5 0 0 1 .707 0z"/>
-                  <path fill-rule="evenodd" d="M10.5 1.5A.5.5 0 0 1 11 1h3.5a.5.5 0 0 1 .5.5V5a.5.5 0 0 1-1 0V2h-3a.5.5 0 0 1-.5-.5zm4 9a.5.5 0 0 0-.5.5v3h-3a.5.5 0 0 0 0 1h3.5a.5.5 0 0 0 .5-.5V11a.5.5 0 0 0-.5-.5z"/>
-                  <path fill-rule="evenodd" d="M10 9.964a.5.5 0 0 0 0 .708l4.146 4.146a.5.5 0 0 0 .708-.707l-4.147-4.147a.5.5 0 0 0-.707 0zM1.182 1.146a.5.5 0 0 0 0 .708L5.328 6a.5.5 0 0 0 .708-.707L1.889 1.146a.5.5 0 0 0-.707 0z"/>
-                  <path fill-rule="evenodd" d="M5.5 1.5A.5.5 0 0 0 5 1H1.5a.5.5 0 0 0-.5.5V5a.5.5 0 0 0 1 0V2h3a.5.5 0 0 0 .5-.5z"/>
-                </svg>
+                            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrows-fullscreen" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                <title>Full Screen</title>
+                                <path fill-rule="evenodd" d="M1.464 10.536a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3.5a.5.5 0 0 1-.5-.5v-3.5a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M5.964 10a.5.5 0 0 1 0 .707l-4.146 4.147a.5.5 0 0 1-.707-.708L5.257 10a.5.5 0 0 1 .707 0zm8.854-8.854a.5.5 0 0 1 0 .708L10.672 6a.5.5 0 0 1-.708-.707l4.147-4.147a.5.5 0 0 1 .707 0z"/>
+                                <path fill-rule="evenodd" d="M10.5 1.5A.5.5 0 0 1 11 1h3.5a.5.5 0 0 1 .5.5V5a.5.5 0 0 1-1 0V2h-3a.5.5 0 0 1-.5-.5zm4 9a.5.5 0 0 0-.5.5v3h-3a.5.5 0 0 0 0 1h3.5a.5.5 0 0 0 .5-.5V11a.5.5 0 0 0-.5-.5z"/>
+                                <path fill-rule="evenodd" d="M10 9.964a.5.5 0 0 0 0 .708l4.146 4.146a.5.5 0 0 0 .708-.707l-4.147-4.147a.5.5 0 0 0-.707 0zM1.182 1.146a.5.5 0 0 0 0 .708L5.328 6a.5.5 0 0 0 .708-.707L1.889 1.146a.5.5 0 0 0-.707 0z"/>
+                                <path fill-rule="evenodd" d="M5.5 1.5A.5.5 0 0 0 5 1H1.5a.5.5 0 0 0-.5.5V5a.5.5 0 0 0 1 0V2h3a.5.5 0 0 0 .5-.5z"/>
+                            </svg>
 						</svg>
 						<span class="tooltipmap tooltipmap2"> FULL SCREEN</span>
 					</li>
 					<!-- <li class="timeline-sync pointer" id="time-toggle">
 						<svg class="panel-icon">
-              <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-clock-history" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                <title>Time</title>
-                <path fill-rule="evenodd" d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
-                <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
-                <path fill-rule="evenodd" d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
-              </svg>
-
+                            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-clock-history" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                    <title>Time</title>
+                                    <path fill-rule="evenodd" d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+                                    <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+                                    <path fill-rule="evenodd" d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
 						</svg>
 						<span class="tooltipmap tooltipmap4 left"> Time Slider</span>
 					</li> -->
-					<li class="print pointer" id="compare-layers">
+					<li class="print pointer" id="compare-layers" data-toggle="modal" data-target="#compareModalCenter">
 						<svg class="panel-icon">
-                  <svg width="2em" height="2em" id="icon-print" viewBox="0 0 16 16" class="bi bi-input-cursor" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                    <title>Compare Layers</title>
-                    <path d="M10 5h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4v1h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4v1zM6 5V4H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v-1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4z"/>
-                    <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13A.5.5 0 0 1 8 1z"/>
-                  </svg>
+                            <svg width="2em" height="2em" id="icon-print" viewBox="0 0 16 16" class="bi bi-input-cursor" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                <title>Compare Layers</title>
+                                <path d="M10 5h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4v1h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4v1zM6 5V4H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v-1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4z"/>
+                                <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13A.5.5 0 0 1 8 1z"/>
+                            </svg>
 						</svg>
 						<span class="tooltipmap tooltipmap3">Compare Layers</span>
 					</li>
-          <li class="draw pointer" id="draw-tool">
+                    <li class="draw pointer" id="draw-tool">
 						<svg class="panel-icon">
 							<use xlink:href="#icon-analysis-draw">
-                <svg width="2em" height="2em" id="icon-analysis-draw" viewBox="0 0 16 16" class="bi bi-bounding-box-circles" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                  <title>Draw a rectangle</title>
-                  <path fill-rule="evenodd" d="M12.5 2h-9V1h9v1zm-10 1.5v9h-1v-9h1zm11 9v-9h1v9h-1zM3.5 14h9v1h-9v-1z"/>
-                  <path fill-rule="evenodd" d="M14 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
-                </svg>
+                                <svg width="2em" height="2em" id="icon-analysis-draw" viewBox="0 0 16 16" class="bi bi-bounding-box-circles" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                    <title>Draw a rectangle</title>
+                                    <path fill-rule="evenodd" d="M12.5 2h-9V1h9v1zm-10 1.5v9h-1v-9h1zm11 9v-9h1v9h-1zM3.5 14h9v1h-9v-1z"/>
+                                    <path fill-rule="evenodd" d="M14 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                                </svg>
 							</use>
 						</svg>
 						<span class="tooltipmap tooltipmap4"> Draw a rectangle</span>
 					</li>
-          <li class="draw pointer" id="draw-marker">
+                    <li class="draw pointer" id="draw-marker">
 						<svg class="panel-icon">
-								<svg fill="#FFF" id="" viewBox="-60 -60 660 660">
-									<title>Draw a marker</title>
-                  		<path d="M256,0C153.755,0,70.573,83.182,70.573,185.426c0,126.888,165.939,313.167,173.004,321.035
-                  			c6.636,7.391,18.222,7.378,24.846,0c7.065-7.868,173.004-194.147,173.004-321.035C441.425,83.182,358.244,0,256,0z M256,278.719
-                  			c-51.442,0-93.292-41.851-93.292-93.293S204.559,92.134,256,92.134s93.291,41.851,93.291,93.293S307.441,278.719,256,278.719z"/>
-								</svg>
+							<svg fill="#FFF" id="" viewBox="-60 -60 660 660">
+								<title>Draw a marker</title>
+                  		        <path d="M256,0C153.755,0,70.573,83.182,70.573,185.426c0,126.888,165.939,313.167,173.004,321.035
+                  		        	c6.636,7.391,18.222,7.378,24.846,0c7.065-7.868,173.004-194.147,173.004-321.035C441.425,83.182,358.244,0,256,0z M256,278.719
+                  			        c-51.442,0-93.292-41.851-93.292-93.293S204.559,92.134,256,92.134s93.291,41.851,93.291,93.293S307.441,278.719,256,278.719z"/>
+							</svg>
 						</svg>
 						<span class="tooltipmap tooltipmap5"> Draw a marker</span>
 					</li>
-          <li class="draw pointer" id="disclaimer">
+                    <li class="draw pointer" id="disclaimer">
 						<svg class="panel-icon">
-
-                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-exclamation-octagon" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                  <title>Disclaimer</title>
-                  <path fill-rule="evenodd" d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353L4.54.146zM5.1 1L1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1H5.1z"/>
-                  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
-                </svg>
-
+                            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-exclamation-octagon" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                <title>Disclaimer</title>
+                                <path fill-rule="evenodd" d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353L4.54.146zM5.1 1L1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1H5.1z"/>
+                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                            </svg>
 						</svg>
 						<span class="tooltipmap tooltipmap6"> Disclaimer</span>
 					</li>
-          <li class="draw pointer" id="reset-btn">
+                    <li class="draw pointer" id="reset-btn">
 						<svg class="panel-icon">
-
-                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                  <title>Reset</title>
-                  <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-                  <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
-                </svg>
-
+                            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                <title>Reset</title>
+                                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                                <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                            </svg>
 						</svg>
 						<span class="tooltipmap tooltipmap7"> Reset</span>
 					</li>
-
-          <li class="draw pointer" id="admin-tool" style="display: none;">
+                    <li class="draw pointer" id="admin-tool" style="display: none;">
 						<svg class="panel-icon">
                             <?xml version="1.0" encoding="iso-8859-1"?>
                             <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
@@ -230,52 +222,45 @@
                             			c1.095,0.384,2.211,0.566,3.31,0.566c4.128,0,7.992-2.577,9.436-6.692C277.984,126.393,275.241,120.687,270.03,118.86z"/>
                             	</g>
                             </g>
-
                             </svg>
-
-
 						</svg>
 						<span class="tooltipmap tooltipmap7 left">Admin Region</span>
 					</li>
-
 				</ul>
 			</div>
 
-      <div class="control-panel map-component" style="top:11%; left: unset; right: 10px;">
-      <div class="scalebar-container"></div>
-      <ul style="flex-wrap: wrap;">
-        <li class="zoom-in pointer" id="zoom-in">
-          <svg class="panel-icon">
-              <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-                <title>Zoom In</title>
-              <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
-              <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
-            </svg>
-          </svg>
-          <span class="tooltipmap tooltipmap4 left"> ZOOM IN </span>
-        </li>
-        <li class="zoom-in pointer" id="zoom-out">
-          <svg class="panel-icon">
-            <svg width="2em" height="2em" id="icon-minus"  viewBox="0 0 16 16" class="bi bi-dash" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
-              <title>Zoom Out</title>
-              <path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
-            </svg>
-          </svg>
-          <span class="tooltipmap tooltipmap5 left"> ZOOM OUT</span>
-        </li>
-      </ul>
-    </div>
+            <div class="control-panel map-component" style="top:11%; left: unset; right: 10px;">
+                <div class="scalebar-container"></div>
+                    <ul style="flex-wrap: wrap;">
+                    <li class="zoom-in pointer" id="zoom-in">
+                        <svg class="panel-icon">
+                            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                <title>Zoom In</title>
+                                <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
+                            </svg>
+                        </svg>
+                        <span class="tooltipmap tooltipmap4 left"> ZOOM IN </span>
+                    </li>
+                    <li class="zoom-in pointer" id="zoom-out">
+                        <svg class="panel-icon">
+                            <svg width="2em" height="2em" id="icon-minus"  viewBox="0 0 16 16" class="bi bi-dash" fill="#FFF" xmlns="http://www.w3.org/2000/svg">
+                                <title>Zoom Out</title>
+                                <path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </svg>
+                        <span class="tooltipmap tooltipmap5 left"> ZOOM OUT</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-    </div>
-    {% include "panels/compare_layers.html" %}
-    {% include "panels/disclaimer.html" %}
-    {% include "panels/ts_plot.html" %}
-
+        {% include "panels/compare_layers.html" %}
+        {% include "panels/disclaimer.html" %}
+        {% include "panels/ts_plot.html" %}
 
     <section>
-
-        <div class="map-panel__area map-panel__sidebar" style="display: block;">
-
+        <div class="map-panel__area map-panel__sidebar">
             <div class="map-panel__tabs">
                 <a href="#aqi_content_tab" id="aqi_tabs">
                     <span class="map-panel__tabs--item" data-target="aqi_content_tab">
@@ -406,20 +391,18 @@
                         </span>
                 </a> -->
             </div>
-                <div class="map-panel__content">
-                    <div class="tab-content">
-                        {% include "panels/air-index__content.html" %}
-                        {% include "panels/fire__content.html" %}
-                        {% include "panels/aod__content.html" %}
-                        {% include "panels/geos__content.html" %}
-                        {% include "panels/air-forecast__content.html" %}
-                    </div>
+            <div class="map-panel__content">
+                <div class="tab-content">
+                    {% include "panels/air-index__content.html" %}
+                    {% include "panels/fire__content.html" %}
+                    {% include "panels/aod__content.html" %}
+                    {% include "panels/geos__content.html" %}
+                    {% include "panels/air-forecast__content.html" %}
                 </div>
+            </div>
         </div>
 
         <div class="map-panel__toggle">
-            {% include "panels/panel__toggle.html" %}
-
             <div class="map-panel__tabs">
                 <span id="toggle_layers" class="map-panel__tabs--item active" data-target="layers">
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
@@ -495,6 +478,9 @@
                 </span>
             </div>
         </div>
+        <div class="map-panel__toggle-content">
+            {% include "panels/panel__toggle.html" %}
+        </div>
 
         <div class="sliderContainer" ng-show="false">
           <div id="datePickerSlider" class="datePickerSlider" name="datePickerSlider" ></div>
@@ -511,9 +497,7 @@
                 <span class="glyphicon glyphicon-backward" aria-hidden="true" style="right: 2px;"></span>
             </button>
         </div>
-
-</section>
-
+    </section>
 </div>
 
 {% endblock main_container %}

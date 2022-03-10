@@ -1,72 +1,78 @@
-footer {
-    /*margin: 3em auto;
-    margin-bottom: 20px;
-    margin-left: 150px;
-    margin-right: 150px;*/
+.footer {
     margin-top: 10px;
-    margin-bottom: 20px;
+    /* background-color: rgb(241, 241, 241); */
 }
-
-.footer-container {
-    /*margin-right: 3em;
-    margin-left: 3em;*/
-    padding-top: 1em;
+.fcontent img{
+    width: 280px;
+    margin-left: -6px;
 }
-
-footer .partner-deltares {
-    margin-top: -5%;
-    width: 230px !important;
-    float: right;
+.fcontent h1 {
+    font-size: 18px;
+    padding-left: 0px;
 }
-
-/*
-@media(max-width:767px){} --> extra small devices
-@media(min-width:768px){} --> small devices
-@media(min-width:992px){} --> medium devices
-@media(min-width:1200px){} --> large devices
-*/
-
-@media (max-width: 1024px) {
-	#footer-content {
-    	display: none;
-	}
+.fcontent p {
+    font-size: 18px;
+    padding-left: 0px;
 }
-
-footer .partner-sig {
-    width: 250px !important;
-    float: left;
+.fcontent .btn-primary {
+    margin-top: 30px;
+    margin-left: 0px;
+    font-size: 18px;
+    border-radius: 0;
+    background-color: #173F5F;
 }
-
-footer .partner-sei {
-    width: 250px !important;
-    margin: auto;
+.fcontent .btn-primary:hover {
+    background-color: #3789cc;
 }
-
-footer > div img {
-	width: 70%;
-	display: block;
-}
-
-.info-footer {
-	background-color: rgb(241, 241, 241);	
-}
-
-.copyright {
-    margin-top: 1.5em;
-    font-size: 1.1em;
-}
-
-.footer-links {
+/* .footer-menu {
     letter-spacing: 0.02em;
     font-size: 1.1em;
-    text-transform: uppercase;
+    margin-top: 25px;
+    margin-left: 0px;
+    padding-left: 0;
 }
-
-.footer-link {
-	margin-bottom: 0.35em;
-	font-weight: bold;
+.footer-menu-item {
+    padding-left: 10px;
+	padding-bottom: 10px; 
+    list-style-type: none;
 }
-
-footer > div ul, ol {
-	list-style-type: none;
+.footer-menu-item a{
+    font-size: 18px;
+    font-weight: 500;
+    padding-left: 10px;
+    color: #173F5F;
+    text-decoration: none;
+}
+.footer-menu-item a:hover{
+    color: #3789cc;
+    text-underline-position: below;
+    text-decoration: underline;
+    font-weight: bold;
+} */
+.disclaimer h4{
+    text-align: end;
+}
+.disclaimer p{
+    text-align: end;
+}
+@media only screen and (max-width: 576px){
+    .fcontent .btn-primary {
+        margin-top: 10px;
+    }
+    .disclaimer h4{
+        text-align: start;
+    }
+    .disclaimer p{
+        text-align: justify;
+    }
+}
+.copyright{
+    /* background-color: #173F5F;  */
+    text-align: center;
+}
+.copyright-content {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    font-size: 1.1em;
+    color: #000;   
 }

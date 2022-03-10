@@ -1,0 +1,44 @@
+.partner .partner-sig {
+    padding-left: 3px;
+    width: 220px !important;
+}
+.partner .partner-sei {
+    width: 150px !important;
+}
+.partner .partner-deltares {
+    width: 130px !important;
+}
+
+/*
+@media(max-width:767px){} --> extra small devices
+@media(min-width:768px){} --> small devices
+@media(min-width:992px){} --> medium devices
+@media(min-width:1200px){} --> large devices
+*/
+
+@media(max-width:768px){
+    .partner{
+        text-align: center;
+    }
+    .partner .partner-sig {
+        padding: 20px;
+        text-align: center;
+    }
+    .partner .partner-sei {
+        padding: 20px;
+        text-align: center;
+    }
+    .partner .partner-deltares {
+        padding: 20px;
+        text-align: center;
+    }
+}
+@media(min-width:769px){
+    .partner .partner-sig {
+        text-align: start;
+    }
+    .partner .partner-deltares {
+        text-align: end;
+        float: right;
+    }
+}

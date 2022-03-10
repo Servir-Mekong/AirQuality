@@ -484,7 +484,12 @@
 			if(map.hasLayer(tdWmsGEOSLayer)){
 				map.removeLayer(tdWmsGEOSLayer);
 			}
-			$('.pm25-legendnew').css('display', 'block');
+			if (window.matchMedia('(max-width: 360px)').matches) {
+				$('.pm25-legendnew').css('display', 'none');
+			} else {
+				$('.pm25-legendnew').css('display', 'block');
+			}
+			//$('.pm25-legendnew').css('display', 'block');
 			$('.geos-legend').css('display', 'none');
 			$("#geos_style_table").val("pm25");
 			$("#date_selector").datepicker("setDate", default_forecastDate);

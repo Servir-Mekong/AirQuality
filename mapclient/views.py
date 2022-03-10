@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from json import JSONEncoder
 from django.shortcuts import render
 from mapclient.config import THREDDS_wms
 from mapclient.controllers import gen_thredds_options, generate_variables_meta, get_styles

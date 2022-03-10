@@ -1,5 +1,5 @@
 
-<div id="compare-modal" class="model map-modal map-modal--vertical-smaller map-modal--horizontal-smaller" tabindex="-1" role="dialog"  style="display: none;">
+<!-- <div id="compare-modal" class="model map-modal map-modal--vertical-smaller map-modal--horizontal-smaller" tabindex="-1" role="dialog"  style="display: none;">
     <div class="map-modal__header">
         <h3 class="map-modal__title">[[ 'Compare Layers' | translate]]</h3>
     </div>
@@ -74,4 +74,82 @@
             <button type="button" class="btn" id="btn-add-compare">[[ 'Add Layers' | translate]]</button>
         </div>
     </div>
-</div>
+</div> -->
+
+<!-- Modal -->
+<div class="modal fade" id="compareModalCenter" tabindex="-1" role="dialog" aria-labelledby="compareModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">        
+                <button type="button" class="close pt-3" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="map-modal__title">[[ 'Compare Layers' | translate]]</h3>
+            </div>
+            <div class="modal-body">
+                <h4>[[ 'Left Window Options' | translate]]</h4>
+                <label>
+                    [[ 'Select Parameter' | translate]]
+                </label>
+                <select  class="form-control" name="lrun_table" id="lrun_table" style="width: 100%"></select>
+                <label>
+                    [[ 'Select Run Date' | translate]]
+                </label>
+                <select  class="form-control" name="lrd_table" id="lrd_table" style="width: 100%"></select>
+                <br>
+                <label>
+                    [[ 'Select Variable' | translate]]
+                </label>
+                <select  class="form-control" name="lvar_table" id="lvar_table" style="width: 100%">
+    
+                </select>
+    
+                <label for="range-min" class="formText">[[ 'Range Min' | translate]]</label>
+                <input type="text" class="form-control" id="lrange-min" name="lrange-min" style="width: 100%">
+    
+                <label for="range-max" class="formText">[[ 'Range Max' | translate]]</label>
+                <input type="text" class="form-control" id="lrange-max" name="lrange-max" style="width: 100%">
+    
+                <label>
+                    [[ 'Select a style' | translate]]
+                </label>
+                <select  class="form-control" name="lstyle_table" id="lstyle_table" style="width: 100%"></select>
+                <hr>
+                <h4>[[ 'Right Window Options' | translate]]</h4>
+                <label>
+                    [[ 'Select Parameter' | translate]]
+                </label>
+                <select   class="form-control" name="rrun_table" id="rrun_table" style="width: 100%">
+    
+                </select>
+                <label>
+                    [[ 'Select Run Date' | translate]]
+                </label>
+                <select   class="form-control" name="rrd_table" id="rrd_table" style="width: 100%">
+    
+                </select>
+                <br>
+                <label>
+                    [[ 'Select Variable' | translate]]
+                </label>
+                <select   class="form-control" name="rvar_table" id="rvar_table" style="width: 100%"></select>
+    
+                <label for="range-min" class="formText">[[ 'Range Min' | translate]]</label>
+                <input type="text" class="form-control" id="rrange-min" name="rrange-min" style="width: 100%">
+    
+                <label for="range-max" class="formText">[[ 'Range Max' | translate]]</label>
+                <input type="text" class="form-control" id="rrange-max" name="rrange-max" style="width: 100%">
+                
+                <label>
+                    [[ 'Select a style' | translate]]
+                </label>
+                <select   class="form-control" name="rstyle_table" id="rstyle_table" style="width: 100%"></select>   
+                <hr>    
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" id="btn-close-compare" data-dismiss="modal">[[ 'Close' | translate]]</button>
+                <button type="button" class="btn" id="btn-add-compare">[[ 'Add Layers' | translate]]</button>
+            </div>
+        </div>
+    </div>
+  </div>

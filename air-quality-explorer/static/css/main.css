@@ -855,6 +855,7 @@ p {
     align-items: flex-end;
     bottom: 3vh;
     right: 10px;
+    /* left: 20px; */
     z-index: 999;
 }
 
