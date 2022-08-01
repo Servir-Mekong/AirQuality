@@ -817,13 +817,13 @@
 				$("#date_selector").datepicker("setDate", checkDateTime);
 			}
 			else{
-				if(new Date().getTimezoneOffset() <= 0){
-					date.setDate(date.getDate() - 1);  //+ UTC
-				}else{
-					date.setDate(date.getDate()); //- UTC
-				}
-				checkDateTime = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
-				$("#date_selector").datepicker("setDate", checkDateTime);
+				// if(new Date().getTimezoneOffset() <= 0){
+				// 	date.setDate(date.getDate() - 1);  //+ UTC
+				// }else{
+				// 	date.setDate(date.getDate()); //- UTC
+				// }
+				// checkDateTime = date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate();
+				$("#date_selector").datepicker("setDate", date_arr[0]);
 			}
 			default_forecastDate = $("#date_selector").val();
 
