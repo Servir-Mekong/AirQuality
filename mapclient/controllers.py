@@ -1,4 +1,5 @@
 """Helper Functions for the Controllers Module"""
+import glob
 import os
 import xml.etree.ElementTree as ET
 import json
@@ -153,12 +154,23 @@ def get_time(freq, run_type, run_date):
     # Empty list to store the timeseries values
     ts = []
     json_obj = {}
-
+    dir = os.path.join(DATA_DIR, run_type)
+    files = os.listdir(dir)
+    paths = [os.path.join(dir, basename) for basename in files]
+    print(max(paths, key=os.path.getctime))
+    latest=os.path.basename(max(paths, key=os.path.getctime))
+    # latest=latest.split('.')[1]
+    print(latest)
     """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
     #infile = os.path.join(DATA_DIR, run_type, run_date)
+    #run_date="20220716.nc"
+    try:
+        infile = THREDDS_OPANDAP + "/" + run_type + "/" + run_date
+        nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
+    except:
+        infile = THREDDS_OPANDAP + "/" + run_type + "/" + latest
+        nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
 
-    infile = THREDDS_OPANDAP+"/"+run_type+"/"+run_date
-    nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
     lis_var = nc_fid.variables
     time = nc_fid.variables['time'][:]
     for timestep, v in enumerate(time):
@@ -171,6 +183,9 @@ def get_time(freq, run_type, run_date):
         ts.append(datetime.strftime(dt_str,'%Y-%m-%dT%H:%M:%SZ'))
     ts.sort()
     json_obj["times"] = ts
+    # except:
+    #     json_obj["times"]=[]
+
     return json_obj
 
 @csrf_exempt
