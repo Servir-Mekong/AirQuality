@@ -167,22 +167,35 @@ def get_time(freq, run_type, run_date):
     try:
         infile = THREDDS_OPANDAP + "/" + run_type + "/" + run_date
         nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
+        lis_var = nc_fid.variables
+        time = nc_fid.variables['time'][:]
+        for timestep, v in enumerate(time):
+            dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                      calendar=lis_var['time'].calendar)
+
+            dt_str = datetime.strptime(dt_str.isoformat(), "%Y-%m-%dT%H:%M:%S")
+
+            time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+            ts.append(datetime.strftime(dt_str, '%Y-%m-%dT%H:%M:%SZ'))
+        ts.sort()
+        json_obj["times"] = ts
     except:
-        infile = THREDDS_OPANDAP + "/" + run_type + "/" + latest
-        nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
+        # infile = THREDDS_OPANDAP + "/" + run_type + "/" + latest
+        # nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
+        json_obj["times"] = ts
 
-    lis_var = nc_fid.variables
-    time = nc_fid.variables['time'][:]
-    for timestep, v in enumerate(time):
-        dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-                                  calendar=lis_var['time'].calendar)
-
-        dt_str = datetime.strptime(dt_str.isoformat(),"%Y-%m-%dT%H:%M:%S")
-
-        time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-        ts.append(datetime.strftime(dt_str,'%Y-%m-%dT%H:%M:%SZ'))
-    ts.sort()
-    json_obj["times"] = ts
+        # lis_var = nc_fid.variables
+        # time = nc_fid.variables['time'][:]
+        # for timestep, v in enumerate(time):
+        #     dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+        #                               calendar=lis_var['time'].calendar)
+        #
+        #     dt_str = datetime.strptime(dt_str.isoformat(),"%Y-%m-%dT%H:%M:%S")
+        #
+        #     time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
+        #     ts.append(datetime.strftime(dt_str,'%Y-%m-%dT%H:%M:%SZ'))
+        # ts.sort()
+        # json_obj["times"] = ts
     # except:
     #     json_obj["times"]=[]
 
