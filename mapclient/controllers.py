@@ -26,6 +26,7 @@ from django.views.decorators.csrf import csrf_exempt
 from geopy.distance import great_circle
 from geopy.distance import geodesic
 from itertools import *
+from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger('controllers.py')
 logger.setLevel(logging.DEBUG)
@@ -696,7 +697,7 @@ def get_pm25_data(s_var, run_type, run_date, station, lat, lon):
     except Exception as e:
         return e
 
-
+@csrf_exempt
 def get_ts(s_var, interaction, run_type, freq, run_date, geom_data):
     """Get Time Series for Point and Polygon"""
 
