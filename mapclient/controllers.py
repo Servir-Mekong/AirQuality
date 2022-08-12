@@ -524,6 +524,7 @@ def get_station_data():
 
 
 def get_current_station(obs_date):
+    stations = []
     # current_time = datetime.now().strftime('%H:%M:%S')
     # enddatetime_str = (obs_date + " "+ datetime.now().strftime('%H:%M:%S'))
     # strtodate =  datetime.strptime(enddatetime_str, '%Y-%m-%d %H:%M:%S').date()
@@ -539,43 +540,44 @@ def get_current_station(obs_date):
         #             from stations s, nrt_measurements m
         #             where s.station_id = m.station_id and pm25 is not null and m.datetime = '"""+obs_date+"""'
         #             ORDER BY s.station_id, m.datetime DESC"""
+        try:
+            sql = """SELECT tbl1.station_id, tbl1.rid, tbl1.datetime, tbl1.lat, tbl1.long, tbl1.pm25, tbl1.name_en, tbl2.aqi, tbl2.aqi_level FROM
+            (SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en
+            FROM stations s, nrt_measurements m
+            WHERE s.station_id = m.station_id AND m.pm25 IS NOT null AND m.datetime <= '"""+obs_date+"""'
+            ORDER BY s.station_id, m.datetime DESC) AS tbl1
+            LEFT JOIN measurements tbl2 ON tbl1.station_id = tbl2.station_id AND tbl2.datetime = tbl1.datetime""";
 
-        sql = """SELECT tbl1.station_id, tbl1.rid, tbl1.datetime, tbl1.lat, tbl1.long, tbl1.pm25, tbl1.name_en, tbl2.aqi, tbl2.aqi_level FROM
-        (SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en
-        FROM stations s, nrt_measurements m
-        WHERE s.station_id = m.station_id AND m.pm25 IS NOT null AND m.datetime <= '"""+obs_date+"""'
-        ORDER BY s.station_id, m.datetime DESC) AS tbl1
-        LEFT JOIN measurements tbl2 ON tbl1.station_id = tbl2.station_id AND tbl2.datetime = tbl1.datetime""";
-
-        cursor.execute(sql)
-        data = cursor.fetchall()
-        stations=[]
-        for row in data:
-            rid = row[1]
-            name=row[6]
-            station_id = row[0]
-            lat = row[3]
-            lon = row[4]
-            pm25=row[5]
-            latest_date=row[2]
-            aqi=row[7]
-            aqi_level=row[8]
-            selected_date= datetime.strptime(obs_date, '%Y-%m-%d %H:%M:%S')
-            difference = latest_date - selected_date
-            if difference.days == -1 or difference.days==0:
-                stations.append({
-                    'rid': rid,
-                    'station_id': str(station_id),
-                    'latest_date': str(latest_date),
-                    'lon': lon,
-                    'lat': lat,
-                    'pm25': pm25,
-                    'name':name,
-                    'aqi': aqi,
-                    'aqi_level': aqi_level
-                })
-        connection.close()
-        return stations
+            cursor.execute(sql)
+            data = cursor.fetchall()
+            for row in data:
+                rid = row[1]
+                name=row[6]
+                station_id = row[0]
+                lat = row[3]
+                lon = row[4]
+                pm25=row[5]
+                latest_date=row[2]
+                aqi=row[7]
+                aqi_level=row[8]
+                selected_date= datetime.strptime(obs_date, '%Y-%m-%d %H:%M:%S')
+                difference = latest_date - selected_date
+                if difference.days == -1 or difference.days==0:
+                    stations.append({
+                        'rid': rid,
+                        'station_id': str(station_id),
+                        'latest_date': str(latest_date),
+                        'lon': lon,
+                        'lat': lat,
+                        'pm25': pm25,
+                        'name':name,
+                        'aqi': aqi,
+                        'aqi_level': aqi_level
+                    })
+            connection.close()
+        except Exception as e:
+            print(str(e))
+    return stations
 
 def get_pm25_data(s_var, run_type, run_date, station, lat, lon):
     try:
