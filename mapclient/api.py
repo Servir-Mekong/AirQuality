@@ -16,16 +16,16 @@ def api(request):
     if action:
         public_methods = ['get-time', 'get-stations', 'get-chartData', 'get-24hstations']
         if action in public_methods:
-            run_type = get('run_type', '')
-            freq = get('freq', '')
-            run_date_time = get('run_date', '')
-            obs_date = get('obs_date', '')
-            variable =  get('variable', '')
-            run_type_chart =  get('run_type_chart', '')
-            freq_chart =  get('freq_chart', '')
-            run_date =  get('run_date_chart', '')
-            interaction =  get('interaction', '')
-            geom_data =  get('geom_data', '')
+            run_type = request.POST.get('run_type', request.GET.get("run_type", ""))
+            freq = request.POST.get('freq', request.GET.get("freq", ""))
+            run_date_time = request.POST.get('run_date', request.GET.get("run_date", ""))
+            obs_date = request.POST.get('obs_date', request.GET.get("obs_date", ""))
+            variable =  request.POST.get('variable', request.GET.get("variable", ""))
+            run_type_chart =  request.POST.get('run_type_chart', request.GET.get("run_type_chart", ""))
+            freq_chart =  request.POST.get('freq_chart', request.GET.get("freq_chart", ""))
+            run_date =  request.POST.get('run_date_chart', request.GET.get("run_date_chart", ""))
+            interaction =  request.POST.get('interaction', request.GET.get("interaction", ""))
+            geom_data =  request.POST.get('geom_data', request.GET.get("geom_data", ""))
             if action == 'get-time':
                 data = get_time(freq, run_type, run_date_time)
             elif action == 'get-stations':
