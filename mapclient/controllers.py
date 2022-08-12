@@ -406,6 +406,7 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
         return json_obj
     return json_obj
 
+
 @csrf_exempt
 def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
     """Helper function to generate time series for a polygon"""
@@ -413,8 +414,10 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
     # Empty list to store the timeseries values
     ts_plot = []
     json_obj_arr =[]
+
     json_obj = {}
-    if len(geom_data) > 1:
+    if len(json.loads(geom_data)) != 4:
+        geom_data=json.loads(geom_data)
         for g_data in geom_data:
             # Defining the lat and lon from the coords string
             poly_geojson = Polygon(json.loads(json.dumps(g_data)))
@@ -492,7 +495,7 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
                 logger.warn("The selected polygon has no data")
             else:
                 logger.info("PLOT POLYGON OBJECT : " + json.dumps(json_obj["plot"]))
-            logger.info(json.dumps(json_obj["geom"]))
+            # logger.info(json.dumps(json_obj["geom"]))
             json_obj_arr.append(json_obj)
     else:
         poly_geojson = Polygon(json.loads(geom_data))
@@ -571,7 +574,7 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
             logger.warn("The selected polygon has no data")
         else:
             logger.info("PLOT POLYGON OBJECT : " + json.dumps(json_obj["plot"]))
-        logger.info(json.dumps(json_obj["geom"]))
+        # logger.info(json.dumps(json_obj["geom"]))
         return json_obj
     return json_obj_arr
 
