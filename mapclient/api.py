@@ -6,8 +6,10 @@ from django.conf import settings
 from django.http import JsonResponse
 from datetime import datetime
 import json
-import time
+import time4
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def api(request):
 
     get = request.GET.get
