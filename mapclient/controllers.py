@@ -412,86 +412,168 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
     logger.info("PARAMETERS : ['" + s_var +"','"+ geom_data +"','"+ freq +"','"+ run_type +"','"+ run_date+"']")
     # Empty list to store the timeseries values
     ts_plot = []
-
+    json_obj_arr =[]
     json_obj = {}
-    # Defining the lat and lon from the coords string
-    poly_geojson = Polygon(json.loads(geom_data))
-    shape_obj = shapely.geometry.asShape(poly_geojson)
-    bounds = poly_geojson.bounds
-    miny = float(bounds[0])
-    minx = float(bounds[1])
-    maxy = float(bounds[2])
-    maxx = float(bounds[3])
+    if len(geom_data) > 1:
+        for g_data in geom_data:
+            # Defining the lat and lon from the coords string
+            poly_geojson = Polygon(json.loads(json.dumps(g_data)))
+            shape_obj = shapely.geometry.asShape(poly_geojson)
+            bounds = poly_geojson.bounds
+            miny = float(bounds[0])
+            minx = float(bounds[1])
+            maxy = float(bounds[2])
+            maxx = float(bounds[3])
 
-    """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
-    if "geos" in run_type:
-        infile = THREDDS_OPANDAP + "/" + run_type + "/" + run_date
-    else:
-        infile = os.path.join(DATA_DIR, run_type, freq, run_date)
-    nc_fid = netCDF4.Dataset(infile, 'r')
-    lis_var = nc_fid.variables
-
-    if "geos" == run_type:
-        field = nc_fid.variables[s_var][:]
-        lats = nc_fid.variables['lat'][:]
-        lons = nc_fid.variables['lon'][:]  # Defining the longitude array
-        time = nc_fid.variables['time'][:]
-        # Defining the variable array(throws error if variable is not in combined.nc)
-
-        latli = np.argmin(np.abs(lats - minx))
-        latui = np.argmin(np.abs(lats - maxx))
-
-        lonli = np.argmin(np.abs(lons - miny))
-        lonui = np.argmin(np.abs(lons - maxy))
-        for timestep, v in enumerate(time):
-            val = field[latli:latui,lonli:lonui,timestep]
-            val = np.mean(val)
-            if np.isnan(val) == False:
-                dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-                                          calendar=lis_var['time'].calendar)
-                test = dt_str + timedelta(hours=7)
-                dtt = test.strftime('%Y-%m-%dT%H:%M:%SZ')
-                dt = datetime.strptime(dtt, '%Y-%m-%dT%H:%M:%SZ')
-                time_stamp = calendar.timegm(dt.timetuple()) * 1000
-                ts_plot.append([time_stamp, round(float(val))])
-    else:
-        """Reading variables from combined.nc"""
-        lats = nc_fid.variables['Latitude'][:]  # Defining the latitude array
-        lons = nc_fid.variables['Longitude'][:]  # Defining the longitude array
-        field = nc_fid.variables[s_var][:]  # Defning the variable array(throws error if variable is not in combined.nc)
-        time = nc_fid.variables['time'][:]
-
-        latli = np.argmin(np.abs(lats - minx))
-        latui = np.argmin(np.abs(lats - maxx))
-
-        lonli = np.argmin(np.abs(lons - miny))
-        lonui = np.argmin(np.abs(lons - maxy))
-        for timestep, v in enumerate(time):
-            vals = field[timestep, latli:latui, lonli:lonui]
-            if run_type == 'fire':
-                val = np.sum(vals)
+            """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
+            if "geos" in run_type:
+                infile = THREDDS_OPANDAP + "/" + run_type + "/" + run_date
             else:
-                val = np.mean(vals)
-            if np.isnan(val) == False:
-                dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-                                          calendar=lis_var['time'].calendar)
-                dtt = dt_str.strftime('%Y-%m-%dT%H:%M:%SZ')
-                dt = datetime.strptime(dtt, '%Y-%m-%dT%H:%M:%SZ')
-                time_stamp = calendar.timegm(dt.utctimetuple()) * 1000
-                ts_plot.append([time_stamp, float(val)])
+                infile = os.path.join(DATA_DIR, run_type, freq, run_date)
+            nc_fid = netCDF4.Dataset(infile, 'r')
+            lis_var = nc_fid.variables
 
-    ts_plot.sort()
+            if "geos" == run_type:
+                field = nc_fid.variables[s_var][:]
+                lats = nc_fid.variables['lat'][:]
+                lons = nc_fid.variables['lon'][:]  # Defining the longitude array
+                time = nc_fid.variables['time'][:]
+                # Defining the variable array(throws error if variable is not in combined.nc)
 
-    geom = [round(minx, 2), round(miny, 2), round(maxx, 2), round(maxy, 2)]
+                latli = np.argmin(np.abs(lats - minx))
+                latui = np.argmin(np.abs(lats - maxx))
 
-    json_obj["plot"] = ts_plot
-    json_obj["geom"] = geom
-    if len(ts_plot) == 0:
-        logger.warn("The selected polygon has no data")
+                lonli = np.argmin(np.abs(lons - miny))
+                lonui = np.argmin(np.abs(lons - maxy))
+                for timestep, v in enumerate(time):
+                    val = field[latli:latui,lonli:lonui,timestep]
+                    val = np.mean(val)
+                    if np.isnan(val) == False:
+                        dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                                  calendar=lis_var['time'].calendar)
+                        test = dt_str + timedelta(hours=7)
+                        dtt = test.strftime('%Y-%m-%dT%H:%M:%SZ')
+                        dt = datetime.strptime(dtt, '%Y-%m-%dT%H:%M:%SZ')
+                        time_stamp = calendar.timegm(dt.timetuple()) * 1000
+                        ts_plot.append([time_stamp, round(float(val))])
+            else:
+                """Reading variables from combined.nc"""
+                lats = nc_fid.variables['Latitude'][:]  # Defining the latitude array
+                lons = nc_fid.variables['Longitude'][:]  # Defining the longitude array
+                field = nc_fid.variables[s_var][:]  # Defning the variable array(throws error if variable is not in combined.nc)
+                time = nc_fid.variables['time'][:]
+
+                latli = np.argmin(np.abs(lats - minx))
+                latui = np.argmin(np.abs(lats - maxx))
+
+                lonli = np.argmin(np.abs(lons - miny))
+                lonui = np.argmin(np.abs(lons - maxy))
+                for timestep, v in enumerate(time):
+                    vals = field[timestep, latli:latui, lonli:lonui]
+                    if run_type == 'fire':
+                        val = np.sum(vals)
+                    else:
+                        val = np.mean(vals)
+                    if np.isnan(val) == False:
+                        dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                                  calendar=lis_var['time'].calendar)
+                        dtt = dt_str.strftime('%Y-%m-%dT%H:%M:%SZ')
+                        dt = datetime.strptime(dtt, '%Y-%m-%dT%H:%M:%SZ')
+                        time_stamp = calendar.timegm(dt.utctimetuple()) * 1000
+                        ts_plot.append([time_stamp, float(val)])
+
+            ts_plot.sort()
+
+            geom = [round(minx, 2), round(miny, 2), round(maxx, 2), round(maxy, 2)]
+
+            json_obj["plot"] = ts_plot
+            json_obj["geom"] = geom
+            if len(ts_plot) == 0:
+                logger.warn("The selected polygon has no data")
+            else:
+                logger.info("PLOT POLYGON OBJECT : " + json.dumps(json_obj["plot"]))
+            logger.info(json.dumps(json_obj["geom"]))
+            json_obj_arr.append(json_obj)
     else:
-        logger.info("PLOT POLYGON OBJECT : " + json.dumps(json_obj["plot"]))
-    logger.info(json.dumps(json_obj["geom"]))
-    return json_obj
+        poly_geojson = Polygon(json.loads(geom_data))
+        shape_obj = shapely.geometry.asShape(poly_geojson)
+        bounds = poly_geojson.bounds
+        miny = float(bounds[0])
+        minx = float(bounds[1])
+        maxy = float(bounds[2])
+        maxx = float(bounds[3])
+
+        """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
+        if "geos" in run_type:
+            infile = THREDDS_OPANDAP + "/" + run_type + "/" + run_date
+        else:
+            infile = os.path.join(DATA_DIR, run_type, freq, run_date)
+        nc_fid = netCDF4.Dataset(infile, 'r')
+        lis_var = nc_fid.variables
+
+        if "geos" == run_type:
+            field = nc_fid.variables[s_var][:]
+            lats = nc_fid.variables['lat'][:]
+            lons = nc_fid.variables['lon'][:]  # Defining the longitude array
+            time = nc_fid.variables['time'][:]
+            # Defining the variable array(throws error if variable is not in combined.nc)
+
+            latli = np.argmin(np.abs(lats - minx))
+            latui = np.argmin(np.abs(lats - maxx))
+
+            lonli = np.argmin(np.abs(lons - miny))
+            lonui = np.argmin(np.abs(lons - maxy))
+            for timestep, v in enumerate(time):
+                val = field[latli:latui, lonli:lonui, timestep]
+                val = np.mean(val)
+                if np.isnan(val) == False:
+                    dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                              calendar=lis_var['time'].calendar)
+                    test = dt_str + timedelta(hours=7)
+                    dtt = test.strftime('%Y-%m-%dT%H:%M:%SZ')
+                    dt = datetime.strptime(dtt, '%Y-%m-%dT%H:%M:%SZ')
+                    time_stamp = calendar.timegm(dt.timetuple()) * 1000
+                    ts_plot.append([time_stamp, round(float(val))])
+        else:
+            """Reading variables from combined.nc"""
+            lats = nc_fid.variables['Latitude'][:]  # Defining the latitude array
+            lons = nc_fid.variables['Longitude'][:]  # Defining the longitude array
+            field = nc_fid.variables[s_var][
+                    :]  # Defning the variable array(throws error if variable is not in combined.nc)
+            time = nc_fid.variables['time'][:]
+
+            latli = np.argmin(np.abs(lats - minx))
+            latui = np.argmin(np.abs(lats - maxx))
+
+            lonli = np.argmin(np.abs(lons - miny))
+            lonui = np.argmin(np.abs(lons - maxy))
+            for timestep, v in enumerate(time):
+                vals = field[timestep, latli:latui, lonli:lonui]
+                if run_type == 'fire':
+                    val = np.sum(vals)
+                else:
+                    val = np.mean(vals)
+                if np.isnan(val) == False:
+                    dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
+                                              calendar=lis_var['time'].calendar)
+                    dtt = dt_str.strftime('%Y-%m-%dT%H:%M:%SZ')
+                    dt = datetime.strptime(dtt, '%Y-%m-%dT%H:%M:%SZ')
+                    time_stamp = calendar.timegm(dt.utctimetuple()) * 1000
+                    ts_plot.append([time_stamp, float(val)])
+
+        ts_plot.sort()
+
+        geom = [round(minx, 2), round(miny, 2), round(maxx, 2), round(maxy, 2)]
+
+        json_obj["plot"] = ts_plot
+        json_obj["geom"] = geom
+        if len(ts_plot) == 0:
+            logger.warn("The selected polygon has no data")
+        else:
+            logger.info("PLOT POLYGON OBJECT : " + json.dumps(json_obj["plot"]))
+        logger.info(json.dumps(json_obj["geom"]))
+        return json_obj
+    return json_obj_arr
 
 #database utils
 def get_station_data():
