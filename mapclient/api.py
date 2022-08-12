@@ -11,8 +11,7 @@ import time
 @csrf_exempt
 def api(request):
 
-    get = request.GET.get
-    action = get('action', '')
+    action = request.POST.get("action", request.GET.get("action", None))
 
     if action:
         public_methods = ['get-time', 'get-stations', 'get-chartData', 'get-24hstations']
