@@ -4,9 +4,11 @@ from mapclient.controllers import get_time, get_current_station, get_ts, get_24h
 from django.conf import settings
 from django.http import JsonResponse
 from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
 import json
 import time
 
+@csrf_exempt
 def api(request):
 
     get = request.GET.get
