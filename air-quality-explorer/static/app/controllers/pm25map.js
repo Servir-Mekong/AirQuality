@@ -12,7 +12,7 @@
 		$scope.showPlayButton = false;
 		$scope.showPauseButton = false;
 		$scope.var_type = 'PM 2.5';
-		$scope.showLoader = true;
+		$scope.showLoader = false; // true
 
 		var map,
 		add_wms,
