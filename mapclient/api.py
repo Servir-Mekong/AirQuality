@@ -10,6 +10,10 @@ import time
 
 @csrf_exempt
 def api(request):
+    if request.method == 'POST':
+        if len(request.POST) == 0 and request.body is not None:
+            request_object = json.loads(request.body)
+            request.POST = request_object
 
     action = request.POST.get("action", request.GET.get("action", None))
 
