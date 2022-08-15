@@ -26,7 +26,6 @@ from django.views.decorators.csrf import csrf_exempt
 from geopy.distance import great_circle
 from geopy.distance import geodesic
 from itertools import *
-from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger('controllers.py')
 logger.setLevel(logging.DEBUG)
@@ -155,12 +154,23 @@ def get_time(freq, run_type, run_date):
     # Empty list to store the timeseries values
     ts = []
     json_obj = {}
-
+    dir = os.path.join(DATA_DIR, run_type)
+    files = os.listdir(dir)
+    paths = [os.path.join(dir, basename) for basename in files]
+    print(max(paths, key=os.path.getctime))
+    latest=os.path.basename(max(paths, key=os.path.getctime))
+    # latest=latest.split('.')[1]
+    print(latest)
     """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
     #infile = os.path.join(DATA_DIR, run_type, run_date)
+    #run_date="20220716.nc"
+    try:
+        infile = THREDDS_OPANDAP + "/" + run_type + "/" + run_date
+        nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
+    except:
+        infile = THREDDS_OPANDAP + "/" + run_type + "/" + latest
+        nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
 
-    infile = THREDDS_OPANDAP+"/"+run_type+"/"+run_date
-    nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
     lis_var = nc_fid.variables
     time = nc_fid.variables['time'][:]
     for timestep, v in enumerate(time):
@@ -173,57 +183,10 @@ def get_time(freq, run_type, run_date):
         ts.append(datetime.strftime(dt_str,'%Y-%m-%dT%H:%M:%SZ'))
     ts.sort()
     json_obj["times"] = ts
-    return json_obj
-
-    # # Empty list to store the timeseries values
-    # ts = []
-    # json_obj = {}
-    # dir = os.path.join(DATA_DIR, run_type)
-    # files = os.listdir(dir)
-    # paths = [os.path.join(dir, basename) for basename in files]
-    # print(max(paths, key=os.path.getctime))
-    # latest=os.path.basename(max(paths, key=os.path.getctime))
-    # # latest=latest.split('.')[1]
-    # print(latest)
-    # """Make sure you have this path for all the run_types(/home/tethys/aq_dir/fire/combined/combined.nc)"""
-    # #infile = os.path.join(DATA_DIR, run_type, run_date)
-    # #run_date="20220716.nc"
-    # try:
-    #     infile = THREDDS_OPANDAP + "/" + run_type + "/" + run_date
-    #     nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
-    #     lis_var = nc_fid.variables
-    #     time = nc_fid.variables['time'][:]
-    #     for timestep, v in enumerate(time):
-    #         dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-    #                                   calendar=lis_var['time'].calendar)
-
-    #         dt_str = datetime.strptime(dt_str.isoformat(), "%Y-%m-%dT%H:%M:%S")
-
-    #         time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-    #         ts.append(datetime.strftime(dt_str, '%Y-%m-%dT%H:%M:%SZ'))
-    #     ts.sort()
-    #     json_obj["times"] = ts
     # except:
-    #     # infile = THREDDS_OPANDAP + "/" + run_type + "/" + latest
-    #     # nc_fid = netCDF4.Dataset(infile, 'r')  # Reading the netCDF file
-    #     json_obj["times"] = ts
+    #     json_obj["times"]=[]
 
-    #     # lis_var = nc_fid.variables
-    #     # time = nc_fid.variables['time'][:]
-    #     # for timestep, v in enumerate(time):
-    #     #     dt_str = netCDF4.num2date(lis_var['time'][timestep], units=lis_var['time'].units,
-    #     #                               calendar=lis_var['time'].calendar)
-    #     #
-    #     #     dt_str = datetime.strptime(dt_str.isoformat(),"%Y-%m-%dT%H:%M:%S")
-    #     #
-    #     #     time_stamp = calendar.timegm(dt_str.utctimetuple()) * 1000
-    #     #     ts.append(datetime.strftime(dt_str,'%Y-%m-%dT%H:%M:%SZ'))
-    #     # ts.sort()
-    #     # json_obj["times"] = ts
-    # # except:
-    # #     json_obj["times"]=[]
-
-    # return json_obj
+    return json_obj
 
 @csrf_exempt
 def get_pt_values(s_var, geom_data, freq, run_type, run_date):
@@ -407,7 +370,6 @@ def get_pt_values(s_var, geom_data, freq, run_type, run_date):
         return json_obj
     return json_obj
 
-
 @csrf_exempt
 def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
     """Helper function to generate time series for a polygon"""
@@ -415,11 +377,10 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
     # Empty list to store the timeseries values
     ts_plot = []
     json_obj_arr =[]
-
-    json_obj = {}
     if len(json.loads(geom_data)) != 4:
         geom_data=json.loads(geom_data)
         for g_data in geom_data:
+            json_obj = {}
             # Defining the lat and lon from the coords string
             poly_geojson = Polygon(json.loads(json.dumps(g_data)))
             shape_obj = shapely.geometry.asShape(poly_geojson)
@@ -499,6 +460,7 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
             # logger.info(json.dumps(json_obj["geom"]))
             json_obj_arr.append(json_obj)
     else:
+        json_obj = {}
         poly_geojson = Polygon(json.loads(geom_data))
         shape_obj = shapely.geometry.asShape(poly_geojson)
         bounds = poly_geojson.bounds
@@ -610,7 +572,6 @@ def get_station_data():
 
 
 def get_current_station(obs_date):
-    stations = []
     # current_time = datetime.now().strftime('%H:%M:%S')
     # enddatetime_str = (obs_date + " "+ datetime.now().strftime('%H:%M:%S'))
     # strtodate =  datetime.strptime(enddatetime_str, '%Y-%m-%d %H:%M:%S').date()
@@ -626,44 +587,43 @@ def get_current_station(obs_date):
         #             from stations s, nrt_measurements m
         #             where s.station_id = m.station_id and pm25 is not null and m.datetime = '"""+obs_date+"""'
         #             ORDER BY s.station_id, m.datetime DESC"""
-        try:
-            sql = """SELECT tbl1.station_id, tbl1.rid, tbl1.datetime, tbl1.lat, tbl1.long, tbl1.pm25, tbl1.name_en, tbl2.aqi, tbl2.aqi_level FROM
-            (SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en
-            FROM stations s, nrt_measurements m
-            WHERE s.station_id = m.station_id AND m.pm25 IS NOT null AND m.datetime <= '"""+obs_date+"""'
-            ORDER BY s.station_id, m.datetime DESC) AS tbl1
-            LEFT JOIN measurements tbl2 ON tbl1.station_id = tbl2.station_id AND tbl2.datetime = tbl1.datetime""";
 
-            cursor.execute(sql)
-            data = cursor.fetchall()
-            for row in data:
-                rid = row[1]
-                name=row[6]
-                station_id = row[0]
-                lat = row[3]
-                lon = row[4]
-                pm25=row[5]
-                latest_date=row[2]
-                aqi=row[7]
-                aqi_level=row[8]
-                selected_date= datetime.strptime(obs_date, '%Y-%m-%d %H:%M:%S')
-                difference = latest_date - selected_date
-                if difference.days == -1 or difference.days==0:
-                    stations.append({
-                        'rid': rid,
-                        'station_id': str(station_id),
-                        'latest_date': str(latest_date),
-                        'lon': lon,
-                        'lat': lat,
-                        'pm25': pm25,
-                        'name':name,
-                        'aqi': aqi,
-                        'aqi_level': aqi_level
-                    })
-            connection.close()
-        except Exception as e:
-            print(str(e))
-    return stations
+        sql = """SELECT tbl1.station_id, tbl1.rid, tbl1.datetime, tbl1.lat, tbl1.long, tbl1.pm25, tbl1.name_en, tbl2.aqi, tbl2.aqi_level FROM
+        (SELECT DISTINCT ON (s.station_id) s.station_id, s.rid, m.datetime, s.lat, s.long, m.pm25, s.name_en
+        FROM stations s, nrt_measurements m
+        WHERE s.station_id = m.station_id AND m.pm25 IS NOT null AND m.datetime <= '"""+obs_date+"""'
+        ORDER BY s.station_id, m.datetime DESC) AS tbl1
+        LEFT JOIN measurements tbl2 ON tbl1.station_id = tbl2.station_id AND tbl2.datetime = tbl1.datetime""";
+
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        stations=[]
+        for row in data:
+            rid = row[1]
+            name=row[6]
+            station_id = row[0]
+            lat = row[3]
+            lon = row[4]
+            pm25=row[5]
+            latest_date=row[2]
+            aqi=row[7]
+            aqi_level=row[8]
+            selected_date= datetime.strptime(obs_date, '%Y-%m-%d %H:%M:%S')
+            difference = latest_date - selected_date
+            if difference.days == -1 or difference.days==0:
+                stations.append({
+                    'rid': rid,
+                    'station_id': str(station_id),
+                    'latest_date': str(latest_date),
+                    'lon': lon,
+                    'lat': lat,
+                    'pm25': pm25,
+                    'name':name,
+                    'aqi': aqi,
+                    'aqi_level': aqi_level
+                })
+        connection.close()
+        return stations
 
 def get_pm25_data(s_var, run_type, run_date, station, lat, lon):
     try:
@@ -697,7 +657,7 @@ def get_pm25_data(s_var, run_type, run_date, station, lat, lon):
     except Exception as e:
         return e
 
-@csrf_exempt
+
 def get_ts(s_var, interaction, run_type, freq, run_date, geom_data):
     """Get Time Series for Point and Polygon"""
 
