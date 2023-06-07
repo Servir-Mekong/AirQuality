@@ -10,6 +10,7 @@
 		$scope.selectedDate_fire = '';
 		$scope.selectedDate_aod = '';
 		$scope.toggle_pcd = true;
+		$scope.toggle_no2 = true;
 		$scope.toggle_fire = false;
 		$scope.toggle_aod = false;
 		$scope.toggle_geos = true;
@@ -165,6 +166,19 @@
 		var drawControlFull = new L.Control.Draw(drawPluginOptions);
 		map.addControl(drawControlFull);
 
+		var today = new Date();
+		var no2_date = today.toISOString().split('T')[0]
+
+		var no2Layer = L.tileLayer.wms('https://aq-backend.optemis.space/geoserver/wms?', {
+			layers: "cite:NO2",
+			format: "image/png",
+			styles: "no2mapcolor",
+			transparent: true,
+			params: {
+                TIME: no2_date // Specify the desired time in ISO 8601 format
+            }
+		});
+
 		/**
 		* getting fire layer options
 		*/
@@ -247,6 +261,14 @@
 			}
 			else {
 				map.removeLayer(markersLayer);
+			}
+		});
+		$("#btn_toggle_no2").on('change', function() {
+			if ($(this).is(':checked')) {
+				map.addLayer(no2Layer);
+			}
+			else {
+				map.removeLayer(no2Layer);
 			}
 		});
 
@@ -779,6 +801,7 @@
 			var date = new Date($scope.selectedDate);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			var selected_date = $("#hour_table option:selected").text();
+			console.log(selected_date)
 			selected_date = selected_date.replace(":30:00", ":00:00");
 			// var selected_date = $("#date_selector").val();
 			// selected_date = selected_date+" 23:59:59";
@@ -788,7 +811,7 @@
 			MapService.getAirStations(parameters)
 			.then(function (result){
 				stations = result;
-				addStations();
+				addStations('hourly');
 			});
 		};
 

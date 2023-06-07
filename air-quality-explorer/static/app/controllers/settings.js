@@ -12,8 +12,10 @@
 		$scope.partnersFooter = appSettings.partnersFooter;
 
 		$scope.changeLanguage = function (key) {
-			$rootScope.lang = key;
-			$translate.use(key);
+			// $rootScope.lang = key;
+			// $translate.use(key);
+			$rootScope.lang = 'en';
+			$translate.use('en');
 		};
 		$('.dropdown-toggle').dropdown();
 	});

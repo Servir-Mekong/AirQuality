@@ -787,6 +787,7 @@
 			var date = new Date($scope.selectedDate);
 			$scope.selectedDate = [date.getFullYear() +	'-' + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) +	'-' + (date.getDate() > 9 ? '' : '0') + date.getDate() + ' ' + (date.getHours() > 9 ? '' : '0') + date.getHours() + ':00:00'];
 			var selected_date = $("#hour_table option:selected").text();
+			console.log(selected_date)
 			selected_date = selected_date.replace(":30:00", ":00:00");
 			var parameters = {
 				obs_date: selected_date
