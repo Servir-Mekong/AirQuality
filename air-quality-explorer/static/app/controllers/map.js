@@ -179,6 +179,8 @@
             }
 		});
 
+		
+
 		/**
 		* getting fire layer options
 		*/

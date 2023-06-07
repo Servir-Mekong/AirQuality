@@ -9,6 +9,7 @@
 		$scope.showTimeSlider = true;
 		$scope.toggle_pcd = true;
 		$scope.toggle_geos = true;
+		$scope.toggle_no2 = true;
 		$scope.showPlayButton = false;
 		$scope.showPauseButton = false;
 		$scope.var_type = 'PM 2.5';
@@ -168,9 +169,27 @@
 		var firmIcon = "https://earthdata.nasa.gov/media/firms-google-earth-fire-icon.png";
 		var firmCustomIcon = "https://aqatmekong-servir.adpc.net/static/images/fire-firms.png";
 
+		var today = new Date();
+		var no2_date = today.toISOString().split('T')[0]
 
+		var no2Layer = L.tileLayer.wms('https://aq-backend.optemis.space/geoserver/wms?', {
+			layers: "cite:NO2",
+			format: "image/png",
+			styles: "no2mapcolor",
+			transparent: true,
+			params: {
+                TIME: no2_date // Specify the desired time in ISO 8601 format
+            }
+		});
 
-
+		$("#btn_toggle_no2").on('change', function() {
+			if ($(this).is(':checked')) {
+				map.addLayer(no2Layer);
+			}
+			else {
+				map.removeLayer(no2Layer);
+			}
+		});
 
 		/**
 		* tabs controller
