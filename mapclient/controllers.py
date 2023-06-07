@@ -400,7 +400,7 @@ def get_poylgon_values(s_var, geom_data, freq, run_type, run_date):
     # Empty list to store the timeseries values
     ts_plot = []
     json_obj_arr =[]
-    if len(json.loads(geom_data)) != 4:
+    if len(json.loads(geom_data)) != 5:
         geom_data=json.loads(geom_data)
         for g_data in geom_data:
             json_obj = {}
