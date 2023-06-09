@@ -25,7 +25,7 @@
   <input type="text" name="shp-lat-lon" id="shp-lat-lon" hidden>
 
   <div class="map" id="map">
-    <div class="pm25-legendnew">
+    <div class="pm25-legendnew" id="pm25-legend">
       <p style="font-size: 10px;color: #FFF;margin-bottom: 0;">Surface PM 2.5 (µgm<sup>-3</sup>)</p>
       <table style="width:100%">
         <tr>
@@ -42,6 +42,22 @@
         </tr>
       </table>
     </div>
+
+    <div class="no2-legend" id="no2-legend">
+      <p style="font-size: 10px;color: #FFF;margin-bottom: 0;">NO2 (Sentinel-5P)</p>
+      <table style="width:100%">
+          <tr>
+              <!-- <td style="background:#2476a2; font-size:10px; width:15%; text-align: center;color:black;">&lt;0.0000</td> -->
+              <td style="background:#2476a2; font-size:10px; width:15%; text-align: center;color:black;">0.00</td>
+              <td style="background:#29c723; font-size:10px; width:15%; text-align: center;color:black;">0.0000 - 0.0001</td>
+              <td style="background:#78ff4f; font-size:10px; width:15%; text-align: center;color:black;">0.0001 - 0.0001</td>
+              <td style="background:#ffe855; font-size:10px; width:15%; text-align: center;color:black;">0.0001 - 0.0002</td>
+              <td style="background:#ffbe27; font-size:10px; width:15%; text-align: center;color:black;">0.0002 - 0.0002</td>
+              <td style="background:#ff9347; font-size:10px; width:15%; text-align: center;color:black;">0.0002 - 0.0003</td>
+              <td style="background:#d7191c; font-size:10px; width:15%; text-align: center;color:black;">&gt; 0.0003</td>
+          </tr>
+      </table>
+  </div>
 
     <div class="geos-legend">
       <p style="font-size: 10px;color: #FFF;margin-bottom: 0;">GEOS PM 2.5 (µgm<sup>-3</sup>)</p>

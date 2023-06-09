@@ -182,14 +182,7 @@
             }
 		});
 
-		$("#btn_toggle_no2").on('change', function() {
-			if ($(this).is(':checked')) {
-				map.addLayer(no2Layer);
-			}
-			else {
-				map.removeLayer(no2Layer);
-			}
-		});
+		
 
 		/**
 		* tabs controller
@@ -278,6 +271,23 @@
 			}
 		});
 
+		$("#no2-legend").hide();
+		$("#btn_toggle_no2").on('change', function() {
+			if ($(this).is(':checked')) {
+				map.addLayer(no2Layer);
+				$("#pm25-legend").hide();
+				$("#no2-legend").show();
+				$('#btn_toggle_stations').prop('checked', false); 
+				$('#toggle_geos').prop('checked', false);
+				map.removeLayer(markersLayer);
+				tdWmsGEOSLayer.setOpacity(0);
+			}
+			else {
+				map.removeLayer(no2Layer);
+				$("#no2-legend").hide();
+				$("#pm25-legend").show();
+			}
+		});
 
 		/**
 		* Basemap control

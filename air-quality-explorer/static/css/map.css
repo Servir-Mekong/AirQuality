@@ -581,6 +581,39 @@ ul {
         display: none;
     }
 }
+.no2-legend {
+    top: 0;
+    right: 270px;
+    height: auto;
+    position: absolute;
+    width: auto;
+    max-width: 550px;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.65);
+    border-radius: 5px;
+    color: #FFF;
+    padding: 5px;
+    margin-top: 3px;
+}
+.no2-legendnew {
+    top: 0;
+    right: 50px;
+    height: auto;
+    position: absolute;
+    width: auto;
+    max-width: 550px;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.65);
+    border-radius: 5px;
+    color: #FFF;
+    padding: 5px;
+    margin-top: 10px;
+}
+@media (max-width: 360px) {
+    .no2-legendnew {
+        display: none;
+    }
+}
 .geos-legend {
   display: none;
   bottom: 15px;
